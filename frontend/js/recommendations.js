@@ -43,6 +43,23 @@ document.addEventListener('DOMContentLoaded', () => {
   let userLocation = null; // shared between region detection + weather widget
   let currentRegionCode = 'US';
 
+  // ── Persistence helpers ──────────────────────────────────────────────
+  function sGet(key) {
+    try { return JSON.parse(localStorage.getItem(key)); } catch { return null; }
+  }
+  function sSet(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+  function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+  const ROUTINE_SLOTS = [
+    { id: 'am-cleanser',    slot: 'am', key: 'cleanser'    },
+    { id: 'am-treatment',   slot: 'am', key: 'treatment'   },
+    { id: 'am-moisturizer', slot: 'am', key: 'moisturizer' },
+    { id: 'am-sunscreen',   slot: 'am', key: 'sunscreen'   },
+    { id: 'pm-cleanser',    slot: 'pm', key: 'cleanser'    },
+    { id: 'pm-treatment',   slot: 'pm', key: 'treatment'   },
+    { id: 'pm-moisturizer', slot: 'pm', key: 'moisturizer' },
+  ];
+
   async function detectRegionByIP() {
     try {
       const res = await fetch('https://ipapi.co/json/');
@@ -118,6 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       filterAndRenderProducts();
+      initChecklist();
+      renderHeatmap();
+      renderBadges();
       renderWeatherFromLocation();
     } catch (err) {
       console.error('Failed to load DB', err);
@@ -222,6 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagParam = regionData.tag ? `&tag=${regionData.tag}` : '';
     const buyURL = `https://www.amazon.${regionData.tld}/s?k=${searchQuery}${tagParam}`;
     const evidenceHTML = buildEvidenceHTML(prod, ingredient);
+    const savedFavs = sGet('dermAI_favorites') || [];
+    const isFav = savedFavs.includes(prod.id);
 
     return `
       <div class="step-details">
@@ -235,6 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ${evidenceHTML}
       </div>
       <div class="step-actions">
+        <button class="fav-btn${isFav ? ' fav-active' : ''}" onclick="window.toggleFavorite('${prod.id}', this)" aria-pressed="${isFav}" aria-label="${isFav ? 'Remove from favorites' : 'Save to favorites'}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          ${isFav ? 'SAVED' : 'SAVE'}
+        </button>
         <a href="${buyURL}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Search on Amazon
@@ -269,6 +295,152 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>`;
   }
+
+  // ── Checklist ────────────────────────────────────────────────────────
+  function initChecklist() {
+    const log = sGet('dermAI_routineLog') || {};
+    const today = todayKey();
+    const todayLog = log[today] || {};
+    ROUTINE_SLOTS.forEach(({ id, slot, key }) => {
+      const container = document.getElementById(id);
+      if (!container) return;
+      const content = container.querySelector('.step-content');
+      if (!content) return;
+      const checked = !!(todayLog[slot] && todayLog[slot][key]);
+      const btn = document.createElement('button');
+      btn.className = 'step-check-btn' + (checked ? ' checked' : '');
+      btn.setAttribute('aria-pressed', String(checked));
+      btn.setAttribute('aria-label', checked ? 'Unmark step' : 'Mark step done');
+      btn.innerHTML = checked
+        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> DONE'
+        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg> MARK DONE';
+      btn.addEventListener('click', () => onCheckClick(slot, key, btn));
+      content.appendChild(btn);
+    });
+    renderStreak();
+  }
+
+  function onCheckClick(slot, key, btn) {
+    const log = sGet('dermAI_routineLog') || {};
+    const today = todayKey();
+    if (!log[today]) log[today] = {};
+    if (!log[today][slot]) log[today][slot] = {};
+    log[today][slot][key] = !log[today][slot][key];
+    sSet('dermAI_routineLog', log);
+    const checked = log[today][slot][key];
+    btn.className = 'step-check-btn' + (checked ? ' checked' : '');
+    btn.setAttribute('aria-pressed', String(checked));
+    btn.setAttribute('aria-label', checked ? 'Unmark step' : 'Mark step done');
+    btn.innerHTML = checked
+      ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> DONE'
+      : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg> MARK DONE';
+    renderStreak();
+    renderHeatmap();
+    renderBadges();
+  }
+
+  function computeStreak() {
+    const log = sGet('dermAI_routineLog') || {};
+    let streak = 0;
+    const now = new Date();
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const k = d.toISOString().slice(0, 10);
+      const dayLog = log[k];
+      const hasAny = dayLog && Object.values(dayLog).some(slotObj => Object.values(slotObj).some(Boolean));
+      if (hasAny) {
+        streak++;
+      } else if (i === 0) {
+        continue; // today not started yet — skip, check yesterday
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  function renderStreak() {
+    const el = document.getElementById('streak-counter');
+    if (!el) return;
+    const streak = computeStreak();
+    if (streak === 0) { el.classList.add('hidden'); return; }
+    el.classList.remove('hidden');
+    el.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>&nbsp;<strong>${streak}</strong>&nbsp;day streak`;
+  }
+
+  function renderHeatmap() {
+    const container = document.getElementById('adherence-heatmap');
+    if (!container) return;
+    const log = sGet('dermAI_routineLog') || {};
+    const TOTAL = 7;
+    const now = new Date();
+    let cells = '';
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const k = d.toISOString().slice(0, 10);
+      const dayLog = log[k];
+      const done = dayLog
+        ? Object.values(dayLog).reduce((s, sl) => s + Object.values(sl).filter(Boolean).length, 0)
+        : 0;
+      const lvl = done === 0 ? 0 : done < 3 ? 1 : done < 6 ? 2 : 3;
+      const label = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      cells += `<div class="heatmap-cell level-${lvl}" title="${label}: ${done}/${TOTAL} steps"></div>`;
+    }
+    container.innerHTML = `
+      <span class="section-eyebrow">30-DAY ADHERENCE</span>
+      <div class="heatmap-grid">${cells}</div>
+      <div class="heatmap-legend">
+        <span>Less</span>
+        <div class="heatmap-cell level-0"></div>
+        <div class="heatmap-cell level-1"></div>
+        <div class="heatmap-cell level-2"></div>
+        <div class="heatmap-cell level-3"></div>
+        <span>More</span>
+      </div>`;
+    container.classList.remove('hidden');
+  }
+
+  const BADGE_DEFS = [
+    { id: 'first-scan', label: 'FIRST SCAN',    check: ()     => true },
+    { id: '3-day',      label: '3 DAY STREAK',  check: (s)    => s >= 3 },
+    { id: '7-day',      label: 'WEEK STREAK',   check: (s)    => s >= 7 },
+    { id: '30-day',     label: '30 DAY STREAK', check: (s)    => s >= 30 },
+    { id: '5-faves',    label: '5 FAVORITES',   check: (s, f) => f >= 5 },
+  ];
+
+  function renderBadges() {
+    const el = document.getElementById('badges-row');
+    if (!el) return;
+    const streak = computeStreak();
+    const favCount = (sGet('dermAI_favorites') || []).length;
+    const earned = sGet('dermAI_earnedBadges') || [];
+    BADGE_DEFS.forEach(def => {
+      if (def.check(streak, favCount) && !earned.includes(def.id)) earned.push(def.id);
+    });
+    sSet('dermAI_earnedBadges', earned);
+    const earnedDefs = BADGE_DEFS.filter(d => earned.includes(d.id));
+    if (!earnedDefs.length) { el.classList.add('hidden'); return; }
+    el.classList.remove('hidden');
+    el.innerHTML = `<span class="section-eyebrow">ACHIEVEMENTS</span><div class="badges-grid">${
+      earnedDefs.map(b => `<div class="badge-item">${b.label}</div>`).join('')
+    }</div>`;
+  }
+
+  window.toggleFavorite = function (prodId, btn) {
+    const favs = sGet('dermAI_favorites') || [];
+    const idx = favs.indexOf(prodId);
+    if (idx >= 0) favs.splice(idx, 1);
+    else favs.push(prodId);
+    sSet('dermAI_favorites', favs);
+    const isFav = favs.includes(prodId);
+    btn.className = 'fav-btn' + (isFav ? ' fav-active' : '');
+    btn.setAttribute('aria-pressed', String(isFav));
+    btn.setAttribute('aria-label', isFav ? 'Remove from favorites' : 'Save to favorites');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${isFav ? 'SAVED' : 'SAVE'}`;
+    renderBadges();
+  };
 
   window.updateStep = function(containerId, prodId, tld) {
     const prod = allProducts.find(p => p.id === prodId);

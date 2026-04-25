@@ -17,6 +17,7 @@
         <a href="/">Home</a>
         <a href="/analyze.html">Analyze Skin</a>
         <a href="/ingredients.html">Ingredients</a>
+        <a href="/shopping.html">Shopping List</a>
       </div>
       <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-drawer">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -36,6 +37,7 @@
         <a href="/analyze.html">Analyze Skin</a>
         <a href="/ingredients.html">Ingredients</a>
         <a href="/recommendations.html" aria-current="page">Your Routine</a>
+        <a href="/shopping.html">Shopping List</a>
       </div>
       <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Re-analyze Skin</a>
     </nav>
@@ -43,6 +45,7 @@
     <main class="rec-container container">
       <div class="rec-header">
         <h1>Your Personalized <span class="gradient-text">Routine</span></h1>
+        <div id="streak-counter" class="streak-counter hidden" aria-live="polite"></div>
         <p>Based on your AI skin analysis, here are clinically proven products tailored to your skin concerns.</p>
         <p style="font-size:0.75rem; color:var(--neutral-500); margin-top:0.5rem;">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -63,6 +66,8 @@
       </div>
 
       <div id="stale-banner" class="hidden"></div>
+
+      <div id="badges-row" class="badges-row hidden"></div>
 
       <div id="routine-content" class="routine-content hidden">
         <div class="skin-profile-summary glass-panel" style="margin-bottom: 2rem;">
@@ -95,6 +100,8 @@
             Download / Print Routine
           </button>
 
+          <div id="adherence-heatmap" class="adherence-heatmap hidden"></div>
+
           <div id="weather-widget" class="hidden" style="margin-top:2rem;"></div>
         </div>
       </div>
@@ -105,6 +112,7 @@
       &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
     </footer>
 
+    <script src="./js/storage.js"></script>
     <script src="./js/recommendations.js"></script>
     <script src="./js/nav.js"></script>
   </body>
