@@ -1,5 +1,5 @@
 :root {
-  /* Primary — Strawberry Pink */
+  /* Primary — Strawberry Pink (brand accent, CTAs only) */
   --primary-50:  #fff0f5;
   --primary-100: #ffe0eb;
   --primary-200: #ffc2d6;
@@ -27,51 +27,51 @@
   --peach-300: #ffd1b8;
   --peach-500: #ffaa7a;
 
-  /* Neutrals — Warm Rose-Gray */
-  --neutral-50:  #fffbfb;
-  --neutral-100: #fdf3f4;
-  --neutral-200: #f7e6ea;
-  --neutral-300: #ecd2d8;
-  --neutral-400: #d4a8b3;
-  --neutral-500: #b07c8a;
-  --neutral-600: #87596a;
-  --neutral-700: #5e3a48;
-  --neutral-800: #3a2230;
-  --neutral-900: #2d1822;
+  /* Neutrals — Stark Zinc */
+  --neutral-50:  #fafafa;
+  --neutral-100: #f4f4f5;
+  --neutral-200: #e4e4e7;
+  --neutral-300: #d4d4d8;
+  --neutral-400: #a1a1aa;
+  --neutral-500: #71717a;
+  --neutral-600: #52525b;
+  --neutral-700: #3f3f46;
+  --neutral-800: #27272a;
+  --neutral-900: #09090b;
 
   /* Semantic */
   --success: #5ad8a3;
   --warning: #ffaa7a;
-  --error:   #ff7aa8;
+  --error:   #f5588e;
   --info:    #a07cff;
 
   /* Surfaces */
-  --bg-primary:   #fff7f5;
-  --bg-secondary: #ffeef2;
+  --bg-primary:   #fafafa;
+  --bg-secondary: #f4f4f5;
   --bg-card:      #ffffff;
-  --bg-glass:     rgba(255, 255, 255, 0.80);
-  --border-glass: rgba(245, 88, 142, 0.12);
+  --bg-glass:     rgba(255, 255, 255, 0.95);
+  --border-glass: #09090b;
 
   /* Typography */
-  --font-primary: 'Figtree', sans-serif;
-  --font-display: 'DM Sans', sans-serif;
+  --font-primary: 'Space Mono', monospace;
+  --font-display: 'Space Mono', monospace;
 
-  /* Radii */
-  --radius-sm:   8px;
-  --radius-md:   14px;
-  --radius-lg:   20px;
+  /* Radii — 0 (brutalist) */
+  --radius-sm:   0px;
+  --radius-md:   0px;
+  --radius-lg:   0px;
   --radius-pill: 9999px;
 
-  /* Shadows */
-  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
-  --shadow-pop:  0 8px 32px rgba(0, 0, 0, 0.10);
+  /* Shadows — hard offset, no blur */
+  --shadow-soft: 2px 2px 0px #09090b;
+  --shadow-pop:  4px 4px 0px #09090b;
 
-  /* Affiliate colors */
+  /* Affiliate */
   --color-amazon: #ff9900;
 
-  /* Motion */
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
+  /* Motion — snappy */
+  --duration-fast: 80ms;
+  --duration-base: 150ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in:  cubic-bezier(0.4, 0, 1, 1);
 }
