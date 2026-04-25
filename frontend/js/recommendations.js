@@ -6,26 +6,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const userConcernsList = document.getElementById('user-concerns-list');
   const userSkinType = document.getElementById('user-skin-type');
 
-  // Amazon Regions Data
+  // Amazon Regions Data — fill in `tag` per region as you get approved on each Amazon Associates programme
   const amazonRegions = {
-    "US": { tld: "com", tag: "dermai-us-20", name: "United States" },
-    "CA": { tld: "ca", tag: "dermai-ca-20", name: "Canada" },
-    "UK": { tld: "co.uk", tag: "dermai-uk-21", name: "United Kingdom" },
-    "DE": { tld: "de", tag: "dermai-de-21", name: "Germany" },
-    "FR": { tld: "fr", tag: "dermai-fr-21", name: "France" },
-    "IT": { tld: "it", tag: "dermai-it-21", name: "Italy" },
-    "ES": { tld: "es", tag: "dermai-es-21", name: "Spain" },
-    "NL": { tld: "nl", tag: "dermai-nl-21", name: "Netherlands" },
-    "SE": { tld: "se", tag: "dermai-se-21", name: "Sweden" },
-    "PL": { tld: "pl", tag: "dermai-pl-21", name: "Poland" },
-    "IN": { tld: "in", tag: "dermai-in-21", name: "India" },
-    "JP": { tld: "co.jp", tag: "dermai-jp-22", name: "Japan" },
-    "AU": { tld: "com.au", tag: "dermai-au-22", name: "Australia" },
-    "SG": { tld: "sg", tag: "dermai-sg-22", name: "Singapore" },
-    "AE": { tld: "ae", tag: "dermai-ae-21", name: "United Arab Emirates" },
-    "SA": { tld: "sa", tag: "dermai-sa-21", name: "Saudi Arabia" },
-    "MX": { tld: "com.mx", tag: "dermai-mx-20", name: "Mexico" },
-    "BR": { tld: "com.br", tag: "dermai-br-20", name: "Brazil" }
+    "US": { tld: "com",     tag: "", name: "United States" },
+    "CA": { tld: "ca",      tag: "", name: "Canada" },
+    "UK": { tld: "co.uk",   tag: "", name: "United Kingdom" },
+    "DE": { tld: "de",      tag: "", name: "Germany" },
+    "FR": { tld: "fr",      tag: "", name: "France" },
+    "IT": { tld: "it",      tag: "", name: "Italy" },
+    "ES": { tld: "es",      tag: "", name: "Spain" },
+    "NL": { tld: "nl",      tag: "", name: "Netherlands" },
+    "SE": { tld: "se",      tag: "", name: "Sweden" },
+    "PL": { tld: "pl",      tag: "", name: "Poland" },
+    "IN": { tld: "in",      tag: "tinkref-21", name: "India" },
+    "JP": { tld: "co.jp",   tag: "", name: "Japan" },
+    "AU": { tld: "com.au",  tag: "", name: "Australia" },
+    "SG": { tld: "sg",      tag: "", name: "Singapore" },
+    "AE": { tld: "ae",      tag: "", name: "United Arab Emirates" },
+    "SA": { tld: "sa",      tag: "", name: "Saudi Arabia" },
+    "MX": { tld: "com.mx",  tag: "", name: "Mexico" },
+    "BR": { tld: "com.br",  tag: "", name: "Brazil" }
   };
 
   let allProducts = [];
