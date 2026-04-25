@@ -36,16 +36,6 @@
   border-bottom: 2px solid var(--primary-400);
 }
 
-/* ── Section Eyebrow ────────────────────────────────────────────── */
-.section-eyebrow {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: var(--primary-400);
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  display: block;
-}
 
 /* ── Hero Section ────────────────────────────────────────────────── */
 .hero {
@@ -454,4 +444,49 @@
   .hero-stats { flex-wrap: wrap; }
 
   .section-title { font-size: 2.5rem; }
+}
+
+
+/* ── Science feature list ────────────────────────────────────────── */
+.science-list { overflow: hidden; }
+
+.science-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 2rem 2.5rem;
+}
+
+.science-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+}
+
+.science-text h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.science-text p {
+  color: var(--neutral-400);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.science-divider {
+  height: 1px;
+  background: var(--border-glass);
+  margin: 0 2.5rem;
+}
+
+@media (max-width: 600px) {
+  .science-item { padding: 1.5rem; gap: 1rem; }
+  .science-divider { margin: 0 1.5rem; }
 }

@@ -17,15 +17,6 @@
   font-size: 1.125rem;
 }
 
-/* Section eyebrow */
-.section-eyebrow {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  color: var(--primary-400);
-  text-transform: uppercase;
-  margin-bottom: 0.75rem;
-}
 
 /* Photo tips */
 .photo-tips {

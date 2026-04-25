@@ -74,6 +74,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     userAnalysis = JSON.parse(savedData);
+
+    // Show staleness banner if analysis is older than 30 days
+    const savedAt = userAnalysis.savedAt;
+    if (savedAt) {
+      const ageDays = (Date.now() - savedAt) / (1000 * 60 * 60 * 24);
+      if (ageDays > 30) {
+        const banner = document.getElementById('stale-banner');
+        if (banner) {
+          banner.classList.remove('hidden');
+          banner.innerHTML = `
+            <span>Your skin analysis is ${Math.floor(ageDays)} days old. Results may no longer reflect your current skin.</span>
+            <a href="/analyze.html">Re-analyze</a>
+            <button class="stale-banner-dismiss" aria-label="Dismiss">&#x2715;</button>`;
+          banner.querySelector('.stale-banner-dismiss').addEventListener('click', () => {
+            banner.classList.add('hidden');
+          });
+        }
+      }
+    }
+
     renderUserConcerns();
 
     loadingIndicator.classList.remove('hidden');
@@ -188,9 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const rationaleText = rationales[0] || `${ingredient.name} is clinically studied for ${matchedConcerns.join(', ')}.`;
 
     return `
-      <div style="margin-top:0.75rem; padding:0.75rem; background:rgba(99,102,241,0.08); border-radius:8px; border-left:3px solid var(--primary-500);">
-        <p style="font-size:0.75rem; color:var(--primary-300); font-weight:600; margin-bottom:0.25rem;">WHY THIS?</p>
-        <p style="font-size:0.8rem; color:var(--neutral-300); line-height:1.5;">${rationaleText} ${studyLink}</p>
+      <div class="evidence-rationale">
+        <p class="evidence-rationale-label">WHY THIS?</p>
+        <p class="evidence-rationale-body">${rationaleText} ${studyLink}</p>
       </div>`;
   }
 
@@ -205,21 +225,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return `
       <div class="step-details">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <h3 style="color:var(--primary-300); font-size:1rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.25rem;">${prod.brand}</h3>
-          <span class="badge badge-tier-${evidenceTier}" style="font-size:0.7rem;">${evidenceTier === 1 ? '🏆 Tier 1 RCT' : '✅ Tier 2'}</span>
+        <div class="prod-header">
+          <p class="prod-brand">${prod.brand}</p>
+          <span class="badge badge-tier-${evidenceTier}">${evidenceTier === 1 ? 'Tier 1 RCT' : 'Tier 2'}</span>
         </div>
-        <p style="font-size:1.5rem; font-weight:600; font-family:var(--font-display); line-height:1.2; margin-bottom:0.75rem;">${prod.name}</p>
-        <p style="font-size:0.875rem; color:var(--neutral-300);"><strong style="color:var(--neutral-100);">Active:</strong> ${ingredient ? ingredient.name : prod.primaryIngredientId}</p>
-        <p style="font-size:0.875rem; color:var(--neutral-300); margin-top:0.25rem;"><strong style="color:var(--neutral-100);">Treats:</strong> ${prod.concerns.filter(c => userAnalysis.concerns.map(uc => uc.name).includes(c)).join(', ') || prod.concerns.join(', ')}</p>
+        <p class="prod-name">${prod.name}</p>
+        <p class="prod-meta"><strong>Active:</strong> ${ingredient ? ingredient.name : prod.primaryIngredientId}</p>
+        <p class="prod-meta"><strong>Treats:</strong> ${prod.concerns.filter(c => userAnalysis.concerns.map(uc => uc.name).includes(c)).join(', ') || prod.concerns.join(', ')}</p>
         ${evidenceHTML}
       </div>
-      <div class="step-actions" style="margin-top:1rem;">
-        <a href="${buyURL}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn" style="width:100%;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+      <div class="step-actions">
+        <a href="${buyURL}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Search on Amazon
         </a>
-        <p style="font-size:0.7rem; color:var(--neutral-500); text-align:center; margin-top:0.5rem;">As an Amazon Associate we earn from qualifying purchases.</p>
+        <p class="prod-disclosure">Affiliate link — DermAI may earn from qualifying purchases.</p>
       </div>`;
   }
 

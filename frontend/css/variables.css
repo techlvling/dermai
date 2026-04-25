@@ -47,6 +47,9 @@
   --font-primary: 'Figtree', sans-serif;
   --font-display: 'Outfit', sans-serif;
 
+  /* Affiliate colors */
+  --color-amazon: #ff9900;
+
   /* Motion */
   --duration-fast: 150ms;
   --duration-base: 250ms;

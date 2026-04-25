@@ -356,6 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = await response.json();
         if (rotateInterval) clearInterval(rotateInterval);
+        data.savedAt = Date.now();
         localStorage.setItem('dermAI_analysis', JSON.stringify(data));
         renderResults(data);
       } catch (error) {

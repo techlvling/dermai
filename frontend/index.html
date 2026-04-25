@@ -27,6 +27,25 @@
         <a href="/ingredients.html">Ingredients</a>
       </div>
       <a href="/analyze.html" class="btn btn-primary">Analyze My Skin</a>
+      <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </nav>
+
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="nav-drawer-header">
+        <span class="logo gradient-text" style="font-family:var(--font-display); font-size:1.25rem; font-weight:700;">DermAI</span>
+        <button class="nav-drawer-close" aria-label="Close navigation menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="nav-drawer-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#science">The Science</a>
+        <a href="/ingredients.html">Ingredients</a>
+      </div>
+      <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Analyze My Skin</a>
     </nav>
 
     <main id="main-content">
@@ -149,27 +168,35 @@
           <h2 class="section-title reveal">The Science Behind It</h2>
           <p class="section-subtitle reveal">Every ingredient we recommend has been validated in human clinical trials — not just lab studies or influencer reviews.</p>
         </div>
-        <div class="steps-grid">
-          <div class="step-card glass-panel reveal">
-            <div class="step-number" style="background:linear-gradient(135deg,var(--accent-500),var(--accent-600));box-shadow:0 8px 20px -4px rgba(244,63,94,0.4);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <div class="science-list glass-panel reveal" style="max-width:680px; margin:0 auto; padding:0;">
+          <div class="science-item">
+            <div class="science-icon" style="background:linear-gradient(135deg,var(--accent-500),var(--accent-600));box-shadow:0 6px 16px -4px rgba(244,63,94,0.4);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
-            <h3>RCT-Only Filter</h3>
-            <p>We only source ingredients that have been tested in randomized controlled trials on human subjects — the gold standard in evidence-based medicine.</p>
+            <div class="science-text">
+              <h3>RCT-Only Filter</h3>
+              <p>We only source ingredients tested in randomized controlled trials on human subjects — the gold standard in evidence-based medicine. No in-vitro studies. No influencer anecdotes.</p>
+            </div>
           </div>
-          <div class="step-card glass-panel reveal" style="transition-delay:0.1s;">
-            <div class="step-number" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);box-shadow:0 8px 20px -4px rgba(124,58,237,0.4);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <div class="science-divider"></div>
+          <div class="science-item">
+            <div class="science-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);box-shadow:0 6px 16px -4px rgba(8,145,178,0.4);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             </div>
-            <h3>Region-Aware</h3>
-            <p>Product availability varies by country. Our database filters to brands available in your region so every recommendation is actually purchasable.</p>
+            <div class="science-text">
+              <h3>Region-Aware</h3>
+              <p>Product availability varies by country. Our database filters to brands sold in your region so every recommendation is actually purchasable — not just theoretically available.</p>
+            </div>
           </div>
-          <div class="step-card glass-panel reveal" style="transition-delay:0.2s;">
-            <div class="step-number" style="background:linear-gradient(135deg,#0891b2,#0e7490);box-shadow:0 8px 20px -4px rgba(8,145,178,0.4);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <div class="science-divider"></div>
+          <div class="science-item">
+            <div class="science-icon" style="background:linear-gradient(135deg,var(--primary-500),var(--primary-600));box-shadow:0 6px 16px -4px rgba(20,184,148,0.4);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
             </div>
-            <h3>No Marketing Fluff</h3>
-            <p>No brand partnerships. No paid placement. Recommendations are sorted by evidence strength, not sponsorship dollars.</p>
+            <div class="science-text">
+              <h3>No Paid Placement</h3>
+              <p>No brand partnerships. No sponsored recommendations. Products are ranked by evidence tier and concern severity — not by who paid more to appear first.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -208,5 +235,6 @@
     </footer>
 
     <script src="./js/animations.js" defer></script>
+    <script src="./js/nav.js" defer></script>
   </body>
 </html>

@@ -8,24 +8,44 @@
     <link rel="stylesheet" href="./css/ingredients.css" />
   </head>
   <body>
-    <nav class="navbar container">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <nav class="navbar container" aria-label="Main navigation">
       <div class="logo">
         <a href="/"><span class="gradient-text">DermAI</span></a>
       </div>
       <div class="nav-links">
         <a href="/">Home</a>
         <a href="/analyze.html">Analyze Skin</a>
-        <a href="/ingredients.html" class="active">Ingredients</a>
+        <a href="/ingredients.html" class="active" aria-current="page">Ingredients</a>
       </div>
+      <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
     </nav>
 
-    <main class="encyclopedia-container container">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="nav-drawer-header">
+        <span class="logo gradient-text" style="font-family:var(--font-display); font-size:1.25rem; font-weight:700;">DermAI</span>
+        <button class="nav-drawer-close" aria-label="Close navigation menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="nav-drawer-links">
+        <a href="/">Home</a>
+        <a href="/analyze.html">Analyze Skin</a>
+        <a href="/ingredients.html" aria-current="page">Ingredients</a>
+      </div>
+      <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Analyze My Skin</a>
+    </nav>
+
+    <main class="encyclopedia-container container" id="main-content">
       <div class="text-center encyclopedia-header">
         <h1>Clinical Ingredient <span class="gradient-text">Encyclopedia</span></h1>
         <p>Explore the active ingredients backed by gold-standard PubMed clinical trials.</p>
-        
+
         <div class="search-bar">
-          <input type="text" id="search-input" placeholder="Search ingredients (e.g., Salicylic Acid)..." class="glass-input" />
+          <input type="text" id="search-input" placeholder="Search ingredients (e.g., Salicylic Acid)..." class="glass-input" aria-label="Search ingredients" />
         </div>
       </div>
 
@@ -34,10 +54,17 @@
         <p>Loading clinical data from PubMed database...</p>
       </div>
 
-      <div id="ingredients-grid" class="ingredients-grid">
+      <div id="ingredients-grid" class="ingredients-grid" role="list" aria-label="Clinical ingredients">
         <!-- Ingredients will be injected here via JS -->
       </div>
     </main>
+
+    <footer class="footer-minimal container">
+      Cosmetic analysis only &mdash; not a substitute for professional medical advice.
+      &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
+    </footer>
+
     <script src="./js/ingredients.js"></script>
+    <script src="./js/nav.js"></script>
   </body>
 </html>

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./css/recommendations.css" />
   </head>
   <body>
-    <nav class="navbar container">
+    <nav class="navbar container" aria-label="Main navigation">
       <div class="logo">
         <a href="/"><span class="gradient-text">DermAI</span></a>
       </div>
@@ -17,6 +17,26 @@
         <a href="/analyze.html">Analyze Skin</a>
         <a href="/ingredients.html">Ingredients</a>
       </div>
+      <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </nav>
+
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="nav-drawer-header">
+        <span class="logo gradient-text" style="font-family:var(--font-display); font-size:1.25rem; font-weight:700;">DermAI</span>
+        <button class="nav-drawer-close" aria-label="Close navigation menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="nav-drawer-links">
+        <a href="/">Home</a>
+        <a href="/analyze.html">Analyze Skin</a>
+        <a href="/ingredients.html">Ingredients</a>
+        <a href="/recommendations.html" aria-current="page">Your Routine</a>
+      </div>
+      <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Re-analyze Skin</a>
     </nav>
 
     <main class="rec-container container">
@@ -41,7 +61,7 @@
         <p>Finding the best products in your region...</p>
       </div>
 
-      <div id="weather-widget" class="hidden"></div>
+      <div id="stale-banner" class="hidden"></div>
 
       <div id="routine-content" class="routine-content hidden">
         <div class="skin-profile-summary glass-panel" style="margin-bottom: 2rem;">
@@ -70,12 +90,21 @@
           </div>
           
           <button class="btn print-btn" onclick="window.print()" style="margin-top: 2rem; width: 100%; background: var(--bg-card); border: 1px solid var(--primary-400); color: var(--primary-300);">
-            🖨️ Download / Print Routine
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Download / Print Routine
           </button>
+
+          <div id="weather-widget" class="hidden" style="margin-top:2rem;"></div>
         </div>
       </div>
     </main>
 
+    <footer class="footer-minimal container">
+      Cosmetic analysis only &mdash; not a substitute for professional medical advice.
+      &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
+    </footer>
+
     <script src="./js/recommendations.js"></script>
+    <script src="./js/nav.js"></script>
   </body>
 </html>
