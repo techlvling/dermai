@@ -22,11 +22,17 @@
 .nav-links a {
   color: var(--neutral-300);
   font-weight: 500;
-  transition: color 0.3s ease;
+  transition: color var(--duration-fast);
+  padding: 0.25rem 0;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
   color: var(--primary-400);
+}
+
+.nav-links a[aria-current="page"] {
+  border-bottom: 2px solid var(--primary-400);
 }
 
 /* Hero Section */
@@ -84,12 +90,18 @@
   color: var(--neutral-400);
   font-size: 0.875rem;
   font-weight: 500;
+  flex-wrap: wrap;
 }
 
 .trust-badges span {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.trust-badges svg {
+  color: var(--primary-400);
+  flex-shrink: 0;
 }
 
 /* Hero Visual */
@@ -132,12 +144,13 @@
 .scan-results {
   position: absolute;
   bottom: 2rem;
-  right: -2rem;
+  right: -1rem;
   padding: 1rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  max-width: calc(100% - 2rem);
 }
 
 .result-item {
@@ -238,11 +251,15 @@
     grid-template-columns: 1fr;
     text-align: center;
   }
+  .hero-title {
+    font-size: 3rem;
+  }
   .hero-subtitle {
     margin: 0 auto 2.5rem;
   }
   .hero-actions {
     justify-content: center;
+    flex-wrap: wrap;
   }
   .trust-badges {
     justify-content: center;
@@ -251,6 +268,26 @@
     grid-template-columns: 1fr;
   }
   .scan-results {
-    right: 1rem;
+    right: 0.5rem;
+    bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  .trust-badges {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-actions .btn {
+    text-align: center;
+    justify-content: center;
   }
 }

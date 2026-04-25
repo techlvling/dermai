@@ -44,6 +44,12 @@
   --border-glass: rgba(255, 255, 255, 0.1);
 
   /* Typography */
-  --font-primary: 'Inter', sans-serif;
+  --font-primary: 'Figtree', sans-serif;
   --font-display: 'Outfit', sans-serif;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
 }

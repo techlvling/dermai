@@ -31,8 +31,11 @@
 }
 
 .upload-icon {
-  font-size: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 1rem;
+  opacity: 0.9;
 }
 
 .upload-box h3 {
@@ -82,15 +85,24 @@
 .spinner {
   width: 60px;
   height: 60px;
-  border: 4px solid var(--border-glass);
+  border: 3px solid var(--border-glass);
   border-top-color: var(--primary-400);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   margin: 0 auto 2rem;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+.loading-section h2 {
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 /* Results Section */

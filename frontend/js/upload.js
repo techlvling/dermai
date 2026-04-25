@@ -225,6 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
   analyzeBtn.addEventListener('click', async function handleUpload() {
     if (!capturedFiles.length) return;
 
+    analyzeBtn.disabled = true;
+    analyzeBtn.setAttribute('aria-busy', 'true');
     loadingSection.classList.remove('hidden');
     previewContainer.classList.add('hidden');
     uploadSection.classList.add('hidden');
@@ -264,6 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
         userMsg = `Error: ${msg || 'Unknown error — check the server console for details.'}`;
       }
 
+      analyzeBtn.disabled = false;
+      analyzeBtn.removeAttribute('aria-busy');
       loadingSection.classList.add('hidden');
       uploadSection.classList.remove('hidden');
       previewContainer.classList.remove('hidden');

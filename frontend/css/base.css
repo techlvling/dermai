@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
 @import './variables.css';
 
 * {
@@ -31,6 +31,30 @@ ul {
   list-style: none;
 }
 
+/* Skip link for keyboard users */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--primary-500);
+  color: white;
+  border-radius: 0 0 8px 8px;
+  font-weight: 600;
+  transition: top var(--duration-fast);
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* Global focus ring */
+:focus-visible {
+  outline: 3px solid var(--primary-400);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 /* Glassmorphism Utilities */
 .glass-panel {
   background: var(--bg-glass);
@@ -60,13 +84,21 @@ ul {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
+  min-height: 44px;
+  min-width: 44px;
   border-radius: 9999px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              opacity var(--duration-fast);
   cursor: pointer;
   border: none;
   font-family: var(--font-primary);
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .btn-primary {
@@ -80,6 +112,11 @@ ul {
   box-shadow: 0 6px 20px rgba(20, 184, 148, 0.5);
 }
 
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(20, 184, 148, 0.3);
+}
+
 .btn-outline {
   background: transparent;
   border: 1px solid var(--border-glass);
@@ -88,6 +125,17 @@ ul {
 
 .btn-outline:hover {
   background: var(--bg-glass);
+}
+
+.btn-outline:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Badge */
@@ -115,4 +163,13 @@ ul {
 
 .hidden {
   display: none !important;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
