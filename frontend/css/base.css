@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 @import './variables.css';
 
 * {
@@ -82,7 +82,7 @@ ul {
 .bg-blob-1 {
   width: 640px;
   height: 640px;
-  background: radial-gradient(circle, rgba(245, 88, 142, 0.22), transparent 70%);
+  background: radial-gradient(circle, rgba(245, 88, 142, 0.07), transparent 70%);
   top: -220px;
   right: -180px;
   animation: blob-1 22s ease-in-out infinite;
@@ -91,7 +91,7 @@ ul {
 .bg-blob-2 {
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle, rgba(160, 124, 255, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(160, 124, 255, 0.06), transparent 70%);
   bottom: -160px;
   left: -160px;
   animation: blob-2 28s ease-in-out infinite;
@@ -100,7 +100,7 @@ ul {
 .bg-blob-3 {
   width: 380px;
   height: 380px;
-  background: radial-gradient(circle, rgba(255, 170, 122, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 170, 122, 0.05), transparent 70%);
   top: 45%;
   left: 35%;
   animation: blob-3 34s ease-in-out infinite;
@@ -123,7 +123,7 @@ ul {
 }
 
 /* Background sits behind page content */
-body > *:not(.bg-blob) {
+body > *:not(.bg-blob):not(.nav-drawer):not(.nav-overlay) {
   position: relative;
   z-index: 1;
 }

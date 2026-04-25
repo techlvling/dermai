@@ -54,17 +54,17 @@
 
   /* Typography */
   --font-primary: 'Figtree', sans-serif;
-  --font-display: 'Fredoka', sans-serif;
+  --font-display: 'DM Sans', sans-serif;
 
   /* Radii */
-  --radius-sm:   12px;
-  --radius-md:   20px;
-  --radius-lg:   28px;
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
   --radius-pill: 9999px;
 
   /* Shadows */
-  --shadow-soft: 0 8px 30px rgba(245, 88, 142, 0.10);
-  --shadow-pop:  0 14px 40px rgba(245, 88, 142, 0.20);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-pop:  0 8px 32px rgba(0, 0, 0, 0.10);
 
   /* Affiliate colors */
   --color-amazon: #ff9900;
