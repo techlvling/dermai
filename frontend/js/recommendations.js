@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const regionSelect = document.getElementById('region-select');
   const loadingIndicator = document.getElementById('loading-indicator');
   const routineContent = document.getElementById('routine-content');
   const noAnalysisWarning = document.getElementById('no-analysis-warning');
   const userConcernsList = document.getElementById('user-concerns-list');
   const userSkinType = document.getElementById('user-skin-type');
+  const detectedRegionEl = document.getElementById('detected-region');
 
   // Amazon Regions Data — fill in `tag` per region as you get approved on each Amazon Associates programme
   const amazonRegions = {
@@ -28,56 +28,79 @@ document.addEventListener('DOMContentLoaded', () => {
     "BR": { tld: "com.br",  tag: "", name: "Brazil" }
   };
 
+  // ISO country code → amazonRegions key
+  const COUNTRY_TO_REGION = {
+    US: 'US', CA: 'CA', GB: 'UK', DE: 'DE', FR: 'FR',
+    IT: 'IT', ES: 'ES', NL: 'NL', SE: 'SE', PL: 'PL',
+    IN: 'IN', JP: 'JP', AU: 'AU', SG: 'SG',
+    AE: 'AE', SA: 'SA', MX: 'MX', BR: 'BR'
+  };
+
   let allProducts = [];
   let allIngredients = [];
   let allConcerns = {};
   let userAnalysis = null;
+  let userLocation = null; // shared between region detection + weather widget
+  let currentRegionCode = 'US';
+
+  async function detectRegionByIP() {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      userLocation = await res.json();
+      const code = (userLocation.country_code || '').toUpperCase();
+      return COUNTRY_TO_REGION[code] || fallbackByTimezone();
+    } catch (err) {
+      console.warn('IP geolocation failed, falling back to timezone', err);
+      return fallbackByTimezone();
+    }
+  }
+
+  function fallbackByTimezone() {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (tz.includes('Kolkata') || tz.includes('India')) return 'IN';
+    if (tz.includes('London') || tz.includes('Europe/London')) return 'UK';
+    if (tz.includes('Europe')) return 'DE';
+    if (tz.includes('Australia')) return 'AU';
+    if (tz.includes('Tokyo')) return 'JP';
+    if (tz.includes('Singapore')) return 'SG';
+    return 'US';
+  }
 
   async function init() {
-    Object.keys(amazonRegions).forEach(code => {
-      const option = document.createElement('option');
-      option.value = code;
-      option.textContent = amazonRegions[code].name;
-      regionSelect.appendChild(option);
-    });
-
     const savedData = localStorage.getItem('dermAI_analysis');
     if (!savedData) {
       noAnalysisWarning.classList.remove('hidden');
       return;
     }
-    
-    userAnalysis = JSON.parse(savedData);
-    
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    let defaultRegion = "US";
-    if (tz.includes('Europe')) defaultRegion = "UK";
-    if (tz.includes('India')) defaultRegion = "IN";
-    if (tz.includes('Australia')) defaultRegion = "AU";
-    if (tz.includes('Tokyo')) defaultRegion = "JP";
-    regionSelect.value = defaultRegion;
 
+    userAnalysis = JSON.parse(savedData);
     renderUserConcerns();
 
     loadingIndicator.classList.remove('hidden');
     try {
-      const [prodRes, ingRes, conRes] = await Promise.all([
+      const [regionCode, prodRes, ingRes, conRes] = await Promise.all([
+        detectRegionByIP(),
         fetch('/api/products'),
         fetch('/api/ingredients'),
         fetch('/api/concerns')
       ]);
 
-      if (!prodRes.ok || !ingRes.ok || !conRes.ok) throw new Error("API returned non-200");
+      if (!prodRes.ok || !ingRes.ok || !conRes.ok) throw new Error('API returned non-200');
 
+      currentRegionCode = regionCode;
       allProducts = await prodRes.json();
       allIngredients = await ingRes.json();
       allConcerns = await conRes.json();
 
+      const region = amazonRegions[currentRegionCode];
+      if (detectedRegionEl) {
+        detectedRegionEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Showing products on amazon.${region.tld} (${region.name}).`;
+      }
+
       filterAndRenderProducts();
-      fetchWeatherAndUV();
+      renderWeatherFromLocation();
     } catch (err) {
-      console.error("Failed to load DB", err);
-      // Fallback message
+      console.error('Failed to load DB', err);
       document.querySelector('.routine-timeline').innerHTML = '<p class="error" style="text-align: center;">Failed to connect to database. Ensure backend is running.</p>';
     } finally {
       loadingIndicator.classList.add('hidden');
@@ -114,8 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function filterAndRenderProducts() {
-    const selectedRegionCode = regionSelect.value;
-    const selectedRegionData = amazonRegions[selectedRegionCode];
+    const selectedRegionData = amazonRegions[currentRegionCode];
     const userConcernNames = userAnalysis.concerns.map(c => c.name);
 
     // Filter treatments to only those matching user concerns
@@ -235,18 +257,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(`${containerId}-content`).innerHTML = buildProductCardHTML(prod, regionData);
   };
 
-  async function fetchWeatherAndUV() {
+  async function renderWeatherFromLocation() {
+    if (!userLocation || !userLocation.latitude || !userLocation.longitude) return;
     try {
-      const ipRes = await fetch('https://ipapi.co/json/');
-      const loc = await ipRes.json();
-      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,relative_humidity_2m,uv_index`);
+      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${userLocation.latitude}&longitude=${userLocation.longitude}&current=temperature_2m,relative_humidity_2m,uv_index`);
       const weather = await weatherRes.json();
       const current = weather.current;
-      
+
       const weatherDiv = document.getElementById('weather-widget');
       weatherDiv.innerHTML = `
         <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
-          <h4 style="margin-bottom:0.5rem; color:var(--primary-300);">🌤️ Local Climate Context (${loc.city || 'Your Location'})</h4>
+          <h4 style="margin-bottom:0.5rem; color:var(--primary-300);">🌤️ Local Climate Context (${userLocation.city || 'Your Location'})</h4>
           <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:1rem;">
             <div>
               <p style="font-size:0.875rem; color:var(--neutral-400);">Current UV Index</p>
@@ -264,10 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("Weather fetch failed", err);
     }
   }
-
-  regionSelect.addEventListener('change', () => {
-    filterAndRenderProducts();
-  });
 
   init();
 });
