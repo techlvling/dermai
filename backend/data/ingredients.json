@@ -222,28 +222,20 @@
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
     "keyStudies": [
       {
-        "title": "Effectiveness and Safety of Sculptra Poly-L-Lactic Acid Injectable Implant in the Correction of Cheek Wrinkles.",
-        "journal": "Journal of drugs in dermatology : JDD",
-        "year": "2024",
-        "pubmedId": "38206151",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/38206151/",
-        "authors": "Fabi S, Hamilton T, LaTowsky B et al."
+        "title": "Topical 8% glycolic acid and 8% L-lactic acid creams for the treatment of photodamaged skin. A double-blind vehicle-controlled clinical trial.",
+        "journal": "Archives of dermatology",
+        "year": "1996",
+        "pubmedId": "8712075",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/8712075/",
+        "authors": "Stiller MJ, Bartolone J, Stern R et al."
       },
       {
-        "title": "Microneedling Radiofrequency Enhances Poly-L-Lactic Acid Penetration That Effectively Improves Facial Skin Laxity without Lipolysis.",
-        "journal": "Plastic and reconstructive surgery",
-        "year": "2024",
-        "pubmedId": "38051121",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/38051121/",
-        "authors": "Wu X, Cen Q, Wang X et al."
-      },
-      {
-        "title": "Comparative Bulk RNA-Seq Analysis of Poly-l-Lactic Acid Versus Calcium Hydroxylapatite Reveals a Novel, Adipocyte-Mediated Regenerative Mechanism of Action Unique to PLLA.",
-        "journal": "Dermatologic surgery : official publication for American Society for Dermatologic Surgery [et al.]",
-        "year": "2024",
-        "pubmedId": "39480040",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/39480040/",
-        "authors": "Waibel J, Ziegler M, Nguyen TQ et al."
+        "title": "Epidermal and dermal effects of topical lactic acid.",
+        "journal": "Journal of the American Academy of Dermatology",
+        "year": "1996",
+        "pubmedId": "8708950",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/8708950/",
+        "authors": "Smith WP"
       }
     ]
   },

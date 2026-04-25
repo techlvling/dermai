@@ -19,35 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Build filter chip bar
   const chipsContainer = document.createElement('div');
   chipsContainer.id = 'filter-chips';
-  chipsContainer.style.cssText = 'display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; margin-top:1.25rem;';
+  chipsContainer.className = 'filter-chips';
 
   filterDefs.forEach(def => {
     const chip = document.createElement('button');
-    chip.className = 'filter-chip';
+    chip.className = 'filter-chip' + (def.label === 'All' ? ' active' : '');
     chip.textContent = def.label;
     chip.dataset.filter = def.label;
-    chip.style.cssText = `
-      padding: 0.4rem 1rem;
-      border-radius: 999px;
-      border: 1px solid var(--primary-500);
-      background: transparent;
-      color: var(--primary-300);
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    `;
-    if (def.label === 'All') {
-      chip.style.background = 'var(--primary-500)';
-      chip.style.color = '#fff';
-    }
     chip.addEventListener('click', () => {
       activeFilter = def.label;
-      document.querySelectorAll('.filter-chip').forEach(c => {
-        c.style.background = 'transparent';
-        c.style.color = 'var(--primary-300)';
-      });
-      chip.style.background = 'var(--primary-500)';
-      chip.style.color = '#fff';
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
       applyFilters();
     });
     chipsContainer.appendChild(chip);
