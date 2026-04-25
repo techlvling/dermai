@@ -473,3 +473,212 @@
   .heatmap-cell { width: 16px; height: 16px; }
   .heatmap-grid { gap: 3px; }
 }
+
+/* ── Ingredient conflict cards ────────────────────────────────────── */
+.conflict-warnings {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+.conflict-card {
+  padding: 1rem 1.25rem;
+  margin-top: 0.5rem;
+  border: 2px solid var(--warning);
+  background: rgba(255, 170, 122, 0.06);
+  box-shadow: 2px 2px 0 var(--warning);
+}
+.conflict-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.conflict-title { font-size: 0.9rem; }
+.conflict-reason {
+  font-size: 0.82rem;
+  color: var(--neutral-700);
+  margin: 0 0 0.4rem;
+  line-height: 1.55;
+}
+.conflict-tip {
+  font-size: 0.78rem;
+  color: #9a5416;
+  margin: 0;
+}
+
+/* ── Reaction row in product card ─────────────────────────────────── */
+.reaction-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.reaction-log-btn {
+  background: transparent;
+  border: 1px solid var(--neutral-300);
+  color: var(--neutral-500);
+  font-family: var(--font-primary);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  transition: border-color var(--duration-fast), color var(--duration-fast);
+}
+.reaction-log-btn:hover { border-color: var(--primary-500); color: var(--primary-500); }
+.reaction-indicator {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--primary-700);
+  background: rgba(245,88,142,0.1);
+  border: 1px solid var(--primary-400);
+  padding: 0.2rem 0.5rem;
+}
+
+/* ── Patch-test banner extras ─────────────────────────────────────── */
+.patch-test-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Modal overlay ────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 9, 11, 0.6);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-panel {
+  background: var(--bg-card);
+  border: 2px solid var(--neutral-900);
+  box-shadow: var(--shadow-pop);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 2px solid var(--neutral-900);
+}
+.modal-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+.modal-close {
+  background: none;
+  border: 2px solid var(--neutral-900);
+  cursor: pointer;
+  color: var(--neutral-900);
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--duration-fast), color var(--duration-fast);
+}
+.modal-close:hover { background: var(--neutral-900); color: white; }
+.modal-close:focus-visible { outline: 2px solid var(--neutral-900); outline-offset: 2px; }
+.modal-body { padding: 1.25rem 1.5rem; flex: 1; }
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 2px solid var(--neutral-200);
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+.modal-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--neutral-700);
+  margin-bottom: 0.5rem;
+}
+.modal-subtitle {
+  font-size: 0.82rem;
+  color: var(--neutral-500);
+  margin-bottom: 1rem;
+}
+.modal-hint {
+  font-size: 0.72rem;
+  color: var(--neutral-400);
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}
+
+/* ── Severity picker ──────────────────────────────────────────────── */
+.severity-picker { display: flex; flex-direction: column; gap: 0.35rem; }
+.reaction-severity-input {
+  width: 100%;
+  accent-color: var(--primary-500);
+  cursor: pointer;
+  height: 6px;
+}
+.severity-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--neutral-500);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.severity-display { color: var(--neutral-900); font-size: 0.85rem; }
+
+/* ── Symptom chips ────────────────────────────────────────────────── */
+.symptom-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.reaction-symptom {
+  padding: 0.3rem 0.7rem;
+  border: 2px solid var(--neutral-300);
+  background: transparent;
+  color: var(--neutral-600);
+  font-family: var(--font-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color var(--duration-fast), background var(--duration-fast), color var(--duration-fast);
+}
+.reaction-symptom:hover { border-color: var(--primary-400); color: var(--primary-600); }
+.reaction-symptom.active {
+  background: var(--primary-500);
+  border-color: var(--primary-500);
+  color: white;
+}
+
+/* ── Reaction notes textarea ──────────────────────────────────────── */
+.reaction-notes {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 2px solid var(--neutral-300);
+  background: var(--bg-primary);
+  color: var(--neutral-900);
+  font-family: var(--font-primary);
+  font-size: 0.85rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--duration-fast);
+}
+.reaction-notes:focus { border-color: var(--neutral-900); }
+
+@media (max-width: 480px) {
+  .modal-panel { max-height: 100dvh; border-left: none; border-right: none; }
+  .patch-test-actions { margin-left: 0; width: 100%; }
+  .conflict-card { padding: 0.875rem 1rem; }
+}

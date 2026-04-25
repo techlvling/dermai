@@ -66,10 +66,14 @@
       </div>
 
       <div id="stale-banner" class="hidden"></div>
+      <div id="reorder-banner" class="stale-banner hidden" style="background:rgba(90,216,163,0.08);border-color:var(--mint-500);color:#1a6647;"></div>
 
       <div id="badges-row" class="badges-row hidden"></div>
 
       <div id="routine-content" class="routine-content hidden">
+        <div id="patch-test-banner" class="stale-banner hidden" style="margin-bottom:1.5rem;"></div>
+        <div id="conflict-warnings" class="conflict-warnings hidden" style="margin-bottom:2rem;"></div>
+
         <div class="skin-profile-summary glass-panel" style="margin-bottom: 2rem;">
           <h3 style="margin-bottom:1rem; color:var(--primary-600);">Your Skin Profile</h3>
           <p style="margin-bottom:0.5rem;"><strong>Skin Type:</strong> <span id="user-skin-type" style="text-transform: capitalize; color:var(--neutral-800);"></span></p>
@@ -111,6 +115,76 @@
       Cosmetic analysis only &mdash; not a substitute for professional medical advice.
       &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
     </footer>
+
+    <!-- ── Reaction log modal ──────────────────────────────────────────── -->
+    <div id="reaction-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="reaction-modal-title">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h3 class="reaction-modal-title" id="reaction-modal-title">Log a reaction</h3>
+          <button class="modal-close" onclick="window.closeReactionModal()" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label class="modal-label">Severity</label>
+          <div class="severity-picker">
+            <input type="range" class="reaction-severity-input" min="1" max="5" value="3" aria-label="Reaction severity 1 to 5"
+              oninput="this.closest('.severity-picker').querySelector('.severity-display').textContent = this.value">
+            <div class="severity-scale">
+              <span>1 mild</span><span class="severity-display">3</span><span>5 severe</span>
+            </div>
+          </div>
+          <label class="modal-label" style="margin-top:1.25rem;">Symptoms</label>
+          <div class="symptom-chips">
+            <button class="reaction-symptom" data-symptom="redness" onclick="this.classList.toggle('active')">Redness</button>
+            <button class="reaction-symptom" data-symptom="stinging" onclick="this.classList.toggle('active')">Stinging</button>
+            <button class="reaction-symptom" data-symptom="breakout" onclick="this.classList.toggle('active')">Breakout</button>
+            <button class="reaction-symptom" data-symptom="peeling" onclick="this.classList.toggle('active')">Peeling</button>
+            <button class="reaction-symptom" data-symptom="itching" onclick="this.classList.toggle('active')">Itching</button>
+            <button class="reaction-symptom" data-symptom="dryness" onclick="this.classList.toggle('active')">Dryness</button>
+          </div>
+          <label class="modal-label" for="reaction-notes" style="margin-top:1.25rem;">Notes (optional)</label>
+          <textarea id="reaction-notes" class="reaction-notes" rows="3" placeholder="Describe what you noticed..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button onclick="window.closeReactionModal()" class="btn btn-outline">Cancel</button>
+          <button onclick="window.saveReaction()" class="btn btn-primary">Save Reaction</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Reorder reminder modal ───────────────────────────────────────── -->
+    <div id="reorder-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="reorder-modal-title">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h3 id="reorder-modal-title">Set reorder reminder</h3>
+          <button class="modal-close" onclick="window.closeReorderModal()" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="reorder-modal-product" class="modal-subtitle"></p>
+          <label class="modal-label" for="reorder-size">Bottle size</label>
+          <select id="reorder-size" class="glass-select" style="width:100%">
+            <option value="30">30 ml</option>
+            <option value="50" selected>50 ml</option>
+            <option value="100">100 ml</option>
+            <option value="150">150 ml</option>
+            <option value="200">200 ml</option>
+          </select>
+          <label class="modal-label" for="reorder-freq" style="margin-top:1rem;">Uses per day</label>
+          <select id="reorder-freq" class="glass-select" style="width:100%">
+            <option value="1" selected>Once a day</option>
+            <option value="2">Twice a day</option>
+          </select>
+          <p class="modal-hint">We'll remind you 7 days before your estimated empty date.</p>
+        </div>
+        <div class="modal-footer">
+          <button onclick="window.closeReorderModal()" class="btn btn-outline">Skip</button>
+          <button onclick="window.saveReorderReminder()" class="btn btn-primary">Set Reminder</button>
+        </div>
+      </div>
+    </div>
 
     <script src="./js/storage.js"></script>
     <script src="./js/recommendations.js"></script>

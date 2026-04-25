@@ -102,6 +102,14 @@ app.get('/api/concerns', (_req, res) => {
   }
 });
 
+app.get('/api/conflicts', (_req, res) => {
+  try {
+    res.json(JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'conflicts.json'))));
+  } catch (_) {
+    res.status(500).json({ error: 'Failed to load conflicts database' });
+  }
+});
+
 app.get('/api/products', (_req, res) => {
   try {
     res.json(JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'products.json'))));

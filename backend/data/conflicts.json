@@ -1,0 +1,72 @@
+[
+  {
+    "a": "benzoyl_peroxide", "b": "tretinoin",
+    "severity": "high",
+    "title": "Benzoyl Peroxide + Tretinoin",
+    "reason": "Benzoyl peroxide oxidises tretinoin on contact, rendering it inactive. Never layer them in the same session.",
+    "tip": "AM: benzoyl peroxide. PM: tretinoin only, after it fully absorbs."
+  },
+  {
+    "a": "benzoyl_peroxide", "b": "retinol",
+    "severity": "high",
+    "title": "Benzoyl Peroxide + Retinol",
+    "reason": "Benzoyl peroxide degrades retinol through oxidation, completely eliminating its anti-ageing efficacy.",
+    "tip": "Use in strictly separate AM/PM sessions — never in the same layer."
+  },
+  {
+    "a": "benzoyl_peroxide", "b": "vitamin_c",
+    "severity": "medium",
+    "title": "Benzoyl Peroxide + Vitamin C",
+    "reason": "Benzoyl peroxide can oxidise ascorbic acid, reducing vitamin C's brightening and antioxidant effect.",
+    "tip": "AM: vitamin C. PM or separate session: benzoyl peroxide."
+  },
+  {
+    "a": "tretinoin", "b": "salicylic_acid",
+    "severity": "medium",
+    "title": "Retinoid + BHA",
+    "reason": "Both are potent exfoliants. Combining tretinoin with salicylic acid can cause excessive irritation and barrier disruption.",
+    "tip": "AM: salicylic acid. PM: tretinoin only."
+  },
+  {
+    "a": "tretinoin", "b": "glycolic_acid",
+    "severity": "medium",
+    "title": "Retinoid + AHA (Glycolic)",
+    "reason": "Glycolic acid increases tretinoin absorption and risk of irritation. Use glycolic strictly in AM and tretinoin strictly at night.",
+    "tip": "AM: glycolic acid. PM: tretinoin only. Never same session."
+  },
+  {
+    "a": "tretinoin", "b": "lactic_acid",
+    "severity": "medium",
+    "title": "Retinoid + AHA (Lactic)",
+    "reason": "Combining lactic acid with tretinoin significantly raises irritation risk, especially for sensitive or retinoid-naive skin.",
+    "tip": "Alternate nights — never apply both in the same session."
+  },
+  {
+    "a": "retinol", "b": "salicylic_acid",
+    "severity": "medium",
+    "title": "Retinol + BHA",
+    "reason": "Salicylic acid lowers skin pH, destabilising retinol and increasing irritation. Keep them in separate sessions.",
+    "tip": "AM: salicylic acid. PM: retinol."
+  },
+  {
+    "a": "retinol", "b": "glycolic_acid",
+    "severity": "medium",
+    "title": "Retinol + AHA (Glycolic)",
+    "reason": "Both promote cell turnover — layering them risks over-exfoliation, redness, and prolonged sensitivity.",
+    "tip": "Alternate nights. Do not layer in the same session."
+  },
+  {
+    "a": "retinol", "b": "lactic_acid",
+    "severity": "low",
+    "title": "Retinol + AHA (Lactic) — mild",
+    "reason": "Lactic acid is gentler than glycolic, but combining with retinol still elevates irritation risk for sensitive or retinol-naive skin.",
+    "tip": "Generally fine for experienced users — avoid if your skin reacts easily."
+  },
+  {
+    "a": "vitamin_c", "b": "niacinamide",
+    "severity": "low",
+    "title": "Vitamin C + Niacinamide — low concern",
+    "reason": "Historically thought to cause flushing (nicotinic acid formation), but modern stable formulations show minimal interaction. Low concern.",
+    "tip": "Generally safe together. Separate by 30 min if you notice any flushing."
+  }
+]

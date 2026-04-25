@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let allProducts = [];
   let allIngredients = [];
   let allConcerns = {};
+  let allConflicts = [];
   let userAnalysis = null;
   let userLocation = null; // shared between region detection + weather widget
   let currentRegionCode = 'US';
@@ -115,19 +116,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadingIndicator.classList.remove('hidden');
     try {
-      const [regionCode, prodRes, ingRes, conRes] = await Promise.all([
+      const [regionCode, prodRes, ingRes, conRes, conflRes] = await Promise.all([
         detectRegionByIP(),
         fetch('/api/products'),
         fetch('/api/ingredients'),
-        fetch('/api/concerns')
+        fetch('/api/concerns'),
+        fetch('/api/conflicts')
       ]);
 
       if (!prodRes.ok || !ingRes.ok || !conRes.ok) throw new Error('API returned non-200');
 
       currentRegionCode = regionCode;
-      allProducts = await prodRes.json();
+      allProducts    = await prodRes.json();
       allIngredients = await ingRes.json();
-      allConcerns = await conRes.json();
+      allConcerns    = await conRes.json();
+      allConflicts   = conflRes.ok ? await conflRes.json() : [];
 
       const region = amazonRegions[currentRegionCode];
       if (detectedRegionEl) {
@@ -138,6 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
       initChecklist();
       renderHeatmap();
       renderBadges();
+      detectAndRenderConflicts();
+      initPatchTest();
+      checkReorderReminders();
       renderWeatherFromLocation();
     } catch (err) {
       console.error('Failed to load DB', err);
@@ -205,6 +211,16 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStep('pm-cleanser', 'Step 1: Cleanser', cleansers, selectedRegionData);
     renderStep('pm-treatment', 'Step 2: Treatment', pmTreatments, selectedRegionData);
     renderStep('pm-moisturizer', 'Step 3: Moisturizer', pmMoisturizers.length ? pmMoisturizers : moisturizers, selectedRegionData);
+
+    // Capture the default-selected product per slot for conflict detection
+    window._dermActiveStack = [
+      cleansers[0],
+      amTreatments[0],
+      (amMoisturizers.length ? amMoisturizers : moisturizers)[0],
+      sunscreens[0],
+      pmTreatments[0],
+      (pmMoisturizers.length ? pmMoisturizers : moisturizers)[0],
+    ].filter(Boolean);
   }
 
   function buildEvidenceHTML(prod, ingredient) {
@@ -244,6 +260,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const evidenceHTML = buildEvidenceHTML(prod, ingredient);
     const savedFavs = sGet('dermAI_favorites') || [];
     const isFav = savedFavs.includes(prod.id);
+    const reactions = sGet('dermAI_reactions') || {};
+    const hasReaction = !!(reactions[prod.id] && reactions[prod.id].length);
 
     return `
       <div class="step-details">
@@ -255,6 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="prod-meta"><strong>Active:</strong> ${ingredient ? ingredient.name : prod.primaryIngredientId}</p>
         <p class="prod-meta"><strong>Treats:</strong> ${prod.concerns.filter(c => userAnalysis.concerns.map(uc => uc.name).includes(c)).join(', ') || prod.concerns.join(', ')}</p>
         ${evidenceHTML}
+        <div class="reaction-row">
+          ${hasReaction ? `<span class="reaction-indicator" id="reaction-ind-${prod.id}">REACTION LOGGED</span>` : `<span class="reaction-indicator hidden" id="reaction-ind-${prod.id}">REACTION LOGGED</span>`}
+          <button class="reaction-log-btn" onclick="window.openReactionModal('${prod.id}')" aria-label="Log a skin reaction to this product">LOG REACTION</button>
+        </div>
       </div>
       <div class="step-actions">
         <button class="fav-btn${isFav ? ' fav-active' : ''}" onclick="window.toggleFavorite('${prod.id}', this)" aria-pressed="${isFav}" aria-label="${isFav ? 'Remove from favorites' : 'Save to favorites'}">
@@ -431,6 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toggleFavorite = function (prodId, btn) {
     const favs = sGet('dermAI_favorites') || [];
     const idx = favs.indexOf(prodId);
+    const isAdding = idx < 0;
     if (idx >= 0) favs.splice(idx, 1);
     else favs.push(prodId);
     sSet('dermAI_favorites', favs);
@@ -439,7 +462,188 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.setAttribute('aria-pressed', String(isFav));
     btn.setAttribute('aria-label', isFav ? 'Remove from favorites' : 'Save to favorites');
     btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${isFav ? 'SAVED' : 'SAVE'}`;
+    if (isAdding) setTimeout(() => window.openReorderModal(prodId), 350);
     renderBadges();
+  };
+
+  // ── Ingredient conflict warnings ──────────────────────────────────────
+  function detectAndRenderConflicts() {
+    const container = document.getElementById('conflict-warnings');
+    if (!container || !allConflicts.length) return;
+    const stack = window._dermActiveStack || [];
+    const ingSet = new Set(stack.map(p => p.primaryIngredientId).filter(Boolean));
+    const found = allConflicts.filter(c => ingSet.has(c.a) && ingSet.has(c.b));
+    if (!found.length) { container.classList.add('hidden'); return; }
+    container.classList.remove('hidden');
+    container.innerHTML = `
+      <span class="section-eyebrow">INGREDIENT ALERTS</span>
+      ${found.map(c => `
+        <div class="conflict-card">
+          <div class="conflict-header">
+            <span class="severity-badge severity-${c.severity}">${c.severity.toUpperCase()}</span>
+            <strong class="conflict-title">${c.title}</strong>
+          </div>
+          <p class="conflict-reason">${c.reason}</p>
+          <p class="conflict-tip"><strong>Tip:</strong> ${c.tip}</p>
+        </div>`).join('')}`;
+  }
+
+  // ── Patch-test flow ───────────────────────────────────────────────────
+  function initPatchTest() {
+    const stack = window._dermActiveStack || [];
+    if (!stack.length) return;
+    const seen  = sGet('dermAI_seen')       || {};
+    const queue = sGet('dermAI_patchQueue') || {};
+    const now   = Date.now();
+    stack.forEach(prod => {
+      if (!seen[prod.id]) {
+        seen[prod.id]  = now;
+        queue[prod.id] = { addedAt: now, reviewed: false };
+      }
+    });
+    sSet('dermAI_seen', seen);
+    sSet('dermAI_patchQueue', queue);
+
+    const HOURS_48 = 48 * 60 * 60 * 1000;
+    const due = Object.entries(queue)
+      .filter(([, e]) => !e.reviewed && (now - e.addedAt) >= HOURS_48)
+      .map(([id]) => allProducts.find(p => p.id === id))
+      .filter(Boolean).map(p => p.name);
+    if (!due.length) return;
+
+    const banner = document.getElementById('patch-test-banner');
+    if (!banner) return;
+    banner.classList.remove('hidden');
+    banner.innerHTML = `
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>48h patch test complete for <strong>${due.join(', ')}</strong> — any reaction?</span>
+      <div class="patch-test-actions">
+        <button class="btn btn-outline" style="padding:0.3rem 0.75rem;font-size:0.68rem;" onclick="window.dismissPatchTest(false)">No reaction</button>
+        <button class="btn btn-primary" style="padding:0.3rem 0.75rem;font-size:0.68rem;" onclick="window.dismissPatchTest(true)">Log reaction</button>
+      </div>`;
+  }
+
+  window.dismissPatchTest = function (logReaction) {
+    const queue = sGet('dermAI_patchQueue') || {};
+    const now   = Date.now();
+    const H48   = 48 * 60 * 60 * 1000;
+    Object.keys(queue).forEach(id => {
+      if (!queue[id].reviewed && (now - queue[id].addedAt) >= H48) queue[id].reviewed = true;
+    });
+    sSet('dermAI_patchQueue', queue);
+    const banner = document.getElementById('patch-test-banner');
+    if (banner) banner.classList.add('hidden');
+    if (logReaction) window.openReactionModal(null);
+  };
+
+  // ── Reaction log ──────────────────────────────────────────────────────
+  window.openReactionModal = function (prodId) {
+    const modal = document.getElementById('reaction-modal');
+    if (!modal) return;
+    const prod = prodId ? allProducts.find(p => p.id === prodId) : null;
+    modal.querySelector('.reaction-modal-title').textContent =
+      prod ? `Log reaction: ${prod.name}` : 'Log a skin reaction';
+    modal.dataset.prodId = prodId || '';
+    modal.querySelector('.reaction-severity-input').value = '3';
+    modal.querySelector('.severity-display').textContent = '3';
+    modal.querySelectorAll('.reaction-symptom').forEach(s => s.classList.remove('active'));
+    modal.querySelector('.reaction-notes').value = '';
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    modal.querySelector('.modal-close').focus();
+  };
+
+  window.closeReactionModal = function () {
+    const modal = document.getElementById('reaction-modal');
+    if (modal) modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
+  window.saveReaction = function () {
+    const modal   = document.getElementById('reaction-modal');
+    if (!modal) return;
+    const prodId   = modal.dataset.prodId || 'general';
+    const severity = parseInt(modal.querySelector('.reaction-severity-input').value);
+    const symptoms = Array.from(modal.querySelectorAll('.reaction-symptom.active')).map(s => s.dataset.symptom);
+    const notes    = modal.querySelector('.reaction-notes').value.trim();
+    const reactions = sGet('dermAI_reactions') || {};
+    if (!reactions[prodId]) reactions[prodId] = [];
+    reactions[prodId].push({ date: new Date().toISOString(), severity, symptoms, notes });
+    sSet('dermAI_reactions', reactions);
+    window.closeReactionModal();
+    if (prodId !== 'general') {
+      const ind = document.getElementById(`reaction-ind-${prodId}`);
+      if (ind) ind.classList.remove('hidden');
+    }
+  };
+
+  // ── Reorder reminders ─────────────────────────────────────────────────
+  function checkReorderReminders() {
+    const data = sGet('dermAI_reorderData') || {};
+    const now  = Date.now();
+    const WEEK = 7 * 24 * 60 * 60 * 1000;
+    const due  = Object.entries(data)
+      .filter(([, d]) => !d.dismissed && d.estimatedEmpty > now && (d.estimatedEmpty - now) < WEEK)
+      .map(([id, d]) => {
+        const prod = allProducts.find(p => p.id === id);
+        const days = Math.ceil((d.estimatedEmpty - now) / (24 * 60 * 60 * 1000));
+        return prod ? `${prod.name} (~${days}d)` : null;
+      }).filter(Boolean);
+    if (!due.length) return;
+    const banner = document.getElementById('reorder-banner');
+    if (!banner) return;
+    banner.classList.remove('hidden');
+    banner.innerHTML = `
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      <span>Running low: <strong>${due.join(', ')}</strong></span>
+      <a href="/shopping.html" class="btn btn-primary" style="padding:0.3rem 0.875rem;font-size:0.68rem;margin-left:auto;">Reorder →</a>
+      <button onclick="window.dismissReorderBanner()" class="stale-banner-dismiss" aria-label="Dismiss">&#x2715;</button>`;
+  }
+
+  window.openReorderModal = function (prodId) {
+    const modal = document.getElementById('reorder-modal');
+    if (!modal) return;
+    const prod = allProducts.find(p => p.id === prodId);
+    const subtitle = modal.querySelector('#reorder-modal-product');
+    if (subtitle) subtitle.textContent = prod ? `For: ${prod.brand} ${prod.name}` : '';
+    modal.dataset.prodId = prodId;
+    modal.querySelector('#reorder-size').value = '50';
+    modal.querySelector('#reorder-freq').value = '1';
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeReorderModal = function () {
+    const modal = document.getElementById('reorder-modal');
+    if (modal) modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
+  window.saveReorderReminder = function () {
+    const modal  = document.getElementById('reorder-modal');
+    if (!modal) return;
+    const prodId  = modal.dataset.prodId;
+    const sizeML  = parseInt(modal.querySelector('#reorder-size').value);
+    const freq    = parseInt(modal.querySelector('#reorder-freq').value);
+    const mlPerDay = freq * 0.3; // ~0.3ml per application
+    const days    = Math.round(sizeML / mlPerDay);
+    const data    = sGet('dermAI_reorderData') || {};
+    data[prodId]  = { sizeML, freq, estimatedEmpty: Date.now() + days * 24 * 60 * 60 * 1000, dismissed: false };
+    sSet('dermAI_reorderData', data);
+    window.closeReorderModal();
+  };
+
+  window.dismissReorderBanner = function () {
+    const banner = document.getElementById('reorder-banner');
+    if (banner) banner.classList.add('hidden');
+    const data = sGet('dermAI_reorderData') || {};
+    const now  = Date.now();
+    const WEEK = 7 * 24 * 60 * 60 * 1000;
+    Object.keys(data).forEach(id => {
+      if (!data[id].dismissed && data[id].estimatedEmpty > now && (data[id].estimatedEmpty - now) < WEEK)
+        data[id].dismissed = true;
+    });
+    sSet('dermAI_reorderData', data);
   };
 
   window.updateStep = function(containerId, prodId, tld) {
