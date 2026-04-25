@@ -414,6 +414,15 @@ body > *:not(.bg-blob) {
 }
 
 /* ── Severity badges (analyze + recommendations pages) ───────────── */
+.severity-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
 .severity-low    { background: rgba(90, 216, 163, 0.12); color: #2a8a64; }
 .severity-medium { background: rgba(255, 170, 122, 0.15); color: #9a5416; }
 .severity-high   { background: rgba(245, 88, 142, 0.12); color: var(--primary-700); }
