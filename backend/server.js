@@ -5,7 +5,7 @@ const express   = require('express');
 const cors      = require('cors');
 const fs        = require('fs');
 const multer    = require('multer');
-const { GoogleGenAI } = require('@google/genai');
+const { OpenAI } = require('openai');
 const rateLimit = require('express-rate-limit');
 
 // ---------------------------------------------------------------------------
@@ -48,11 +48,42 @@ const upload = multer({
 });
 
 // ---------------------------------------------------------------------------
+// OpenRouter client (OpenAI-compatible)
+// ---------------------------------------------------------------------------
+
+function getClient() {
+  const key = process.env.OPENROUTER_API_KEY;
+  if (!key || key === 'your_openrouter_key_here') return null;
+  return new OpenAI({
+    baseURL: 'https://openrouter.ai/api/v1',
+    apiKey: key,
+    defaultHeaders: {
+      'HTTP-Referer': 'https://dermai-livid.vercel.app',
+      'X-Title': 'DermAI'
+    }
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Routes — data files
 // ---------------------------------------------------------------------------
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'DermAI backend is running' });
+});
+
+app.get('/api/health-ai', async (_req, res) => {
+  const client = getClient();
+  if (!client) {
+    return res.status(500).json({ error: 'OPENROUTER_API_KEY not set in .env' });
+  }
+  try {
+    const models = await client.models.list();
+    const list = (models.data || []).slice(0, 20).map(m => m.id);
+    res.json({ ok: true, provider: 'openrouter', count: list.length, sample: list });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get('/api/ingredients', (_req, res) => {
@@ -79,27 +110,8 @@ app.get('/api/products', (_req, res) => {
   }
 });
 
-// Diagnostic: list accessible Gemini models for this API key
-app.get('/api/models', async (_req, res) => {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key || key === 'your_api_key_here') {
-    return res.status(500).json({ error: 'GEMINI_API_KEY not set in .env' });
-  }
-  try {
-    const ai   = new GoogleGenAI({ apiKey: key });
-    const iter = await ai.models.list();
-    const list = [];
-    for await (const m of iter) {
-      list.push({ name: m.name, displayName: m.displayName, methods: m.supportedGenerationMethods });
-    }
-    res.json({ count: list.length, models: list });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // ---------------------------------------------------------------------------
-// POST /api/analyze  — accepts 1-3 images, returns Gemini skin analysis
+// POST /api/analyze  — accepts 1-3 images, returns AI skin analysis
 // ---------------------------------------------------------------------------
 
 app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, res) => {
@@ -110,16 +122,16 @@ app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, re
       return res.status(400).json({ error: 'No image received. Field name must be "images".' });
     }
 
-    const key = process.env.GEMINI_API_KEY;
-    if (!key || key === 'your_api_key_here') {
-      return res.status(500).json({ error: 'GEMINI_API_KEY is not set in backend/.env' });
+    const client = getClient();
+    if (!client) {
+      return res.status(500).json({ error: 'OPENROUTER_API_KEY is not set in backend/.env' });
     }
 
-    // Convert each uploaded buffer directly to base64 — no disk I/O needed
-    const imageParts = files.map(file => ({
-      inlineData: {
-        mimeType: file.mimetype,
-        data: file.buffer.toString('base64')
+    // Build image content parts using data URLs (OpenRouter/OpenAI vision format)
+    const imageContents = files.map(file => ({
+      type: 'image_url',
+      image_url: {
+        url: `data:${file.mimetype};base64,${file.buffer.toString('base64')}`
       }
     }));
 
@@ -143,49 +155,58 @@ app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, re
       '  - description: 1-2 plain-English sentences about what you observe\n' +
       'Raw JSON only. No markdown.';
 
-    // @google/genai v1.x: contents must be Content[], each with role + parts
-    const contents = [{
+    const messages = [{
       role: 'user',
-      parts: [{ text: prompt }, ...imageParts]
+      content: [{ type: 'text', text: prompt }, ...imageContents]
     }];
 
-    const ai           = new GoogleGenAI({ apiKey: key });
-    const modelsToTry  = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-flash-preview-04-17'];
-    let geminiResponse = null;
-    let lastError      = null;
-    let quotaHit       = false;
+    // Model fallback chain — cheapest first, all support vision via OpenRouter
+    const modelsToTry = [
+      'qwen/qwen-2.5-vl-72b-instruct',
+      'meta-llama/llama-3.2-11b-vision-instruct',
+      'openai/gpt-4o-mini'
+    ];
+
+    let aiResponse  = null;
+    let lastError   = null;
+    let quotaHit    = false;
 
     for (const model of modelsToTry) {
       try {
         console.log(`[analyze] ${model} — ${count} image(s)`);
-        geminiResponse = await ai.models.generateContent({ model, contents });
+        const completion = await client.chat.completions.create({
+          model,
+          messages,
+          temperature: 0.3,
+          max_tokens: 800
+        });
+        aiResponse = completion.choices[0].message.content;
         console.log(`[analyze] success: ${model}`);
         break;
       } catch (err) {
         const msg = String(err.message || err);
         console.warn(`[analyze] ${model} failed:`, msg.slice(0, 300));
-        if (msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED') || msg.includes('quota')) {
+        if (msg.includes('429') || msg.includes('quota') || msg.includes('rate limit') || msg.includes('RESOURCE_EXHAUSTED')) {
           quotaHit = true;
         }
         lastError = err;
       }
     }
 
-    if (!geminiResponse) {
+    if (!aiResponse) {
       if (quotaHit) {
         return res.status(429).json({
-          error: 'Gemini API daily quota reached. Enable billing at aistudio.google.com or try again tomorrow.'
+          error: 'AI rate limit reached. Please wait a moment and try again.'
         });
       }
-      throw lastError || new Error('All Gemini models failed');
+      throw lastError || new Error('All AI models failed');
     }
 
-    const rawText = geminiResponse.text;
-    console.log('[analyze] raw Gemini output:', rawText.slice(0, 400));
+    console.log('[analyze] raw output:', aiResponse.slice(0, 400));
 
-    const match = rawText.match(/\{[\s\S]*\}/);
+    const match = aiResponse.match(/\{[\s\S]*\}/);
     if (!match) {
-      throw new Error('Gemini returned no JSON block. Output: ' + rawText.slice(0, 200));
+      throw new Error('AI returned no JSON block. Output: ' + aiResponse.slice(0, 200));
     }
 
     res.json(JSON.parse(match[0]));
@@ -197,7 +218,7 @@ app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, re
 });
 
 // ---------------------------------------------------------------------------
-// Global JSON error handler (catches multer errors, validation errors, etc.)
+// Global JSON error handler
 // ---------------------------------------------------------------------------
 
 app.use((err, _req, res, _next) => {
