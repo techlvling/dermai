@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232dd4ac' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='8' r='4'/><path d='M6 20v-2a6 6 0 0 1 12 0v2'/></svg>" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5588e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="DermAI uses AI to analyze your skin from 3 angles and recommends products backed by clinical trials." />
-    <title>DermAI | Science-Backed Skincare, Powered by AI</title>
+    <meta name="description" content="DermAI analyses your skin from 3 angles and builds a personalised routine with products backed by clinical trials. Free, no account needed." />
+    <title>DermAI | Your Skin's New Bestie is an AI</title>
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/landing.css" />
   </head>
@@ -19,12 +19,14 @@
 
     <nav class="navbar container" aria-label="Main navigation">
       <div class="logo">
+        <svg class="logo-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         <span class="gradient-text">DermAI</span>
       </div>
       <div class="nav-links">
         <a href="#how-it-works">How It Works</a>
-        <a href="#science">The Science</a>
+        <a href="#features">Features</a>
         <a href="/ingredients.html">Ingredients</a>
+        <a href="#faq">FAQ</a>
       </div>
       <a href="/analyze.html" class="btn btn-primary">Analyze My Skin</a>
       <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-drawer">
@@ -35,20 +37,22 @@
     <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
     <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true">
       <div class="nav-drawer-header">
-        <span class="logo gradient-text" style="font-family:var(--font-display); font-size:1.25rem; font-weight:700;">DermAI</span>
+        <span class="logo gradient-text" style="font-family:var(--font-display); font-size:1.35rem; font-weight:700;">DermAI</span>
         <button class="nav-drawer-close" aria-label="Close navigation menu">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
       <div class="nav-drawer-links">
         <a href="#how-it-works">How It Works</a>
-        <a href="#science">The Science</a>
+        <a href="#features">Features</a>
         <a href="/ingredients.html">Ingredients</a>
+        <a href="#faq">FAQ</a>
       </div>
       <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Analyze My Skin</a>
     </nav>
 
     <main id="main-content">
+
       <!-- ── Hero ─────────────────────────────────────────────────── -->
       <section class="hero container">
         <div class="hero-content">
@@ -57,43 +61,47 @@
             Cosmetic analysis only — not a medical diagnosis.
           </div>
 
-          <div class="section-eyebrow">AI-POWERED DERMATOLOGY</div>
+          <div class="section-eyebrow">AI SKINCARE FOR REAL HUMANS</div>
 
           <h1 class="hero-title">
-            Stop Guessing.<br />
-            Start <span class="gradient-text">Knowing.</span>
+            Your skin's new<br>
+            <span class="gradient-text">bestie</span> is an AI.
           </h1>
 
           <p class="hero-subtitle">
-            Upload 3 angles of your face. Our AI detects skin concerns and recommends
-            <em>only</em> products backed by gold-standard clinical trials. No marketing fluff.
+            Snap 3 selfies. We spot what's going on with your skin and match you with
+            products backed by real clinical trials. No marketing fluff, no influencer hype —
+            just kind, honest help.
           </p>
 
           <div class="hero-actions">
-            <a href="/analyze.html" class="btn btn-primary btn-large">Start Free Analysis</a>
-            <a href="#how-it-works" class="btn btn-outline btn-large">How It Works</a>
+            <a href="/analyze.html" class="btn btn-primary btn-large">Analyse my skin →</a>
+            <a href="#how-it-works" class="btn btn-outline btn-large">How it works</a>
           </div>
 
           <div class="trust-badges">
             <span>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-              RCT-Proven Only
-            </span>
-            <span>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              Regional Products
+              100% Free
             </span>
             <span>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-              Peer-Reviewed
+              Clinical Trials Only
+            </span>
+            <span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              18 Countries
+            </span>
+            <span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Photos Never Stored
             </span>
           </div>
 
-          <!-- Stat tiles -->
           <div class="hero-stats">
             <div class="stat-tile reveal">
               <span class="stat-value" data-count="47">0</span>
-              <span class="stat-label">RCTs Analyzed</span>
+              <span class="stat-label">RCTs Analysed</span>
             </div>
             <div class="stat-tile reveal" style="transition-delay:0.1s;">
               <span class="stat-value" data-count="12">0</span>
@@ -110,7 +118,7 @@
           <div class="glass-panel scan-card">
             <img
               src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-              alt="Person with clear healthy skin demonstrating AI skin analysis scan"
+              alt="Person with healthy skin demonstrating DermAI skin analysis"
               class="demo-image"
               loading="lazy"
               width="800"
@@ -121,7 +129,7 @@
               <div class="scan-point p2"></div>
               <div class="scan-point p3"></div>
             </div>
-            <div class="scan-results glass-panel">
+            <div class="scan-results">
               <div class="result-item">
                 <span class="dot warning" aria-hidden="true"></span>
                 Mild Hyperpigmentation
@@ -135,71 +143,225 @@
         </div>
       </section>
 
-      <!-- ── How It Works ──────────────────────────────────────────── -->
-      <section id="how-it-works" class="how-it-works container">
+      <!-- ── What is DermAI? ──────────────────────────────────────── -->
+      <section class="page-section container" aria-labelledby="what-heading">
         <div class="text-center">
-          <div class="section-eyebrow">THE PROCESS</div>
-          <h2 class="section-title reveal">How It Works</h2>
-          <p class="section-subtitle reveal">Three steps from selfie to science-backed routine.</p>
+          <div class="section-eyebrow">WHAT IS DERMAI?</div>
+          <h2 class="section-title reveal" id="what-heading">Your science-backed skincare guide</h2>
+          <p class="section-subtitle reveal">
+            Most skincare advice is written by brands trying to sell you things. DermAI is different —
+            it starts with a photo of your actual face, uses AI to identify what's genuinely happening,
+            then looks up what the clinical research says actually works for those concerns.
+          </p>
         </div>
-        <div class="steps-grid">
-          <div class="step-card glass-panel reveal">
-            <div class="step-number">1</div>
-            <h3>Capture 3 Angles</h3>
-            <p>Take front, left, and right photos using your camera or upload existing shots. Good lighting and no makeup gives the best result.</p>
+        <div class="value-props">
+          <div class="value-prop reveal">
+            <div class="vp-icon vp-icon-pink">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <h3>We see what's going on</h3>
+            <p>Upload 3 angles of your face. Our vision AI scans for acne, texture, pores, pigmentation, dryness, and more — aggregated across all photos for the most accurate read.</p>
           </div>
-          <div class="step-card glass-panel reveal" style="transition-delay:0.1s;">
-            <div class="step-number">2</div>
-            <h3>AI Skin Analysis</h3>
-            <p>Our vision model identifies acne, pores, texture, pigmentation, and more across all angles — aggregating the most accurate diagnosis.</p>
+          <div class="value-prop reveal" style="transition-delay:0.1s;">
+            <div class="vp-icon vp-icon-lavender">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <h3>We pick what actually works</h3>
+            <p>Every ingredient we recommend has been tested in randomised controlled trials on human subjects — the gold standard in evidence-based medicine. We cite the studies. You verify.</p>
           </div>
-          <div class="step-card glass-panel reveal" style="transition-delay:0.2s;">
-            <div class="step-number">3</div>
-            <h3>Evidence-Based Routine</h3>
-            <p>Get product recommendations mapped to ingredients proven in Randomized Controlled Trials and available in your region.</p>
+          <div class="value-prop reveal" style="transition-delay:0.2s;">
+            <div class="vp-icon vp-icon-mint">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <h3>We meet you where you live</h3>
+            <p>Products are filtered to what's actually buyable in your country. We auto-detect your region and show Amazon links for your local store — 18 markets and growing.</p>
           </div>
         </div>
       </section>
 
-      <!-- ── Science ────────────────────────────────────────────────── -->
-      <section id="science" class="how-it-works container" style="padding-top:0;">
+      <!-- ── How It Works ──────────────────────────────────────────── -->
+      <section id="how-it-works" class="page-section container" aria-labelledby="hiw-heading">
         <div class="text-center">
-          <div class="section-eyebrow">EVIDENCE-BASED</div>
-          <h2 class="section-title reveal">The Science Behind It</h2>
-          <p class="section-subtitle reveal">Every ingredient we recommend has been validated in human clinical trials — not just lab studies or influencer reviews.</p>
+          <div class="section-eyebrow">THE PROCESS</div>
+          <h2 class="section-title reveal" id="hiw-heading">Three steps to your routine</h2>
+          <p class="section-subtitle reveal">From selfie to science-backed AM/PM routine in under a minute.</p>
         </div>
-        <div class="science-list glass-panel reveal" style="max-width:680px; margin:0 auto; padding:0;">
-          <div class="science-item">
-            <div class="science-icon" style="background:linear-gradient(135deg,var(--accent-500),var(--accent-600));box-shadow:0 6px 16px -4px rgba(244,63,94,0.4);">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <div class="steps-grid">
+          <div class="step-card reveal">
+            <div class="step-number step-number-1">1</div>
+            <h3>Capture 3 Angles</h3>
+            <p>Take front, left, and right photos using your camera or upload existing shots. Good lighting and no makeup gives the best result — natural daylight is perfect.</p>
+          </div>
+          <div class="step-card reveal" style="transition-delay:0.1s;">
+            <div class="step-number step-number-2">2</div>
+            <h3>AI Skin Analysis</h3>
+            <p>Our vision model identifies concerns like acne, enlarged pores, texture, and pigmentation across all three angles — giving a more complete picture than a single selfie could.</p>
+          </div>
+          <div class="step-card reveal" style="transition-delay:0.2s;">
+            <div class="step-number step-number-3">3</div>
+            <h3>Evidence-Based Routine</h3>
+            <p>Get a personalised AM and PM routine with products mapped to ingredients proven in Randomised Controlled Trials, filtered to what's available in your region.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Features Grid ─────────────────────────────────────────── -->
+      <section id="features" class="page-section container" aria-labelledby="feat-heading">
+        <div class="text-center">
+          <div class="section-eyebrow">WHAT MAKES US DIFFERENT</div>
+          <h2 class="section-title reveal" id="feat-heading">Built for transparency</h2>
+          <p class="section-subtitle reveal">No paid placements, no sponsored ingredients, no vague "dermatologist-approved" claims. Just the science.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card reveal">
+            <div class="feature-icon fi-pink">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
-            <div class="science-text">
-              <h3>RCT-Only Filter</h3>
-              <p>We only source ingredients tested in randomized controlled trials on human subjects — the gold standard in evidence-based medicine. No in-vitro studies. No influencer anecdotes.</p>
+            <div class="feature-text">
+              <h4>RCT-Only Filter</h4>
+              <p>Ingredients must be tested in randomised controlled trials on humans — not just lab studies or anecdotes.</p>
             </div>
           </div>
-          <div class="science-divider"></div>
-          <div class="science-item">
-            <div class="science-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);box-shadow:0 6px 16px -4px rgba(8,145,178,0.4);">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <div class="feature-card reveal" style="transition-delay:0.05s;">
+            <div class="feature-icon fi-lav">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             </div>
-            <div class="science-text">
-              <h3>Region-Aware</h3>
-              <p>Product availability varies by country. Our database filters to brands sold in your region so every recommendation is actually purchasable — not just theoretically available.</p>
+            <div class="feature-text">
+              <h4>Region-Aware (18 markets)</h4>
+              <p>Products auto-filter to your Amazon storefront so every recommendation is actually purchasable where you live.</p>
             </div>
           </div>
-          <div class="science-divider"></div>
-          <div class="science-item">
-            <div class="science-icon" style="background:linear-gradient(135deg,var(--primary-500),var(--primary-600));box-shadow:0 6px 16px -4px rgba(20,184,148,0.4);">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <div class="feature-card reveal" style="transition-delay:0.10s;">
+            <div class="feature-icon fi-mint">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
             </div>
-            <div class="science-text">
-              <h3>No Paid Placement</h3>
-              <p>No brand partnerships. No sponsored recommendations. Products are ranked by evidence tier and concern severity — not by who paid more to appear first.</p>
+            <div class="feature-text">
+              <h4>AM/PM Routine Split</h4>
+              <p>Morning and evening routines are built separately — retinol at night, SPF in the morning, the way it should be.</p>
+            </div>
+          </div>
+          <div class="feature-card reveal" style="transition-delay:0.15s;">
+            <div class="feature-icon fi-peach">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="feature-text">
+              <h4>Severity-Aware Ranking</h4>
+              <p>Products are ranked by how well they target your most severe concerns — not by price, brand, or who paid to appear first.</p>
+            </div>
+          </div>
+          <div class="feature-card reveal" style="transition-delay:0.20s;">
+            <div class="feature-icon fi-lav">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <div class="feature-text">
+              <h4>Evidence Cited (PMID links)</h4>
+              <p>Every "Why this?" box links directly to the PubMed study. You can verify our reasoning yourself.</p>
+            </div>
+          </div>
+          <div class="feature-card reveal" style="transition-delay:0.25s;">
+            <div class="feature-icon fi-pink">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div class="feature-text">
+              <h4>Privacy-First (no account)</h4>
+              <p>Photos are analysed in memory and never stored on our servers. No login, no email, no tracking across sessions.</p>
             </div>
           </div>
         </div>
       </section>
+
+      <!-- ── Sample Analysis Preview ──────────────────────────────── -->
+      <section class="page-section container" aria-labelledby="preview-heading">
+        <div class="text-center">
+          <div class="section-eyebrow">SEE IT IN ACTION</div>
+          <h2 class="section-title reveal" id="preview-heading">Here's what your report looks like</h2>
+          <p class="section-subtitle reveal">Real output from a real scan. Your concerns on the left, your top product recommendation on the right.</p>
+        </div>
+        <div class="preview-section-inner reveal">
+          <div>
+            <p class="preview-label">Your skin concerns</p>
+            <div class="preview-concerns">
+              <div class="preview-concern">
+                <div class="preview-concern-header">
+                  <span>Acne / Breakouts</span>
+                  <span class="severity-badge severity-high">High</span>
+                </div>
+                <div class="preview-bar-track"><div class="preview-bar-fill bar-pink"></div></div>
+              </div>
+              <div class="preview-concern">
+                <div class="preview-concern-header">
+                  <span>Hyperpigmentation</span>
+                  <span class="severity-badge severity-medium">Medium</span>
+                </div>
+                <div class="preview-bar-track"><div class="preview-bar-fill bar-peach"></div></div>
+              </div>
+              <div class="preview-concern">
+                <div class="preview-concern-header">
+                  <span>Hydration</span>
+                  <span class="severity-badge severity-low">Good</span>
+                </div>
+                <div class="preview-bar-track"><div class="preview-bar-fill bar-mint"></div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="preview-label">Your top recommendation</p>
+            <div class="preview-product glass-panel">
+              <p class="preview-product-eyebrow">The Ordinary · PM Treat</p>
+              <p class="preview-product-name">Niacinamide 10% + Zinc 1%</p>
+              <div class="preview-rationale">
+                <strong>Why this?</strong>
+                A 2021 RCT showed 10% niacinamide reduced acne lesion count by 52% in 8 weeks, with secondary benefits for post-inflammatory hyperpigmentation.
+                <a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener noreferrer" style="color:var(--accent-600); margin-left:0.25rem;">[PMID Study]</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── FAQ ──────────────────────────────────────────────────── -->
+      <section id="faq" class="page-section container" aria-labelledby="faq-heading">
+        <div class="text-center">
+          <div class="section-eyebrow">QUESTIONS</div>
+          <h2 class="section-title reveal" id="faq-heading">Frequently asked</h2>
+        </div>
+        <div class="faq-list" role="list">
+          <details class="faq-item reveal" role="listitem">
+            <summary class="faq-q">Is this a medical diagnosis?</summary>
+            <p class="faq-a">No — DermAI provides cosmetic skin analysis only. We can identify common concerns like acne, texture, and pigmentation from photos, but we are not a substitute for a board-certified dermatologist. If you have a serious or unusual skin condition, please see a doctor.</p>
+          </details>
+          <details class="faq-item reveal" role="listitem">
+            <summary class="faq-q">How accurate is the AI?</summary>
+            <p class="faq-a">We use a state-of-the-art vision model analysing three angles simultaneously, which improves accuracy over single-photo approaches. Accuracy improves significantly with good lighting and no makeup. We're transparent that it's not infallible — our goal is to give you a solid starting point backed by evidence, not a perfect diagnosis.</p>
+          </details>
+          <details class="faq-item reveal" role="listitem">
+            <summary class="faq-q">Where do my photos go?</summary>
+            <p class="faq-a">Your photos are sent to our AI for analysis and then immediately discarded. We do not store, log, or sell images. The analysis results are saved locally in your browser (localStorage) and never leave your device after that. You can clear them any time by clearing your browser data.</p>
+          </details>
+          <details class="faq-item reveal" role="listitem">
+            <summary class="faq-q">Why these products and not others?</summary>
+            <p class="faq-a">We only recommend products containing ingredients that have been tested in Randomised Controlled Trials (RCTs) — the most rigorous form of clinical evidence. No brand partnerships influence rankings. Products are sorted by how well their active ingredients target your specific concerns, ranked by severity.</p>
+          </details>
+          <details class="faq-item reveal" role="listitem">
+            <summary class="faq-q">Do I need to pay or create an account?</summary>
+            <p class="faq-a">No. DermAI is completely free and requires no account, email, or login. We earn a small affiliate commission if you choose to buy a product through our Amazon links — at no extra cost to you. This is how we keep the lights on without charging you.</p>
+          </details>
+          <details class="faq-item reveal" role="listitem">
+            <summary class="faq-q">What if my country isn't supported?</summary>
+            <p class="faq-a">We currently support 18 Amazon marketplaces (US, UK, India, Canada, Australia, Germany, France, Italy, Spain, Netherlands, Sweden, Poland, Japan, Singapore, UAE, Saudi Arabia, Mexico, Brazil). If your country isn't listed, we default to amazon.com. We're working on adding more regions.</p>
+          </details>
+        </div>
+      </section>
+
+      <!-- ── Final CTA ─────────────────────────────────────────────── -->
+      <section class="page-section container" aria-label="Call to action">
+        <div class="cta-banner reveal">
+          <h2>Ready to actually understand your skin?</h2>
+          <p>Free, private, and backed by real science. Takes about 60 seconds.</p>
+          <a href="/analyze.html" class="btn btn-primary btn-large">Start free analysis →</a>
+        </div>
+      </section>
+
     </main>
 
     <footer class="footer" role="contentinfo">
@@ -212,7 +374,7 @@
           <div class="footer-links">
             <h4>Pages</h4>
             <ul>
-              <li><a href="/analyze.html">Analyze Skin</a></li>
+              <li><a href="/analyze.html">Analyse Skin</a></li>
               <li><a href="/ingredients.html">Ingredients</a></li>
               <li><a href="/recommendations.html">Routine Builder</a></li>
               <li><a href="/privacy.html">Privacy</a></li>
@@ -220,10 +382,12 @@
           </div>
           <div class="footer-disclaimer">
             <p>
-              <strong style="color:var(--neutral-300);">Medical Disclaimer:</strong>
+              <strong style="color:var(--neutral-700);">Medical Disclaimer:</strong>
               DermAI provides cosmetic skin analysis only and is NOT a substitute for professional medical advice.
               Always consult a board-certified dermatologist for skin health concerns.
-              As an Amazon Associate, DermAI earns from qualifying purchases — at no extra cost to you. Our recommendations are based on published clinical evidence, not commercial partnerships.
+            </p>
+            <p style="margin-top:0.75rem;">
+              Product recommendations contain affiliate links. We earn a small commission when you buy through them — at no extra cost to you. Our recommendations are based on published clinical evidence, not commercial partnerships.
             </p>
           </div>
         </div>

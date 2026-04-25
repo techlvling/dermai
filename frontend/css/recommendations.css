@@ -13,10 +13,11 @@
 .rec-header h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
+  color: var(--neutral-900);
 }
 
 .rec-header p {
-  color: var(--neutral-300);
+  color: var(--neutral-600);
   font-size: 1.125rem;
   margin-bottom: 2rem;
 }
@@ -33,14 +34,15 @@
 
 .glass-select {
   padding: 0.75rem 2rem 0.75rem 1rem;
-  border-radius: 8px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-glass);
-  color: var(--neutral-100);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 2px solid var(--border-glass);
+  color: var(--neutral-800);
   font-family: var(--font-primary);
   font-size: 1rem;
   cursor: pointer;
   outline: none;
+  box-shadow: var(--shadow-soft);
 }
 
 .glass-select:focus {
@@ -51,11 +53,16 @@
 .concerns-summary {
   padding: 1.5rem;
   margin-bottom: 3rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
 }
 
 .concerns-summary h3 {
   margin-bottom: 1rem;
   font-size: 1.25rem;
+  color: var(--neutral-900);
 }
 
 .concerns-tags {
@@ -65,13 +72,13 @@
 }
 
 .concern-tag {
-  background: rgba(45, 212, 172, 0.1);
-  color: var(--primary-300);
+  background: rgba(245, 88, 142, 0.10);
+  color: var(--primary-700);
   padding: 0.5rem 1rem;
-  border-radius: 9999px;
+  border-radius: var(--radius-pill);
   font-size: 0.875rem;
   font-weight: 500;
-  border: 1px solid rgba(45, 212, 172, 0.2);
+  border: 1px solid rgba(245, 88, 142, 0.18);
 }
 
 /* Product card — timeline layout */
@@ -83,33 +90,35 @@
 }
 
 .prod-brand {
-  color: var(--primary-300);
-  font-size: 1rem;
+  color: var(--primary-600);
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin: 0;
   font-family: var(--font-primary);
+  font-weight: 700;
 }
 
 .prod-name {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
   font-family: var(--font-display);
   line-height: 1.2;
   margin-bottom: 0.75rem;
+  color: var(--neutral-900);
 }
 
 .prod-meta {
   font-size: 0.875rem;
-  color: var(--neutral-300);
+  color: var(--neutral-600);
   margin: 0;
 }
 .prod-meta + .prod-meta { margin-top: 0.25rem; }
-.prod-meta strong { color: var(--neutral-100); }
+.prod-meta strong { color: var(--neutral-800); }
 
 .prod-disclosure {
   font-size: 0.7rem;
-  color: var(--neutral-500);
+  color: var(--neutral-400);
   text-align: center;
   margin-top: 0.5rem;
   margin-bottom: 0;
@@ -118,21 +127,21 @@
 .evidence-rationale {
   margin-top: 0.75rem;
   padding: 0.75rem;
-  background: rgba(99, 102, 241, 0.08);
-  border-radius: 8px;
-  border-left: 3px solid var(--primary-500);
+  background: rgba(160, 124, 255, 0.08);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent-500);
 }
 
 .evidence-rationale-label {
   font-size: 0.75rem;
-  color: var(--primary-300);
+  color: var(--accent-600);
   font-weight: 600;
   margin-bottom: 0.25rem;
 }
 
 .evidence-rationale-body {
   font-size: 0.8rem;
-  color: var(--neutral-300);
+  color: var(--neutral-600);
   line-height: 1.5;
   margin: 0;
 }
@@ -140,10 +149,10 @@
 .analysis-error {
   margin-top: 1rem;
   padding: 1rem;
-  background: rgba(248, 113, 113, 0.1);
-  border: 1px solid rgba(248, 113, 113, 0.4);
-  border-radius: 8px;
-  color: #f87171;
+  background: rgba(245, 88, 142, 0.08);
+  border: 1px solid rgba(245, 88, 142, 0.25);
+  border-radius: var(--radius-sm);
+  color: var(--primary-700);
   font-size: 0.875rem;
   text-align: center;
 }
@@ -157,6 +166,7 @@
   background: var(--color-amazon);
   color: #111;
   font-weight: 700;
+  border-radius: var(--radius-pill);
 }
 
 .buy-btn:hover {
@@ -175,6 +185,8 @@
   margin: 0 auto 1rem;
 }
 
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* Routine Timeline */
 .routine-timeline {
   display: flex;
@@ -185,11 +197,11 @@
 }
 
 .routine-time-block h2 {
-  font-size: 2rem;
+  font-size: 1.75rem;
   margin-bottom: 2.5rem;
-  color: var(--primary-300);
+  color: var(--primary-600);
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-glass);
+  border-bottom: 2px solid var(--border-glass);
 }
 
 .routine-step {
@@ -204,23 +216,23 @@
   position: absolute;
   top: -12px;
   left: -1rem;
-  background: var(--primary-500);
+  background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
   color: white;
   padding: 0.25rem 1rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  box-shadow: 0 4px 10px rgba(20, 184, 148, 0.3);
+  box-shadow: 0 4px 12px rgba(245, 88, 142, 0.30);
 }
 
 .product-picker {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: var(--bg-secondary);
+  background: var(--bg-card);
   border: 1px solid var(--border-glass);
-  color: var(--neutral-100);
-  border-radius: 8px;
+  color: var(--neutral-800);
+  border-radius: var(--radius-sm);
   margin-bottom: 1rem;
   outline: none;
   font-family: var(--font-primary);
@@ -236,7 +248,10 @@
   gap: 1.5rem;
   align-items: center;
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-soft);
 }
 
 .step-details {
@@ -260,7 +275,7 @@
 
 @media (max-width: 480px) {
   .rec-header h1 { font-size: 2rem; }
-  .routine-time-block h2 { font-size: 1.5rem; }
+  .routine-time-block h2 { font-size: 1.4rem; }
   .routine-step { padding-left: 1rem; }
 }
 
@@ -271,7 +286,7 @@
   body {
     background: white;
   }
-  .glass-panel, .routine-step {
+  .step-content, .concerns-summary {
     background: white !important;
     border: 1px solid #ccc !important;
     box-shadow: none !important;
@@ -281,7 +296,7 @@
     -webkit-text-fill-color: #111 !important;
     color: #111 !important;
   }
-  .step-label { background: #111 !important; }
+  .step-label { background: #e63977 !important; }
   .prod-brand, .prod-name, .prod-meta, .prod-meta strong,
   .evidence-rationale-label, .evidence-rationale-body,
   .routine-time-block h2, h1, h2, h3, p {

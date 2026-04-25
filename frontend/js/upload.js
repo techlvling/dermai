@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
         previewContainer.classList.remove('hidden');
 
         const errDiv = document.createElement('div');
-        errDiv.style.cssText = 'margin-top:1rem; padding:1rem; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.4); border-radius:8px; color:#f87171; font-size:0.875rem; text-align:center;';
+        errDiv.style.cssText = 'margin-top:1rem; padding:1rem; background:rgba(245,88,142,0.08); border:1px solid rgba(245,88,142,0.25); border-radius:12px; color:var(--primary-700); font-size:0.875rem; text-align:center;';
         errDiv.textContent = userMsg;
         const existing = document.getElementById('analysis-error');
         if (existing) existing.remove();
@@ -449,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:${barWidth}px; max-width:60px;">
           <span style="font-size:0.65rem; color:${isLatest ? 'var(--primary-300)' : 'var(--neutral-400)'}; font-weight:${isLatest ? '700' : '400'};">${h.overallHealth}</span>
           <div style="width:100%; height:80px; display:flex; align-items:flex-end;">
-            <div style="width:100%; height:${heightPct}%; background:${isLatest ? 'var(--primary-500)' : 'rgba(99,102,241,0.3)'}; border-radius:4px 4px 0 0; transition:height 0.3s;"></div>
+            <div style="width:100%; height:${heightPct}%; background:${isLatest ? 'var(--primary-500)' : 'rgba(160,124,255,0.25)'}; border-radius:4px 4px 0 0; transition:height 0.3s;"></div>
           </div>
           <span style="font-size:0.6rem; color:var(--neutral-500); white-space:nowrap;">${label}</span>
         </div>`;
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const trend     = history[history.length - 1].overallHealth - history[history.length - 2].overallHealth;
     const trendText = trend > 0 ? `↑ +${trend} from last scan` : trend < 0 ? `↓ ${trend} from last scan` : 'No change from last scan';
-    const trendColor = trend > 0 ? 'var(--primary-300)' : trend < 0 ? '#f87171' : 'var(--neutral-400)';
+    const trendColor = trend > 0 ? 'var(--primary-500)' : trend < 0 ? 'var(--error)' : 'var(--neutral-600)';
 
     section.innerHTML = `
       <div class="glass-panel" style="padding:1.5rem;">

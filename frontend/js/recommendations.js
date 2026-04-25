@@ -291,11 +291,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:1rem;">
             <div>
               <p style="font-size:0.875rem; color:var(--neutral-400);">Current UV Index</p>
-              <p style="font-size:1.25rem; font-weight:bold;">${current.uv_index} ${current.uv_index > 5 ? '<span style="color:#f87171; font-size:1rem;">(High! Apply Extra SPF)</span>' : '<span style="color:var(--primary-400); font-size:1rem;">(Safe)</span>'}</p>
+              <p style="font-size:1.25rem; font-weight:bold;">${current.uv_index} ${current.uv_index > 5 ? '<span style="color:var(--primary-700); font-size:1rem;">(High! Apply Extra SPF)</span>' : '<span style="color:#2a8a64; font-size:1rem;">(Safe)</span>'}</p>
             </div>
             <div>
               <p style="font-size:0.875rem; color:var(--neutral-400);">Relative Humidity</p>
-              <p style="font-size:1.25rem; font-weight:bold;">${current.relative_humidity_2m}% ${current.relative_humidity_2m < 40 ? '<span style="color:#f87171; font-size:1rem;">(Dry! Hydrate)</span>' : ''}</p>
+              <p style="font-size:1.25rem; font-weight:bold;">${current.relative_humidity_2m}% ${current.relative_humidity_2m < 40 ? '<span style="color:var(--primary-700); font-size:1rem;">(Dry! Hydrate)</span>' : ''}</p>
             </div>
           </div>
         </div>

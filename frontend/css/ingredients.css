@@ -12,10 +12,11 @@
 .encyclopedia-header h1 {
   font-size: 3.5rem;
   margin-bottom: 1rem;
+  color: var(--neutral-900);
 }
 
 .encyclopedia-header p {
-  color: var(--neutral-300);
+  color: var(--neutral-600);
   font-size: 1.125rem;
   margin-bottom: 2rem;
 }
@@ -29,32 +30,42 @@
 .glass-input {
   width: 100%;
   padding: 1rem 1.5rem;
-  border-radius: 9999px;
-  background: var(--bg-glass);
-  border: 1px solid var(--border-glass);
-  color: var(--neutral-100);
+  border-radius: var(--radius-pill);
+  background: var(--bg-card);
+  border: 2px solid var(--border-glass);
+  color: var(--neutral-800);
   font-family: var(--font-primary);
   font-size: 1rem;
   outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-soft);
 }
+
+.glass-input::placeholder { color: var(--neutral-500); }
 
 .glass-input:focus {
   border-color: var(--primary-400);
-  box-shadow: 0 0 0 4px rgba(45, 212, 172, 0.1);
+  box-shadow: 0 0 0 4px rgba(245, 88, 142, 0.10);
 }
 
 /* Grid */
 .ingredients-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr));
+  gap: 1.5rem;
 }
 
 .ingredient-card {
   padding: 2rem;
   display: flex;
   flex-direction: column;
+  transition: transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+
+.ingredient-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-pop);
 }
 
 .ingredient-header {
@@ -68,13 +79,13 @@
   font-size: 1.5rem;
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--primary-300);
+  color: var(--primary-600);
   margin-bottom: 0.5rem;
 }
 
 .evidence-label {
   font-size: 0.75rem;
-  color: var(--neutral-400);
+  color: var(--neutral-500);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -88,7 +99,7 @@
 
 .studies-title {
   font-size: 0.875rem;
-  color: var(--neutral-300);
+  color: var(--neutral-600);
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--border-glass);
   padding-bottom: 0.5rem;
@@ -104,7 +115,7 @@
 }
 
 .study-link {
-  color: var(--neutral-100);
+  color: var(--accent-600);
   font-weight: 500;
   display: block;
   margin-bottom: 0.25rem;
@@ -112,12 +123,12 @@
 }
 
 .study-link:hover {
-  color: var(--primary-400);
+  color: var(--accent-500);
   text-decoration: underline;
 }
 
 .study-meta {
-  color: var(--neutral-400);
+  color: var(--neutral-500);
   font-size: 0.75rem;
 }
 
@@ -130,3 +141,5 @@
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }

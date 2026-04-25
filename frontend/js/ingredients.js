@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const concernTagsHTML = targetedConcerns.length
         ? `<div style="display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.75rem;">
-            ${targetedConcerns.map(c => `<span style="font-size:0.7rem; padding:0.2rem 0.6rem; border-radius:999px; background:rgba(99,102,241,0.15); color:var(--primary-300); border:1px solid rgba(99,102,241,0.3);">${c}</span>`).join('')}
+            ${targetedConcerns.map(c => `<span style="font-size:0.7rem; padding:0.2rem 0.6rem; border-radius:999px; background:rgba(245,88,142,0.10); color:var(--primary-700); border:1px solid rgba(245,88,142,0.20);">${c}</span>`).join('')}
           </div>`
         : '';
 
