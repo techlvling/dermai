@@ -21,3 +21,5 @@ npm-debug.log*
 # Build output
 dist/
 .vercel/
+
+.vercel
