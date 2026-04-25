@@ -358,6 +358,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (rotateInterval) clearInterval(rotateInterval);
         data.savedAt = Date.now();
         localStorage.setItem('dermAI_analysis', JSON.stringify(data));
+
+        const saveOpt = document.getElementById('save-photo-opt-in');
+        if (saveOpt && saveOpt.checked && capturedFiles[0] && typeof PhotoDB !== 'undefined') {
+          PhotoDB.save(data.savedAt, capturedFiles[0], data.overallHealth, data.skinType)
+            .catch(err => console.warn('[PhotoDB] save failed:', err));
+        }
+
         renderResults(data);
       } catch (error) {
         if (rotateInterval) clearInterval(rotateInterval);

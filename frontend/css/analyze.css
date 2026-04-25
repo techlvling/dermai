@@ -445,3 +445,23 @@
 .hidden {
   display: none !important;
 }
+
+/* ── Save-photo opt-in toggle ─────────────────────────────────────── */
+.save-photo-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--neutral-500);
+  cursor: pointer;
+  margin-top: 0.875rem;
+  user-select: none;
+}
+.save-photo-toggle input {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--primary-500);
+  flex-shrink: 0;
+}
+

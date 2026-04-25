@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
       initPatchTest();
       checkReorderReminders();
       renderWeatherFromLocation();
+      initPhotoTimeline();
     } catch (err) {
       console.error('Failed to load DB', err);
       document.querySelector('.routine-timeline').innerHTML = '<p class="error" style="text-align: center;">Failed to connect to database. Ensure backend is running.</p>';
@@ -631,6 +632,111 @@ document.addEventListener('DOMContentLoaded', () => {
     data[prodId]  = { sizeML, freq, estimatedEmpty: Date.now() + days * 24 * 60 * 60 * 1000, dismissed: false };
     sSet('dermAI_reorderData', data);
     window.closeReorderModal();
+  };
+
+  // ── Progress photo timeline ───────────────────────────────────────
+  async function initPhotoTimeline() {
+    const section = document.getElementById('photos-section');
+    if (!section || typeof PhotoDB === 'undefined') return;
+
+    let photos;
+    try { photos = await PhotoDB.getAll(); }
+    catch (err) { console.warn('[PhotoDB] unavailable:', err); return; }
+
+    photos.sort((a, b) => a.scanAt - b.scanAt);
+
+    if (!photos.length) {
+      section.innerHTML = `<p class="photos-empty-msg">No progress photos yet — tick "Save front photo" when you next analyze your skin.</p>`;
+      section.classList.remove('hidden');
+      return;
+    }
+
+    let sliderHTML = '';
+    if (photos.length >= 2) {
+      const oldest  = URL.createObjectURL(photos[0].blob);
+      const newest  = URL.createObjectURL(photos[photos.length - 1].blob);
+      const oldDate = new Date(photos[0].scanAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      const newDate = new Date(photos[photos.length - 1].scanAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      sliderHTML = `
+        <div class="ba-wrapper">
+          <div class="section-eyebrow" style="margin-bottom:0.75rem;">BEFORE / AFTER</div>
+          <div class="ba-slider" id="ba-slider">
+            <div class="ba-before" style="background-image:url('${oldest}')"></div>
+            <div class="ba-after" id="ba-after" style="background-image:url('${newest}')"></div>
+            <div class="ba-divider" id="ba-divider"></div>
+            <div class="ba-handle" id="ba-handle" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <input type="range" class="ba-range" id="ba-range" min="0" max="100" value="50"
+              aria-label="Drag to compare before and after photos">
+            <span class="ba-label ba-label-left">${oldDate}</span>
+            <span class="ba-label ba-label-right">${newDate}</span>
+          </div>
+        </div>`;
+    }
+
+    const timelineHTML = photos.map((p, i) => {
+      const url      = URL.createObjectURL(p.blob);
+      const date     = new Date(p.scanAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      const delta    = i > 0 ? p.score - photos[i - 1].score : null;
+      const deltaEl  = delta !== null
+        ? `<span class="photo-delta ${delta >= 0 ? 'photo-delta-up' : 'photo-delta-down'}">${delta >= 0 ? '+' : ''}${delta}</span>`
+        : '';
+      return `
+        <div class="photo-entry">
+          <img class="photo-thumb" src="${url}" alt="Skin scan — ${date}" loading="lazy">
+          <div class="photo-entry-info">
+            <span class="photo-entry-date">${date}</span>
+            <div class="photo-entry-score">
+              <span class="photo-score-num">${p.score}</span>
+              <span class="photo-score-label">HEALTH</span>
+              ${deltaEl}
+            </div>
+            <span class="photo-skin-type">${p.skinType}</span>
+          </div>
+          <button class="photo-delete-btn" onclick="window.deleteProgressPhoto(${p.id})"
+            aria-label="Delete progress photo from ${date}">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>`;
+    }).join('');
+
+    section.innerHTML = `
+      <div class="photos-section-header">
+        <div class="section-eyebrow" style="margin:0;">PROGRESS PHOTOS</div>
+        <span class="photos-count-badge">${photos.length} scan${photos.length > 1 ? 's' : ''}</span>
+      </div>
+      ${sliderHTML}
+      <div class="photo-timeline">${timelineHTML}</div>`;
+    section.classList.remove('hidden');
+
+    if (photos.length >= 2) initBASlider();
+  }
+
+  function initBASlider() {
+    const range   = document.getElementById('ba-range');
+    const after   = document.getElementById('ba-after');
+    const divider = document.getElementById('ba-divider');
+    const handle  = document.getElementById('ba-handle');
+    if (!range || !after) return;
+
+    function update(pct) {
+      after.style.clipPath   = `inset(0 0 0 ${pct}%)`;
+      if (divider) divider.style.left = pct + '%';
+      if (handle)  handle.style.left  = pct + '%';
+    }
+    update(50);
+    range.addEventListener('input', () => update(Number(range.value)));
+  }
+
+  window.deleteProgressPhoto = async function (id) {
+    if (!confirm('Remove this progress photo?')) return;
+    try {
+      await PhotoDB.remove(id);
+      initPhotoTimeline();
+    } catch (err) { console.warn('[PhotoDB] delete failed:', err); }
   };
 
   window.dismissReorderBanner = function () {
