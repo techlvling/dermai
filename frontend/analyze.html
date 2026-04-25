@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DermAI | AI Skin Analysis</title>
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/analyze.css" />
+  </head>
+  <body>
+    <nav class="navbar container">
+      <div class="logo">
+        <a href="/"><span class="gradient-text">DermAI</span></a>
+      </div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/ingredients.html">Ingredients</a>
+      </div>
+    </nav>
+
+    <main class="analyze-container container">
+      <div class="upload-section" id="upload-section">
+        <div class="text-center">
+          <h1 class="analyze-title">Scan Your <span class="gradient-text">Skin</span></h1>
+          <p class="analyze-subtitle">Upload a selfie or take a photo to get your personalized, science-backed skin analysis.</p>
+        </div>
+
+        <div class="photo-instructions glass-panel" style="margin-bottom: 2rem; padding: 1.5rem; text-align: left;">
+          <h3 style="margin-bottom: 1rem;">📷 How to get an accurate scan:</h3>
+          <ul style="list-style-type: decimal; padding-left: 1.5rem; color: var(--neutral-300);">
+            <li style="margin-bottom:0.5rem"><strong>Wash your face:</strong> Use a gentle cleanser to remove dirt and oil.</li>
+            <li style="margin-bottom:0.5rem"><strong>Wait 15 minutes:</strong> Let your skin settle to its natural state so we can detect oil/dryness accurately.</li>
+            <li style="margin-bottom:0.5rem"><strong>No makeup or products:</strong> Your skin must be completely bare.</li>
+            <li><strong>Good lighting:</strong> Face a window with natural daylight if possible.</li>
+          </ul>
+        </div>
+
+        <div class="glass-panel upload-box" id="drop-zone">
+          <div class="upload-icon">📸</div>
+          <h3>Drag & Drop your photo here</h3>
+          <p>or</p>
+          <div class="upload-actions">
+            <label for="file-input" class="btn btn-primary">Choose File</label>
+            <button id="camera-btn" class="btn btn-outline">Use Camera</button>
+          </div>
+          <input type="file" id="file-input" accept="image/jpeg, image/png, image/webp" hidden />
+          <p class="upload-hint">Ensure good lighting. Face the camera directly. No makeup.</p>
+        </div>
+
+        <div id="camera-container" class="glass-panel hidden">
+          <!-- Step progress indicator -->
+          <div class="step-progress">
+            <div class="step-dot active" id="dot-1"></div>
+            <div class="step-dot" id="dot-2"></div>
+            <div class="step-dot" id="dot-3"></div>
+          </div>
+
+          <!-- Instruction banner -->
+          <div class="capture-instruction">
+            <span class="step-counter" id="step-counter">Photo 1 of 3</span>
+            <p class="step-text" id="step-text">Look straight at the camera</p>
+          </div>
+
+          <div style="position:relative; display:inline-block; width:100%;">
+            <video id="camera-feed" autoplay playsinline style="width:100%; border-radius:8px; display:block;"></video>
+            <svg id="face-guide" viewBox="0 0 100 100" preserveAspectRatio="none"
+              style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+              <defs>
+                <mask id="oval-mask">
+                  <rect width="100" height="100" fill="white"/>
+                  <ellipse cx="50" cy="48" rx="28" ry="36" fill="black"/>
+                </mask>
+              </defs>
+              <rect width="100" height="100" fill="rgba(0,0,0,0.45)" mask="url(#oval-mask)"/>
+              <ellipse cx="50" cy="48" rx="28" ry="36"
+                fill="none" stroke="rgba(99,200,140,0.85)" stroke-width="0.8" stroke-dasharray="3,2"/>
+              <text x="50" y="95" text-anchor="middle"
+                font-size="4.5" fill="rgba(255,255,255,0.75)" font-family="sans-serif"
+                id="oval-label">Centre your face in the oval</text>
+            </svg>
+          </div>
+          <div class="camera-actions">
+            <button id="capture-btn" class="btn btn-primary">📸 Capture</button>
+            <button id="close-camera-btn" class="btn btn-outline">Cancel</button>
+          </div>
+        </div>
+
+        <div id="preview-container" class="glass-panel hidden">
+          <div id="thumbnails-grid" class="thumbnails-grid"></div>
+          <div class="preview-actions">
+            <button id="analyze-btn" class="btn btn-primary">Analyze Photos</button>
+            <button id="retake-btn" class="btn btn-outline">Retake All</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading-section hidden" id="loading-section">
+        <div class="spinner"></div>
+        <h2>Analyzing your skin...</h2>
+        <p>Our AI is detecting concerns and consulting our clinical database.</p>
+      </div>
+
+      <div class="results-section hidden" id="results-section">
+        <div class="results-header">
+          <h2>Your Skin <span class="gradient-text">Report Card</span></h2>
+          <div style="display:flex; gap:1rem;">
+            <div class="overall-score glass-panel" style="padding:1rem;">
+              <span class="score-value" id="overall-health" style="font-size:2rem;">--</span>
+              <span class="score-label" style="font-size:0.75rem;">Health Score</span>
+            </div>
+            <div class="overall-score glass-panel" style="padding:1rem;">
+              <span class="score-value" id="skin-type-result" style="font-size:1.5rem; text-transform:capitalize;">--</span>
+              <span class="score-label" style="font-size:0.75rem;">Skin Type</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="concerns-grid" id="concerns-list">
+          <!-- Concerns will be injected here via JS -->
+        </div>
+
+        <div class="results-actions text-center">
+          <a href="/recommendations.html" class="btn btn-primary btn-large">View Recommended Routine</a>
+          <button id="start-over-btn" class="btn btn-outline">Scan Another Photo</button>
+        </div>
+      </div>
+    </main>
+    <script src="./js/upload.js"></script>
+  </body>
+</html>

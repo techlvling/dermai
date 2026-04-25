@@ -1,0 +1,232 @@
+[
+  {
+    "id": "prod_cle_01",
+    "name": "Renewing SA Cleanser",
+    "brand": "CeraVe",
+    "primaryIngredientId": "salicylic_acid",
+    "category": "cleanser",
+    "bestTimeOfDay": "both",
+    "concerns": ["Acne", "Pores", "Oiliness"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_cle_02",
+    "name": "Toleriane Hydrating Gentle Cleanser",
+    "brand": "La Roche-Posay",
+    "primaryIngredientId": "niacinamide",
+    "category": "cleanser",
+    "bestTimeOfDay": "both",
+    "concerns": ["Dryness", "Sensitivity"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_cle_03",
+    "name": "Vitamin C Brightening Cleanser",
+    "brand": "TruSkin",
+    "primaryIngredientId": "vitamin_c",
+    "category": "cleanser",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation", "Dryness", "Fine Lines"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_sal_01",
+    "name": "Skin Perfecting 2% BHA Liquid Exfoliant",
+    "brand": "Paula's Choice",
+    "primaryIngredientId": "salicylic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Acne", "Pores", "Texture"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_nia_01",
+    "name": "Niacinamide 10% + Zinc 1%",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "niacinamide",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation", "Pores", "Oiliness"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_tret_01",
+    "name": "Differin Adapalene Gel 0.1%",
+    "brand": "Differin",
+    "primaryIngredientId": "tretinoin",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Acne", "Fine Lines", "Texture"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_bzp_01",
+    "name": "Acne-Control Cleanser 4% BPO",
+    "brand": "PanOxyl",
+    "primaryIngredientId": "benzoyl_peroxide",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Acne"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_vitc_01",
+    "name": "C E Ferulic Serum",
+    "brand": "SkinCeuticals",
+    "primaryIngredientId": "vitamin_c",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation", "Fine Lines", "Dryness"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_vitc_02",
+    "name": "Vitamin C Suspension 23% + HA Spheres 2%",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "vitamin_c",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation", "Fine Lines"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_aze_01",
+    "name": "Azelaic Acid Suspension 10%",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "azelaic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "both",
+    "concerns": ["Acne", "Hyperpigmentation", "Sensitivity"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_arb_01",
+    "name": "Alpha Arbutin 2% + HA",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "alpha_arbutin",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_lac_01",
+    "name": "Lactic Acid 10% + HA 2%",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "lactic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Texture", "Dryness", "Fine Lines", "Hyperpigmentation"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_gly_01",
+    "name": "AHA 30% + BHA 2% Peeling Solution",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "glycolic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Texture", "Acne", "Fine Lines", "Hyperpigmentation"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_ret_01",
+    "name": "Retinol 0.5% in Squalane",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "retinol",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Fine Lines", "Texture", "Acne"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_ret_02",
+    "name": "Retinol Correxion Line Smoothing Serum",
+    "brand": "RoC",
+    "primaryIngredientId": "retinol",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Fine Lines", "Texture"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_koj_01",
+    "name": "Kojic Acid + Vitamin C Brightening Serum",
+    "brand": "Biopelle",
+    "primaryIngredientId": "kojic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_pep_01",
+    "name": "Buffet Multi-Technology Peptide Serum",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "peptides",
+    "category": "treatment",
+    "bestTimeOfDay": "both",
+    "concerns": ["Fine Lines", "Texture", "Dryness"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_moi_01",
+    "name": "Hydro Boost Water Gel",
+    "brand": "Neutrogena",
+    "primaryIngredientId": "hyaluronic_acid",
+    "category": "moisturizer",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Dryness", "Oiliness", "Acne", "Pores", "Texture", "Hyperpigmentation"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_moi_02",
+    "name": "Moisturizing Cream",
+    "brand": "CeraVe",
+    "primaryIngredientId": "ceramides",
+    "category": "moisturizer",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Dryness", "Sensitivity", "Fine Lines"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_moi_03",
+    "name": "Ceramide Moisturizing Cream",
+    "brand": "Dr. Jart+",
+    "primaryIngredientId": "ceramides",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Dryness", "Sensitivity", "Fine Lines"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_sun_01",
+    "name": "UV Clear Broad-Spectrum SPF 46",
+    "brand": "EltaMD",
+    "primaryIngredientId": "niacinamide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Acne", "Hyperpigmentation", "Pores", "Texture", "Dryness"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_sun_02",
+    "name": "Anthelios Melt-in Milk Sunscreen SPF 60",
+    "brand": "La Roche-Posay",
+    "primaryIngredientId": "ceramides",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Dryness", "Sensitivity"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_sun_03",
+    "name": "100% Mineral Sunscreen SPF 40",
+    "brand": "Supergoop!",
+    "primaryIngredientId": "zinc_oxide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Sensitivity", "Acne", "Hyperpigmentation"],
+    "priceTier": "$$$"
+  }
+]

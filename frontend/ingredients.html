@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DermAI | Clinical Ingredient Encyclopedia</title>
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/ingredients.css" />
+  </head>
+  <body>
+    <nav class="navbar container">
+      <div class="logo">
+        <a href="/"><span class="gradient-text">DermAI</span></a>
+      </div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/analyze.html">Analyze Skin</a>
+        <a href="/ingredients.html" class="active">Ingredients</a>
+      </div>
+    </nav>
+
+    <main class="encyclopedia-container container">
+      <div class="text-center encyclopedia-header">
+        <h1>Clinical Ingredient <span class="gradient-text">Encyclopedia</span></h1>
+        <p>Explore the active ingredients backed by gold-standard PubMed clinical trials.</p>
+        
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="Search ingredients (e.g., Salicylic Acid)..." class="glass-input" />
+        </div>
+      </div>
+
+      <div id="loading-indicator" class="text-center hidden">
+        <div class="spinner"></div>
+        <p>Loading clinical data from PubMed database...</p>
+      </div>
+
+      <div id="ingredients-grid" class="ingredients-grid">
+        <!-- Ingredients will be injected here via JS -->
+      </div>
+    </main>
+    <script src="./js/ingredients.js"></script>
+  </body>
+</html>

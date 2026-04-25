@@ -1,0 +1,34 @@
+{
+  "Acne": {
+    "targetIngredients": ["salicylic_acid", "benzoyl_peroxide", "tretinoin", "niacinamide", "azelaic_acid", "glycolic_acid"],
+    "rationale": "Salicylic acid (BHA) unclogs pores; benzoyl peroxide kills acne bacteria; adapalene/tretinoin normalises cell turnover; niacinamide reduces sebum and inflammation; azelaic acid is antimicrobial and anti-inflammatory."
+  },
+  "Hyperpigmentation": {
+    "targetIngredients": ["niacinamide", "vitamin_c", "alpha_arbutin", "kojic_acid", "tretinoin", "azelaic_acid", "lactic_acid", "glycolic_acid"],
+    "rationale": "Vitamin C inhibits tyrosinase (the enzyme that produces melanin); niacinamide blocks melanosome transfer; alpha arbutin and kojic acid are tyrosinase inhibitors; tretinoin accelerates cell renewal to shed pigmented cells."
+  },
+  "Pores": {
+    "targetIngredients": ["salicylic_acid", "niacinamide", "glycolic_acid"],
+    "rationale": "Salicylic acid dissolves the sebum and debris that stretches pores; niacinamide tightens pore walls and regulates oil production; glycolic acid exfoliates the surface to reduce their appearance."
+  },
+  "Fine Lines": {
+    "targetIngredients": ["tretinoin", "retinol", "peptides", "hyaluronic_acid", "vitamin_c", "lactic_acid"],
+    "rationale": "Tretinoin and retinol are the only topical ingredients with gold-standard RCT evidence for stimulating collagen and reducing wrinkle depth; peptides signal fibroblasts to produce collagen; vitamin C is a cofactor in collagen synthesis; hyaluronic acid provides immediate plumping hydration."
+  },
+  "Texture": {
+    "targetIngredients": ["salicylic_acid", "glycolic_acid", "lactic_acid", "tretinoin", "retinol"],
+    "rationale": "Chemical exfoliation with AHAs (glycolic, lactic) and BHA (salicylic) smooths rough surface texture by dissolving the bonds between dead skin cells; tretinoin normalises keratinisation for long-term refinement."
+  },
+  "Dryness": {
+    "targetIngredients": ["hyaluronic_acid", "ceramides", "lactic_acid", "peptides"],
+    "rationale": "Hyaluronic acid attracts and holds water in the skin; ceramides seal the lipid barrier to prevent trans-epidermal water loss; lactic acid is a natural moisturising factor (NMF) component."
+  },
+  "Oiliness": {
+    "targetIngredients": ["niacinamide", "salicylic_acid", "azelaic_acid"],
+    "rationale": "Niacinamide suppresses sebum production; salicylic acid penetrates the follicle to clear excess oil; azelaic acid normalises keratinisation and reduces abnormal sebum output."
+  },
+  "Sensitivity": {
+    "targetIngredients": ["niacinamide", "ceramides", "hyaluronic_acid", "azelaic_acid"],
+    "rationale": "Niacinamide calms redness and reinforces the barrier; ceramides restore disrupted lipid layers; hyaluronic acid hydrates without irritants; azelaic acid is anti-inflammatory and well-tolerated by sensitive skin."
+  }
+}

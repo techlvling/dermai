@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DermAI | Your Routine</title>
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/recommendations.css" />
+  </head>
+  <body>
+    <nav class="navbar container">
+      <div class="logo">
+        <a href="/"><span class="gradient-text">DermAI</span></a>
+      </div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/analyze.html">Analyze Skin</a>
+        <a href="/ingredients.html">Ingredients</a>
+      </div>
+    </nav>
+
+    <main class="rec-container container">
+      <div class="rec-header">
+        <h1>Your Personalized <span class="gradient-text">Routine</span></h1>
+        <p>Based on your AI skin analysis, here are clinically proven products tailored to your skin concerns.</p>
+        
+        <div class="region-selector glass-panel">
+          <label for="region-select">Select your Amazon Region:</label>
+          <select id="region-select" class="glass-select">
+            <!-- Options will be dynamically injected here by JS -->
+          </select>
+        </div>
+      </div>
+
+      <div id="no-analysis-warning" class="hidden text-center glass-panel" style="padding: 3rem;">
+        <h2>We need to analyze your skin first!</h2>
+        <p>Please go back and upload a photo so we can recommend the right ingredients for you.</p>
+        <a href="/analyze.html" class="btn btn-primary" style="margin-top: 1rem;">Analyze My Skin</a>
+      </div>
+
+      <div id="loading-indicator" class="text-center hidden">
+        <div class="spinner"></div>
+        <p>Finding the best products in your region...</p>
+      </div>
+
+      <div id="weather-widget" class="hidden"></div>
+
+      <div id="routine-content" class="routine-content hidden">
+        <div class="skin-profile-summary glass-panel" style="margin-bottom: 2rem;">
+          <h3 style="margin-bottom:1rem; color:var(--primary-300);">Your Skin Profile</h3>
+          <p style="margin-bottom:0.5rem;"><strong>Skin Type:</strong> <span id="user-skin-type" style="text-transform: capitalize; color:var(--neutral-100);"></span></p>
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <strong>Targeting:</strong> 
+            <ul id="user-concerns-list" class="concerns-tags"></ul>
+          </div>
+        </div>
+
+        <div class="routine-timeline">
+          <div class="routine-time-block">
+            <h2>☀️ Morning Routine</h2>
+            <div id="am-cleanser" class="routine-step"></div>
+            <div id="am-treatment" class="routine-step"></div>
+            <div id="am-moisturizer" class="routine-step"></div>
+            <div id="am-sunscreen" class="routine-step"></div>
+          </div>
+          
+          <div class="routine-time-block" style="margin-top: 4rem;">
+            <h2>🌙 Evening Routine</h2>
+            <div id="pm-cleanser" class="routine-step"></div>
+            <div id="pm-treatment" class="routine-step"></div>
+            <div id="pm-moisturizer" class="routine-step"></div>
+          </div>
+          
+          <button class="btn print-btn" onclick="window.print()" style="margin-top: 2rem; width: 100%; background: var(--bg-card); border: 1px solid var(--primary-400); color: var(--primary-300);">
+            🖨️ Download / Print Routine
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <script src="./js/recommendations.js"></script>
+  </body>
+</html>

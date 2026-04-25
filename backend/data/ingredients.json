@@ -1,0 +1,362 @@
+[
+  {
+    "id": "salicylic_acid",
+    "name": "Salicylic Acid",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Clinical Efficacy of a Salicylic Acid-Containing Gel on Acne Management and Skin Barrier Function: A 21-Day Prospective Study.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2025",
+        "pubmedId": "40682377",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/40682377/",
+        "authors": "Liu Y, Dan Y, Yang J et al."
+      },
+      {
+        "title": "Efficacy of combined 1927 nm thulium fiber laser and supramolecular salicylic acid in photoaging treatment.",
+        "journal": "Lasers in medical science",
+        "year": "2025",
+        "pubmedId": "40960645",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/40960645/",
+        "authors": "Qiao S, Gao Z, Yang M et al."
+      }
+    ]
+  },
+  {
+    "id": "niacinamide",
+    "name": "Niacinamide",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Niacinamide: A B vitamin that improves aging facial skin appearance.",
+        "journal": "Dermatologic surgery : official publication for American Society for Dermatologic Surgery [et al.]",
+        "year": "2005",
+        "pubmedId": "16029679",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/16029679/",
+        "authors": "Bissett DL, Oblong JE, Berge CA"
+      },
+      {
+        "title": "The effect of niacinamide on reducing cutaneous pigmentation and suppression of melanosome transfer.",
+        "journal": "The British journal of dermatology",
+        "year": "2002",
+        "pubmedId": "12100180",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/12100180/",
+        "authors": "Hakozaki T, Minwalla L, Zhuang J et al."
+      }
+    ]
+  },
+  {
+    "id": "tretinoin",
+    "name": "Tretinoin",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Vehicle Formulation Impacts Tolerability and Patient Preference: Comparison of Tretinoin Branded Lotion and Generic Cream.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2022",
+        "pubmedId": "35946981",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/35946981/",
+        "authors": "Draelos Z, Tanghetti E, Guenin E"
+      },
+      {
+        "title": "Tolerability and Efficacy of Clindamycin/Tretinoin versus Adapalene/Benzoyl Peroxide in the Treatment of Acne Vulgaris.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2021",
+        "pubmedId": "33683070",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/33683070/",
+        "authors": "Aschoff R, Möller S, Haase R et al."
+      },
+      {
+        "title": "Liposomal tretinoin for uncomplicated acne vulgaris.",
+        "journal": "The Clinical investigator",
+        "year": "1994",
+        "pubmedId": "7711421",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/7711421/",
+        "authors": "Schäfer-Korting M, Korting HC, Ponce-Pöschl E"
+      }
+    ]
+  },
+  {
+    "id": "benzoyl_peroxide",
+    "name": "Benzoyl Peroxide",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Efficacy and Safety of a Fixed-Dose Clindamycin Phosphate 1.2%, Benzoyl Peroxide 3.1%, and Adapalene 0.15% Gel for Moderate-to-Severe Acne: A Randomized Phase II Study of the First Triple-Combination Drug.",
+        "journal": "American journal of clinical dermatology",
+        "year": "2022",
+        "pubmedId": "34674160",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/34674160/",
+        "authors": "Stein Gold L, Baldwin H, Kircik LH et al."
+      },
+      {
+        "title": "Intense pulsed light versus benzoyl peroxide.",
+        "journal": "Journal of population therapeutics and clinical pharmacology = Journal de la therapeutique des populations et de la pharmacologie clinique",
+        "year": "2022",
+        "pubmedId": "35044116",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/35044116/",
+        "authors": "Al Abdullah MJ, Mahdi YG"
+      }
+    ]
+  },
+  {
+    "id": "hyaluronic_acid",
+    "name": "Hyaluronic Acid",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "The Effects of Dietary Supplementation with Collagen and Vitamin C and Their Combination with Hyaluronic Acid on Skin Density, Texture and Other Parameters: A Randomised, Double-Blind, Placebo-Controlled Trial.",
+        "journal": "Nutrients",
+        "year": "2024",
+        "pubmedId": "38931263",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38931263/",
+        "authors": "Žmitek K, Žmitek J, Hristov H et al."
+      },
+      {
+        "title": "Comparison of the effects of polynucleotide and hyaluronic acid fillers on periocular rejuvenation: a randomized, double-blind, split-face trial.",
+        "journal": "The Journal of dermatological treatment",
+        "year": "2022",
+        "pubmedId": "32248707",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/32248707/",
+        "authors": "Lee YJ, Kim HT, Lee YJ et al."
+      },
+      {
+        "title": "A hyaluronic acid-based micro-filler improves superficial wrinkles and skin quality: a randomized prospective controlled multicenter study.",
+        "journal": "The Journal of dermatological treatment",
+        "year": "2023",
+        "pubmedId": "37577796",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/37577796/",
+        "authors": "Fanian F, Deutsch JJ, Bousquet MT et al."
+      }
+    ]
+  },
+  {
+    "id": "vitamin_c",
+    "name": "Vitamin C",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "The Effects of Dietary Supplementation with Collagen and Vitamin C and Their Combination with Hyaluronic Acid on Skin Density, Texture and Other Parameters: A Randomised, Double-Blind, Placebo-Controlled Trial.",
+        "journal": "Nutrients",
+        "year": "2024",
+        "pubmedId": "38931263",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38931263/",
+        "authors": "Žmitek K, Žmitek J, Hristov H et al."
+      },
+      {
+        "title": "Anti-aging and brightening effects of a topical treatment containing vitamin C, vitamin E, and raspberry leaf cell culture extract: A split-face, randomized controlled trial.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2020",
+        "pubmedId": "31975502",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/31975502/",
+        "authors": "Rattanawiwatpong P, Wanitphakdeedecha R, Bumrungpert A et al."
+      }
+    ]
+  },
+  {
+    "id": "azelaic_acid",
+    "name": "Azelaic Acid",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "[Azelaic acid in the treatment of acne].",
+        "journal": "Giornale italiano di dermatologia e venereologia : organo ufficiale, Societa italiana di dermatologia e sifilografia",
+        "year": "1989",
+        "pubmedId": "2530163",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/2530163/",
+        "authors": "Nazzaro-Porro M, Passi S, Picardo M et al."
+      },
+      {
+        "title": "Azelaic acid foam 15% in the treatment of papulopustular rosacea: a randomized, double-blind, vehicle-controlled study.",
+        "journal": "Cutis",
+        "year": "2013",
+        "pubmedId": "24416747",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/24416747/",
+        "authors": "Draelos ZD, Elewski B, Staedtler G et al."
+      }
+    ]
+  },
+  {
+    "id": "ceramides",
+    "name": "Ceramides",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Ceramide-Containing Adjunctive Skin Care for Skin Barrier Restoration During Acne Vulgaris Treatment.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2023",
+        "pubmedId": "37276158",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/37276158/",
+        "authors": "Draelos ZD, Baalbaki N, Colon G et al."
+      }
+    ]
+  },
+  {
+    "id": "alpha_arbutin",
+    "name": "Alpha Arbutin",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "The Efficacy of Topical Cosmetic Containing Alpha-Arbutin 5% and Kojic Acid 2% Compared With Triple Combination Cream for the Treatment of Melasma: A Split-Face, Evaluator-Blinded Randomized Pilot Study.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2025",
+        "pubmedId": "39555866",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/39555866/",
+        "authors": "Tantanasrigul P, Sripha A, Chongmelaxme B"
+      }
+    ]
+  },
+  {
+    "id": "lactic_acid",
+    "name": "Lactic Acid",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Effectiveness and Safety of Sculptra Poly-L-Lactic Acid Injectable Implant in the Correction of Cheek Wrinkles.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2024",
+        "pubmedId": "38206151",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38206151/",
+        "authors": "Fabi S, Hamilton T, LaTowsky B et al."
+      },
+      {
+        "title": "Microneedling Radiofrequency Enhances Poly-L-Lactic Acid Penetration That Effectively Improves Facial Skin Laxity without Lipolysis.",
+        "journal": "Plastic and reconstructive surgery",
+        "year": "2024",
+        "pubmedId": "38051121",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38051121/",
+        "authors": "Wu X, Cen Q, Wang X et al."
+      },
+      {
+        "title": "Comparative Bulk RNA-Seq Analysis of Poly-l-Lactic Acid Versus Calcium Hydroxylapatite Reveals a Novel, Adipocyte-Mediated Regenerative Mechanism of Action Unique to PLLA.",
+        "journal": "Dermatologic surgery : official publication for American Society for Dermatologic Surgery [et al.]",
+        "year": "2024",
+        "pubmedId": "39480040",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/39480040/",
+        "authors": "Waibel J, Ziegler M, Nguyen TQ et al."
+      }
+    ]
+  },
+  {
+    "id": "glycolic_acid",
+    "name": "Glycolic Acid",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Efficacy and safety of 5% glycolic acid-based Gel essence in the treatment of mild to moderate acne.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2022",
+        "pubmedId": "35182003",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/35182003/",
+        "authors": "Chen L, Lu L, Tu S et al."
+      },
+      {
+        "title": "Effectiveness of water as the neutralising agent for glycolic acid peels in skin phototypes IV-V.",
+        "journal": "The Australasian journal of dermatology",
+        "year": "2021",
+        "pubmedId": "33070326",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/33070326/",
+        "authors": "Sitohang IBS, Rahmayunita G, Hosfiar VA et al."
+      }
+    ]
+  },
+  {
+    "id": "retinol",
+    "name": "Retinol",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Prospective, randomized, double-blind assessment of topical bakuchiol and retinol for facial photoageing.",
+        "journal": "The British journal of dermatology",
+        "year": "2019",
+        "pubmedId": "29947134",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/29947134/",
+        "authors": "Dhaliwal S, Rybak I, Ellis SR et al."
+      },
+      {
+        "title": "Improvement of naturally aged skin with vitamin A (retinol).",
+        "journal": "Archives of dermatology",
+        "year": "2007",
+        "pubmedId": "17515510",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/17515510/",
+        "authors": "Kafi R, Kwak HS, Schumacher WE et al."
+      }
+    ]
+  },
+  {
+    "id": "zinc_oxide",
+    "name": "Zinc Oxide",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Support for the Safe Use of Zinc Oxide Nanoparticle Sunscreens: Lack of Skin Penetration or Cellular Toxicity after Repeated Application in Volunteers.",
+        "journal": "The Journal of investigative dermatology",
+        "year": "2019",
+        "pubmedId": "30448212",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/30448212/",
+        "authors": "Mohammed YH, Holmes A, Haridass IN et al."
+      }
+    ]
+  },
+  {
+    "id": "kojic_acid",
+    "name": "Kojic Acid",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Evaluation of the of the efficacy of Fractional Erbium-Doped Yttrium Aluminum Garnet Laser-Assisted Drug Delivery of Kojic Acid in the Treatment of Melasma; A split face, comparative clinical study.",
+        "journal": "Journal of cosmetic and laser therapy : official publication of the European Society for Laser Dermatology",
+        "year": "2021",
+        "pubmedId": "34407729",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/34407729/",
+        "authors": "Al-Dhalimi MA, Yasser RH"
+      }
+    ]
+  },
+  {
+    "id": "peptides",
+    "name": "Peptides",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Oral intake of specific bioactive collagen peptides reduces skin wrinkles and increases dermal matrix synthesis.",
+        "journal": "Skin pharmacology and physiology",
+        "year": "2014",
+        "pubmedId": "24401291",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/24401291/",
+        "authors": "Proksch E, Schunck M, Zague V et al."
+      },
+      {
+        "title": "Oral Intake of Low-Molecular-Weight Collagen Peptide Improves Hydration, Elasticity, and Wrinkling in Human Skin: A Randomized, Double-Blind, Placebo-Controlled Study.",
+        "journal": "Nutrients",
+        "year": "2018",
+        "pubmedId": "29949889",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/29949889/",
+        "authors": "Kim DU, Chung HC, Choi J et al."
+      },
+      {
+        "title": "Low-molecular-weight collagen peptides supplement promotes a healthy skin: A randomized, double-blinded, placebo-controlled study.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2024",
+        "pubmedId": "37822045",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/37822045/",
+        "authors": "Seong SH, Lee YI, Lee J et al."
+      }
+    ]
+  }
+]
