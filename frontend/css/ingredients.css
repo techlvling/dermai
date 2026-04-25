@@ -132,6 +132,38 @@
   font-size: 0.75rem;
 }
 
+/* Filter Chips */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+.filter-chip {
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--primary-400);
+  background: transparent;
+  color: var(--primary-500);
+  font-size: 0.8rem;
+  font-family: var(--font-primary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.filter-chip:hover {
+  background: rgba(245, 88, 142, 0.1);
+  border-color: var(--primary-500);
+}
+
+.filter-chip.active {
+  background: var(--primary-500);
+  color: #fff;
+  border-color: var(--primary-500);
+}
+
 .spinner {
   width: 40px;
   height: 40px;
