@@ -176,7 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const ingredient = allIngredients.find(ing => ing.id === prod.primaryIngredientId);
     const evidenceTier = ingredient ? ingredient.evidenceTier : '?';
     const searchQuery = encodeURIComponent(`${prod.brand} ${prod.name}`);
-    const buyURL = `https://www.amazon.${regionData.tld}/s?k=${searchQuery}`;
+    // Append Amazon Associates tag if one is configured for this region
+    const tagParam = regionData.tag ? `&tag=${regionData.tag}` : '';
+    const buyURL = `https://www.amazon.${regionData.tld}/s?k=${searchQuery}${tagParam}`;
     const evidenceHTML = buildEvidenceHTML(prod, ingredient);
 
     return `
@@ -195,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Search on Amazon
         </a>
-        <p style="font-size:0.7rem; color:var(--neutral-500); text-align:center; margin-top:0.5rem;">Affiliate link — DermAI may earn from qualifying purchases.</p>
+        <p style="font-size:0.7rem; color:var(--neutral-500); text-align:center; margin-top:0.5rem;">As an Amazon Associate we earn from qualifying purchases.</p>
       </div>`;
   }
 
