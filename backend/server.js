@@ -226,6 +226,17 @@ app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, re
 });
 
 // ---------------------------------------------------------------------------
+// 404 — serve branded page for unknown HTML routes, JSON for API routes
+// ---------------------------------------------------------------------------
+
+app.use((_req, res, next) => {
+  if (_req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: `No route: ${_req.method} ${_req.path}` });
+  }
+  res.status(404).sendFile(path.join(__dirname, '..', 'frontend', '404.html'));
+});
+
+// ---------------------------------------------------------------------------
 // Global JSON error handler
 // ---------------------------------------------------------------------------
 
