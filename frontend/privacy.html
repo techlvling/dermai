@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5588e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,7 +21,7 @@
     </style>
   </head>
   <body>
-    <nav class="navbar container">
+    <nav class="navbar container" aria-label="Main navigation">
       <div class="logo">
         <a href="/"><span class="gradient-text">DermAI</span></a>
       </div>
@@ -28,8 +29,32 @@
         <a href="/">Home</a>
         <a href="/analyze.html">Analyze Skin</a>
         <a href="/ingredients.html">Ingredients</a>
+        <a href="/recommendations.html">Your Routine</a>
+        <a href="/shopping.html">Shopping List</a>
         <a href="/history.html">History</a>
       </div>
+      <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </nav>
+
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="nav-drawer-header">
+        <span style="font-family:var(--font-display); font-size:1.25rem; font-weight:700; color:var(--primary-500);">DermAI</span>
+        <button class="nav-drawer-close" aria-label="Close navigation menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="nav-drawer-links">
+        <a href="/">Home</a>
+        <a href="/analyze.html">Analyze Skin</a>
+        <a href="/ingredients.html">Ingredients</a>
+        <a href="/recommendations.html">Your Routine</a>
+        <a href="/shopping.html">Shopping List</a>
+        <a href="/history.html">History</a>
+      </div>
+      <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Analyze My Skin</a>
     </nav>
 
     <main class="privacy-container">
@@ -37,34 +62,37 @@
       <p class="last-updated">Last updated: April 2026</p>
 
       <div class="highlight">
-        <p><strong>Short version:</strong> Your photo is sent to Google Gemini for analysis, then immediately deleted from our server. We store nothing about you. Your scan history lives only on your device.</p>
+        <p><strong>Short version:</strong> Your photo is sent to an AI vision model for analysis, then immediately discarded from our server. We store nothing about you. Your scan history lives only on your device.</p>
       </div>
 
       <h2>What happens to your photo</h2>
       <ul>
-        <li>When you upload a selfie, it is temporarily saved to our server's memory to be forwarded to Google Gemini's Vision API.</li>
-        <li>Once Gemini returns the analysis result, the image file is permanently deleted from our server. This happens in the same request — your photo is never stored beyond a few seconds.</li>
+        <li>When you upload a selfie, it is held in our server's memory only long enough to be forwarded to the AI vision model.</li>
+        <li>Once the analysis result is returned, your image is discarded from the server. This happens in the same request — your photo is never stored beyond a few seconds.</li>
         <li>We do not log, save, or back up uploaded images at any point.</li>
       </ul>
 
-      <h2>Google Gemini</h2>
+      <h2>AI vision model (OpenRouter)</h2>
       <ul>
-        <li>Your image is processed by Google's Gemini Vision model via their API. Google's own data handling policies apply to this step.</li>
-        <li>Per Google's API terms, images sent via the API are not used to train their models by default.</li>
-        <li>You can review Google's API data usage policy at <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer" style="color:var(--primary-400);">ai.google.dev/gemini-api/terms</a>.</li>
+        <li>Your image is processed by an AI vision model served via <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" style="color:var(--primary-400);">OpenRouter</a>. OpenRouter's own data handling policies apply to this step.</li>
+        <li>Models used include Qwen 2.5 VL, Llama 3.2 Vision, and GPT-4o mini as fallbacks. Per OpenRouter's terms, API-submitted images are not used for model training.</li>
+        <li>You can review OpenRouter's privacy policy at <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer" style="color:var(--primary-400);">openrouter.ai/privacy</a>.</li>
       </ul>
 
       <h2>What we store on your device</h2>
       <ul>
-        <li><strong>Latest analysis</strong> (<code>dermAI_analysis</code>): your most recent skin score, type, and concerns. Used to populate the recommendations page. Cleared when you scan again.</li>
+        <li><strong>Latest analysis</strong> (<code>dermAI_analysis</code>): your most recent skin score, type, concerns, and product recommendations. Used to populate the recommendations page. Overwritten on each new scan.</li>
         <li><strong>Scan history</strong> (<code>dermAI_history</code>): your last 20 full scan results — health score, skin type, concerns, and product recommendations — stored as JSON in your browser's localStorage. Powers the History page so you can re-open any past routine. Never transmitted anywhere.</li>
+        <li><strong>Progress photos</strong> (IndexedDB): if you opt in to progress tracking during a scan, a copy of your photo is stored in your browser's IndexedDB. It never leaves your device.</li>
+        <li><strong>Favourites &amp; shopping list</strong> (<code>dermAI_favorites</code>, <code>dermAI_shopping</code>): product saves, stored locally only.</li>
+        <li><strong>Routine streak &amp; badges</strong> (<code>dermAI_streak</code>, <code>dermAI_badges</code>): gamification state, stored locally only.</li>
       </ul>
-      <p>You can clear this data at any time by opening your browser's developer tools and running <code>localStorage.clear()</code>, or by clearing your browser's site data for this domain.</p>
+      <p>You can clear all data at any time by opening your browser's developer tools and running <code>localStorage.clear()</code>, or by clearing your browser's site data for this domain.</p>
 
       <h2>Product recommendations</h2>
       <ul>
         <li>Recommendations are generated client-side by matching your skin concerns to our local product database. No personal data is sent to any third party for this step.</li>
-        <li>The "Search on Amazon" links are plain search queries — they are not affiliate links and do not include tracking parameters.</li>
+        <li>Product links to Amazon are Amazon Associate affiliate links. DermAI earns a small commission on qualifying purchases at no extra cost to you. This does not affect which products are recommended — selections are based solely on clinical evidence.</li>
       </ul>
 
       <h2>Analytics &amp; tracking</h2>
@@ -77,10 +105,11 @@
       <p>Questions about privacy? Email <a href="mailto:jamesjoy696@gmail.com" style="color:var(--primary-400);">jamesjoy696@gmail.com</a>.</p>
     </main>
 
-    <footer class="footer">
-      <div class="container text-center">
-        <p class="copyright">&copy; 2026 DermAI. All rights reserved. &nbsp;|&nbsp; <a href="/privacy.html" style="color:var(--primary-400);">Privacy</a></p>
-      </div>
+    <footer class="footer-minimal container">
+      Cosmetic analysis only &mdash; not a substitute for professional medical advice.
+      &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
     </footer>
+
+    <script src="/js/nav.js"></script>
   </body>
 </html>
