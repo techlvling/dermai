@@ -39,7 +39,10 @@
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.25rem 0;
+  padding: 0.625rem 0.25rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   border-bottom: 2px solid transparent;
   transition: color var(--duration-fast), border-color var(--duration-fast);
 }
