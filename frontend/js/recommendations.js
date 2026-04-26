@@ -146,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
       checkReorderReminders();
       renderWeatherFromLocation();
       initPhotoTimeline();
+      initDiary();
+      initNotifications();
     } catch (err) {
       console.error('Failed to load DB', err);
       document.querySelector('.routine-timeline').innerHTML = '<p class="error" style="text-align: center;">Failed to connect to database. Ensure backend is running.</p>';
@@ -737,6 +739,278 @@ document.addEventListener('DOMContentLoaded', () => {
       await PhotoDB.remove(id);
       initPhotoTimeline();
     } catch (err) { console.warn('[PhotoDB] delete failed:', err); }
+  };
+
+  // ── F2 — Daily reminder notifications ─────────────────────────────
+  function initNotifications() {
+    const widget = document.getElementById('notif-widget');
+    if (!widget || !('Notification' in window)) return;
+    widget.classList.remove('hidden');
+
+    if (typeof NotifPrefs === 'undefined') return;
+    const prefs    = NotifPrefs.get();
+    const toggle   = document.getElementById('notif-toggle');
+    const timesRow = document.getElementById('notif-times-row');
+    const amInput  = document.getElementById('notif-am');
+    const pmInput  = document.getElementById('notif-pm');
+    const hint     = document.getElementById('notif-hint');
+
+    toggle.checked = prefs.enabled && Notification.permission === 'granted';
+    amInput.value  = prefs.amTime;
+    pmInput.value  = prefs.pmTime;
+    if (toggle.checked) timesRow.classList.remove('hidden');
+
+    toggle.addEventListener('change', async () => {
+      if (toggle.checked) {
+        const granted = await NotifPrefs.enable();
+        if (!granted) {
+          toggle.checked = false;
+          if (hint) hint.textContent = 'Permission denied — enable notifications in browser settings.';
+          return;
+        }
+        timesRow.classList.remove('hidden');
+        if (hint) hint.textContent = '';
+      } else {
+        NotifPrefs.disable();
+        timesRow.classList.add('hidden');
+      }
+    });
+
+    [amInput, pmInput].forEach(inp => {
+      inp.addEventListener('change', () => {
+        const p    = NotifPrefs.get();
+        p.amTime   = amInput.value;
+        p.pmTime   = pmInput.value;
+        NotifPrefs.set(p);
+        if (p.enabled) NotifPrefs.schedule();
+      });
+    });
+  }
+
+  // ── F14 — Skin diary ──────────────────────────────────────────────
+  function initDiary() {
+    const section = document.getElementById('diary-section');
+    if (!section) return;
+    section.innerHTML = `
+      <div class="diary-section-header">
+        <div class="section-eyebrow" style="margin:0;">SKIN DIARY</div>
+        <span class="diary-autosave-hint">auto-saves on tap</span>
+      </div>
+      <div id="diary-today" class="diary-today"></div>
+      <div id="diary-chart" class="diary-chart" style="margin-top:1.75rem;"></div>`;
+    renderDiaryToday();
+    renderDiaryChart();
+    section.classList.remove('hidden');
+  }
+
+  function renderDiaryToday() {
+    const el = document.getElementById('diary-today');
+    if (!el) return;
+    const today = todayKey();
+    const diary  = sGet('dermAI_diary') || {};
+    const entry  = diary[today] || {};
+    const label  = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' }).toUpperCase();
+    const all3   = entry.sleep !== undefined && entry.water !== undefined && entry.stress !== undefined;
+
+    el.innerHTML = `
+      <div class="diary-today-label">
+        ${label}
+        ${all3 ? '<span class="diary-logged-badge">LOGGED</span>' : ''}
+      </div>
+      <div class="diary-field">
+        <span class="diary-field-label">SLEEP (HRS)</span>
+        <div class="diary-chips">
+          ${[5,6,7,8,9,10].map(v =>
+            `<button class="diary-chip${entry.sleep === v ? ' active' : ''}"
+              onclick="window.saveDiaryField('sleep',${v})">${v}</button>`).join('')}
+        </div>
+      </div>
+      <div class="diary-field">
+        <span class="diary-field-label">WATER (GLASSES)</span>
+        <div class="diary-chips">
+          ${[2,4,6,8,10].map(v =>
+            `<button class="diary-chip${entry.water === v ? ' active' : ''}"
+              onclick="window.saveDiaryField('water',${v})">${v}</button>`).join('')}
+        </div>
+      </div>
+      <div class="diary-field">
+        <span class="diary-field-label">STRESS (1–5)</span>
+        <div class="diary-chips">
+          ${[1,2,3,4,5].map(v =>
+            `<button class="diary-chip${entry.stress === v ? ' active' : ''}"
+              onclick="window.saveDiaryField('stress',${v})">${v}</button>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  window.saveDiaryField = function (field, value) {
+    const today = todayKey();
+    const diary  = sGet('dermAI_diary') || {};
+    if (!diary[today]) diary[today] = {};
+    diary[today][field] = value;
+    sSet('dermAI_diary', diary);
+    renderDiaryToday();
+    renderDiaryChart();
+  };
+
+  function renderDiaryChart() {
+    const el = document.getElementById('diary-chart');
+    if (!el) return;
+    const diary   = sGet('dermAI_diary') || {};
+    const history = JSON.parse(localStorage.getItem('dermAI_history') || '[]');
+    const today   = new Date();
+
+    const days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const k     = d.toISOString().slice(0, 10);
+      const entry = diary[k] || {};
+      const scan  = history.find(h => h.date && h.date.slice(0, 10) === k);
+      days.push({ entry, scan, label: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) });
+    }
+
+    const logged = days.filter(d => Object.keys(d.entry).length > 0).length;
+    if (logged < 3) { el.innerHTML = ''; return; }
+
+    el.innerHTML = `
+      <div class="section-eyebrow" style="margin-bottom:1rem;">14-DAY OVERVIEW</div>
+      <div class="diary-grid">
+        ${days.map(d => {
+          const sleepH  = d.entry.sleep  !== undefined ? Math.round((d.entry.sleep  / 10) * 60) : 0;
+          const waterH  = d.entry.water  !== undefined ? Math.round((d.entry.water  / 10) * 60) : 0;
+          const stressH = d.entry.stress !== undefined ? Math.round((d.entry.stress /  5) * 60) : 0;
+          return `
+            <div class="diary-col">
+              <div class="diary-bars">
+                <div class="diary-bar-slot"><div class="diary-bar diary-bar-sleep"  style="height:${sleepH}px"  title="Sleep: ${d.entry.sleep ?? '—'}h"></div></div>
+                <div class="diary-bar-slot"><div class="diary-bar diary-bar-water"  style="height:${waterH}px"  title="Water: ${d.entry.water ?? '—'} glasses"></div></div>
+                <div class="diary-bar-slot"><div class="diary-bar diary-bar-stress" style="height:${stressH}px" title="Stress: ${d.entry.stress ?? '—'}/5"></div></div>
+              </div>
+              <div class="diary-scan-dot${d.scan ? '' : ' diary-scan-empty'}" title="${d.scan ? 'Scan: ' + d.scan.overallHealth : 'No scan'}"></div>
+              <span class="diary-col-label">${d.label}</span>
+            </div>`;
+        }).join('')}
+      </div>
+      <div class="diary-legend">
+        <span class="diary-leg diary-leg-sleep">SLEEP</span>
+        <span class="diary-leg diary-leg-water">WATER</span>
+        <span class="diary-leg diary-leg-stress">STRESS</span>
+        <span class="diary-leg diary-leg-scan">SCAN DAY</span>
+      </div>`;
+  }
+
+  // ── F15 — Shareable routine card (Canvas → PNG) ───────────────────
+  window.shareRoutineCard = async function () {
+    const analysis = JSON.parse(localStorage.getItem('dermAI_analysis') || 'null');
+    if (!analysis) { alert('No skin analysis found — run a scan first.'); return; }
+
+    await document.fonts.ready;
+
+    const W = 1080, H = 1080;
+    const canvas = document.createElement('canvas');
+    canvas.width  = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Dark background + subtle grid
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.lineWidth = 1;
+    for (let y = 60; y < H; y += 60) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+
+    // Top pink accent bar
+    ctx.fillStyle = '#f5588e';
+    ctx.fillRect(0, 0, W, 7);
+
+    // Wordmark
+    ctx.fillStyle = '#f5588e';
+    ctx.font = '700 52px "Space Mono", monospace';
+    ctx.fillText('DermAI', 72, 108);
+
+    // Health score
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 132px "Space Mono", monospace';
+    ctx.fillText(String(analysis.overallHealth ?? '--'), 72, 290);
+    ctx.fillStyle = 'rgba(255,255,255,0.32)';
+    ctx.font = '700 24px "Space Mono", monospace';
+    ctx.fillText('HEALTH SCORE', 72, 330);
+
+    // Skin type badge
+    ctx.font = '700 21px "Space Mono", monospace';
+    const typeLabel = (analysis.skinType || 'Unknown').toUpperCase();
+    const tw = ctx.measureText(typeLabel).width + 32;
+    ctx.fillStyle = 'rgba(245,88,142,0.15)';
+    ctx.fillRect(72, 353, tw, 44);
+    ctx.strokeStyle = '#f5588e';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(72, 353, tw, 44);
+    ctx.fillStyle = '#f5588e';
+    ctx.fillText(typeLabel, 88, 382);
+
+    // Divider
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(72, 424); ctx.lineTo(W - 72, 424); ctx.stroke();
+
+    // Targeting row
+    ctx.fillStyle = 'rgba(255,255,255,0.28)';
+    ctx.font = '700 18px "Space Mono", monospace';
+    ctx.fillText('TARGETING', 72, 470);
+
+    let cx = 72;
+    (analysis.concerns || []).slice(0, 4).forEach(c => {
+      ctx.font = '700 16px "Space Mono", monospace';
+      const cw = ctx.measureText(c.name.toUpperCase()).width + 24;
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+      ctx.lineWidth = 1;
+      ctx.fillRect(cx, 484, cw, 34);
+      ctx.strokeRect(cx, 484, cw, 34);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(c.name.toUpperCase(), cx + 12, 507);
+      cx += cw + 10;
+    });
+
+    // Divider
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(72, 548); ctx.lineTo(W - 72, 548); ctx.stroke();
+
+    // Streak
+    const streak = computeStreak();
+    if (streak > 0) {
+      ctx.fillStyle = '#f5588e';
+      ctx.font = '700 110px "Space Mono", monospace';
+      ctx.fillText(String(streak), 72, 695);
+      ctx.fillStyle = 'rgba(255,255,255,0.32)';
+      ctx.font = '700 24px "Space Mono", monospace';
+      ctx.fillText('DAY STREAK', 72, 734);
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      ctx.font = '700 24px "Space Mono", monospace';
+      ctx.fillText('START YOUR STREAK TODAY', 72, 650);
+    }
+
+    // Bottom accent + date
+    ctx.fillStyle = '#f5588e';
+    ctx.fillRect(0, H - 7, W, 7);
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.font = '400 19px "Space Mono", monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(
+      new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase(),
+      W - 72, H - 26
+    );
+    ctx.textAlign = 'left';
+
+    const link = document.createElement('a');
+    link.download = `dermai-${new Date().toISOString().slice(0, 10)}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   };
 
   window.dismissReorderBanner = function () {

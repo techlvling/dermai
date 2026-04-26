@@ -99,16 +99,41 @@
             <div id="pm-moisturizer" class="routine-step"></div>
           </div>
           
-          <button class="btn print-btn" onclick="window.print()" style="margin-top: 2rem; width: 100%; background: var(--bg-card); border: 1px solid var(--primary-400); color: var(--primary-300);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            Download / Print Routine
-          </button>
+          <div class="routine-actions-row">
+            <button class="btn print-btn" onclick="window.print()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Print Routine
+            </button>
+            <button class="btn share-card-btn" onclick="window.shareRoutineCard()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share Card
+            </button>
+          </div>
+
+          <!-- Daily reminder toggle -->
+          <div id="notif-widget" class="notif-widget hidden" style="margin-top:1.25rem;">
+            <div class="notif-row">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="notif-label">DAILY REMINDERS</span>
+              <label class="notif-switch" aria-label="Toggle daily routine reminders">
+                <input type="checkbox" id="notif-toggle">
+                <span class="notif-track"></span>
+              </label>
+            </div>
+            <div id="notif-times-row" class="notif-times-row hidden">
+              <label class="notif-time-label">AM <input type="time" id="notif-am" value="08:00" class="notif-time-input"></label>
+              <label class="notif-time-label">PM <input type="time" id="notif-pm" value="21:00" class="notif-time-input"></label>
+            </div>
+            <p id="notif-hint" class="notif-hint"></p>
+          </div>
 
           <div id="adherence-heatmap" class="adherence-heatmap hidden"></div>
 
           <div id="weather-widget" class="hidden" style="margin-top:2rem;"></div>
 
           <div id="photos-section" class="photos-section hidden" style="margin-top:3rem;"></div>
+
+          <div id="diary-section" class="diary-section hidden" style="margin-top:3rem;"></div>
         </div>
       </div>
     </main>
@@ -190,6 +215,7 @@
 
     <script src="./js/storage.js"></script>
     <script src="./js/photo-db.js"></script>
+    <script src="./js/notifications.js"></script>
     <script src="./js/recommendations.js"></script>
     <script src="./js/nav.js"></script>
   </body>
