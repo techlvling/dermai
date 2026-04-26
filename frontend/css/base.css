@@ -44,6 +44,22 @@ ul {
 ::-webkit-scrollbar-thumb { background: var(--neutral-400); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--neutral-700); }
 
+/* ── Skip link ───────────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background: var(--neutral-900);
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 /* ── Global focus ring ───────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--neutral-900);
