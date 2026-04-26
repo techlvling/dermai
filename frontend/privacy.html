@@ -26,6 +26,7 @@
         <a href="/">Home</a>
         <a href="/analyze.html">Analyze Skin</a>
         <a href="/ingredients.html">Ingredients</a>
+        <a href="/history.html">History</a>
       </div>
     </nav>
 
@@ -54,7 +55,7 @@
       <h2>What we store on your device</h2>
       <ul>
         <li><strong>Latest analysis</strong> (<code>dermAI_analysis</code>): your most recent skin score, type, and concerns. Used to populate the recommendations page. Cleared when you scan again.</li>
-        <li><strong>Scan history</strong> (<code>dermAI_history</code>): the last 20 analysis results with dates and health scores, stored as JSON in your browser's localStorage. Used only to show your progress chart. Never transmitted anywhere.</li>
+        <li><strong>Scan history</strong> (<code>dermAI_history</code>): your last 20 full scan results — health score, skin type, concerns, and product recommendations — stored as JSON in your browser's localStorage. Powers the History page so you can re-open any past routine. Never transmitted anywhere.</li>
       </ul>
       <p>You can clear this data at any time by opening your browser's developer tools and running <code>localStorage.clear()</code>, or by clearing your browser's site data for this domain.</p>
 

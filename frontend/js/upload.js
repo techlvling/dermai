@@ -422,13 +422,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Scan History ──────────────────────────────────────────────────────────
   function saveToHistory(data) {
-    const entry = {
-      date: new Date().toISOString(),
-      overallHealth: data.overallHealth,
-      skinType: data.skinType,
-      concerns: data.concerns.map(c => ({ name: c.name, severity: c.severity }))
-    };
-    const raw = localStorage.getItem('dermAI_history');
+    const id    = data.savedAt || Date.now();
+    const entry = { id, date: new Date(id).toISOString(), analysis: data };
+    const raw   = localStorage.getItem('dermAI_history');
     const history = raw ? JSON.parse(raw) : [];
     history.push(entry);
     if (history.length > 20) history.splice(0, history.length - 20);
@@ -449,12 +445,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const barWidth = Math.max(32, Math.floor(320 / history.length));
 
     const bars = history.map((h, i) => {
-      const heightPct = (h.overallHealth / maxScore) * 100;
+      const score     = h.analysis?.overallHealth ?? h.overallHealth;
+      const heightPct = (score / maxScore) * 100;
       const isLatest  = i === history.length - 1;
       const label     = new Date(h.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
       return `
         <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:${barWidth}px; max-width:60px;">
-          <span style="font-size:0.65rem; color:${isLatest ? 'var(--primary-300)' : 'var(--neutral-400)'}; font-weight:${isLatest ? '700' : '400'};">${h.overallHealth}</span>
+          <span style="font-size:0.65rem; color:${isLatest ? 'var(--primary-300)' : 'var(--neutral-400)'}; font-weight:${isLatest ? '700' : '400'};">${score}</span>
           <div style="width:100%; height:80px; display:flex; align-items:flex-end;">
             <div style="width:100%; height:${heightPct}%; background:${isLatest ? 'var(--primary-500)' : 'rgba(160,124,255,0.25)'}; border-radius:4px 4px 0 0; transition:height 0.3s;"></div>
           </div>
@@ -462,7 +459,9 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`;
     }).join('');
 
-    const trend     = history[history.length - 1].overallHealth - history[history.length - 2].overallHealth;
+    const last      = history[history.length - 1];
+    const prev      = history[history.length - 2];
+    const trend     = (last.analysis?.overallHealth ?? last.overallHealth) - (prev.analysis?.overallHealth ?? prev.overallHealth);
     const trendText = trend > 0 ? `↑ +${trend} from last scan` : trend < 0 ? `↓ ${trend} from last scan` : 'No change from last scan';
     const trendColor = trend > 0 ? 'var(--primary-500)' : trend < 0 ? 'var(--error)' : 'var(--neutral-600)';
 

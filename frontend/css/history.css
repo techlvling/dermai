@@ -1,0 +1,215 @@
+.history-container {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+  min-height: calc(100vh - 100px);
+}
+
+.history-header {
+  margin-bottom: 2.5rem;
+}
+
+.history-header h1 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--neutral-900);
+  margin-bottom: 0.5rem;
+}
+
+.history-header p {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--neutral-500);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Empty state */
+.history-empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  border: 2px solid var(--neutral-900);
+  box-shadow: var(--shadow-pop);
+  margin-top: 1rem;
+}
+
+.history-empty-state p {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--neutral-500);
+  margin-bottom: 1.5rem;
+}
+
+/* Card */
+.history-card {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border: 2px solid var(--neutral-900);
+  box-shadow: var(--shadow-pop);
+  margin-bottom: 1rem;
+  background: var(--bg-card);
+  transition: transform var(--duration-fast), box-shadow var(--duration-fast);
+}
+
+.history-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--neutral-900);
+}
+
+/* Thumbnail */
+.hc-thumb {
+  width: 80px;
+  min-width: 80px;
+  height: 80px;
+  border: 2px solid var(--neutral-900);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--neutral-100);
+}
+
+.hc-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hc-thumb--empty {
+  background: var(--neutral-200);
+}
+
+.hc-thumb--empty span {
+  font-family: var(--font-display);
+  font-size: 0.5rem;
+  color: var(--neutral-400);
+  letter-spacing: 0.08em;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Body */
+.hc-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hc-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.hc-date {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: var(--neutral-500);
+}
+
+.hc-score {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.5rem;
+  border: 2px solid;
+  white-space: nowrap;
+}
+
+.hc-skin-type {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  color: var(--neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hc-concerns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.hc-tag {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border: 1.5px solid;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.hc-tag--high { border-color: #dc2626; color: #dc2626; }
+.hc-tag--med  { border-color: #d97706; color: #d97706; }
+.hc-tag--low  { border-color: var(--neutral-400); color: var(--neutral-500); }
+
+.hc-legacy {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  color: var(--neutral-400);
+  font-style: italic;
+}
+
+/* Actions */
+.hc-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+.btn-sm {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.72rem;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 2px solid var(--neutral-300);
+  color: var(--neutral-500);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.3rem 0.75rem;
+  letter-spacing: 0.03em;
+  transition: border-color var(--duration-fast), color var(--duration-fast);
+}
+
+.btn-ghost:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+/* Bulk actions */
+.history-bulk-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--neutral-900);
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .history-card {
+    flex-direction: column;
+  }
+
+  .hc-thumb {
+    width: 100%;
+    height: 140px;
+  }
+
+  .history-header h1 {
+    font-size: 1.75rem;
+  }
+}

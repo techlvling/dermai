@@ -4,21 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5588e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DermAI | Clinical Ingredient Encyclopedia</title>
+    <title>DermAI | Scan History</title>
     <link rel="stylesheet" href="./css/base.css" />
-    <link rel="stylesheet" href="./css/ingredients.css" />
+    <link rel="stylesheet" href="./css/history.css" />
   </head>
   <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav class="navbar container" aria-label="Main navigation">
       <div class="logo">
-        <a href="/"><span class="gradient-text">DermAI</span></a>
+        <a href="/"><span style="color:var(--primary-500)">DermAI</span></a>
       </div>
       <div class="nav-links">
         <a href="/">Home</a>
         <a href="/analyze.html">Analyze Skin</a>
-        <a href="/ingredients.html" class="active" aria-current="page">Ingredients</a>
-        <a href="/history.html">History</a>
+        <a href="/ingredients.html">Ingredients</a>
+        <a href="/shopping.html">Shopping List</a>
       </div>
       <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-drawer">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -28,7 +27,7 @@
     <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
     <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true">
       <div class="nav-drawer-header">
-        <span class="logo gradient-text" style="font-family:var(--font-display); font-size:1.25rem; font-weight:700;">DermAI</span>
+        <span style="font-family:var(--font-display); font-size:1.25rem; font-weight:700; color:var(--primary-500);">DermAI</span>
         <button class="nav-drawer-close" aria-label="Close navigation menu">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -36,29 +35,30 @@
       <div class="nav-drawer-links">
         <a href="/">Home</a>
         <a href="/analyze.html">Analyze Skin</a>
-        <a href="/ingredients.html" aria-current="page">Ingredients</a>
-        <a href="/history.html">History</a>
+        <a href="/ingredients.html">Ingredients</a>
+        <a href="/recommendations.html">Your Routine</a>
+        <a href="/shopping.html">Shopping List</a>
+        <a href="/history.html" aria-current="page">History</a>
       </div>
       <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Analyze My Skin</a>
     </nav>
 
-    <main class="encyclopedia-container container" id="main-content">
-      <div class="text-center encyclopedia-header">
-        <h1>Clinical Ingredient <span class="gradient-text">Encyclopedia</span></h1>
-        <p>Explore the active ingredients backed by gold-standard PubMed clinical trials.</p>
-
-        <div class="search-bar">
-          <input type="text" id="search-input" placeholder="Search ingredients (e.g., Salicylic Acid)..." class="glass-input" aria-label="Search ingredients" />
-        </div>
+    <main class="history-container container">
+      <div class="history-header">
+        <h1>SCAN HISTORY</h1>
+        <p id="history-count"></p>
       </div>
 
-      <div id="loading-indicator" class="text-center hidden">
-        <div class="spinner"></div>
-        <p>Loading clinical data from PubMed database...</p>
+      <div id="history-empty" class="hidden history-empty-state">
+        <p>No scans recorded yet.</p>
+        <a href="/analyze.html" class="btn btn-primary">ANALYZE NOW</a>
       </div>
 
-      <div id="ingredients-grid" class="ingredients-grid" role="list" aria-label="Clinical ingredients">
-        <!-- Ingredients will be injected here via JS -->
+      <div id="history-list" aria-live="polite"></div>
+
+      <div id="history-bulk" class="hidden history-bulk-actions">
+        <button class="btn btn-outline" onclick="exportJSON()">EXPORT JSON</button>
+        <button class="btn-ghost" onclick="clearAll()">CLEAR ALL HISTORY</button>
       </div>
     </main>
 
@@ -67,7 +67,9 @@
       &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
     </footer>
 
-    <script src="./js/ingredients.js"></script>
+    <script src="./js/storage.js"></script>
+    <script src="./js/photo-db.js"></script>
     <script src="./js/nav.js"></script>
+    <script src="./js/history.js" defer></script>
   </body>
 </html>
