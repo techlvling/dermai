@@ -98,6 +98,7 @@
         typeof entry.id === 'string' && entry.id.includes('-') &&
         Array.isArray(entry.image_urls) && entry.image_urls[0] &&
         prevEntry != null &&
+        !!prevEntry.analysis &&
         typeof prevEntry.id === 'string' && prevEntry.id.includes('-') &&
         Array.isArray(prevEntry.image_urls) && prevEntry.image_urls[0]
       );
@@ -258,14 +259,17 @@
 
       const { narrative } = await apiRes.json();
 
+      const narrativeEl = document.createElement('p');
+      narrativeEl.className = 'hc-compare-narrative';
+      narrativeEl.textContent = narrative;
       panel.innerHTML = `
         <div class="hc-compare-photos">
           <img src="${objUrlOlder}" alt="Earlier scan" />
           <img src="${objUrlNewer}" alt="Recent scan" />
         </div>
-        <p class="hc-compare-narrative">${narrative}</p>
         <button class="btn-ghost btn-sm hc-compare-close">Close</button>
       `;
+      panel.insertBefore(narrativeEl, panel.querySelector('.hc-compare-close'));
       panel.dataset.loaded = 'true';
 
       panel.querySelector('.hc-compare-close').addEventListener('click', () => {
