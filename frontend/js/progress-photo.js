@@ -1,5 +1,6 @@
 (() => {
-  const TODAY = new Date().toISOString().slice(0, 10); // YYYY-MM-DD local
+  const now = new Date();
+  const TODAY = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
   function _computeStreak(photos) {
     // photos ordered date desc from server
@@ -29,6 +30,7 @@
     const MAX = 1024;
     const img = new Image();
     img.onload = () => {
+      URL.revokeObjectURL(img.src);
       let { naturalWidth: w, naturalHeight: h } = img;
       if (w > MAX || h > MAX) {
         if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
