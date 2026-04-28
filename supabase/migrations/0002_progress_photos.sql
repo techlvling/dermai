@@ -1,7 +1,7 @@
 -- supabase/migrations/0002_progress_photos.sql
 create table public.progress_photos (
   id            uuid primary key default gen_random_uuid(),
-  user_id       uuid references auth.users not null,
+  user_id       uuid references auth.users on delete cascade not null,
   photo_date    date not null,
   drive_file_id text not null,
   drive_url     text not null,
@@ -10,6 +10,8 @@ create table public.progress_photos (
 
 create unique index progress_photos_user_date
   on public.progress_photos (user_id, photo_date);
+
+create index on public.progress_photos (user_id);
 
 alter table public.progress_photos enable row level security;
 
