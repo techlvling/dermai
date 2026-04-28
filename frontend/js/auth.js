@@ -62,6 +62,8 @@ if (!window.supabase) {
   _client.auth.onAuthStateChange((_event, session) => {
     if (session?.provider_token) {
       localStorage.setItem('dermai-drive-scope', 'true');
+    } else {
+      localStorage.removeItem('dermai-drive-scope');
     }
   });
 }
