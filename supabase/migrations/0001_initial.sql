@@ -1,6 +1,6 @@
 -- =============================================================================
 -- DermAI — Initial Schema Migration
--- Run this in the Supabase SQL editor (or via Supabase CLI).
+-- Applied automatically by the Supabase CLI via `supabase migration up`.
 -- =============================================================================
 
 -- ---------------------------------------------------------------------------
@@ -50,7 +50,8 @@ CREATE TABLE public.reactions (
     product_id  text        NOT NULL,
     severity    int         NOT NULL CHECK (severity BETWEEN 1 AND 5),
     notes       text,
-    created_at  timestamptz NOT NULL DEFAULT now()
+    created_at  timestamptz NOT NULL DEFAULT now(),
+    UNIQUE (user_id, product_id)
 );
 
 -- ---------------------------------------------------------------------------
@@ -104,7 +105,17 @@ CREATE POLICY "Users can manage their own reactions"
     WITH CHECK (auth.uid() = user_id);
 
 -- ---------------------------------------------------------------------------
--- 3. TRIGGER — auto-create profile on sign-up
+-- 3. INDEXES
+-- ---------------------------------------------------------------------------
+
+-- Indexes for user_id lookups (FKs don't create indexes automatically in Postgres)
+CREATE INDEX ON public.scans (user_id);
+CREATE INDEX ON public.favorites (user_id);
+CREATE INDEX ON public.routine_logs (user_id);
+CREATE INDEX ON public.reactions (user_id);
+
+-- ---------------------------------------------------------------------------
+-- 4. TRIGGER — auto-create profile on sign-up
 -- ---------------------------------------------------------------------------
 
 -- Function: called after a new row is inserted into auth.users
@@ -120,7 +131,8 @@ BEGIN
         NEW.id,
         NEW.raw_user_meta_data ->> 'full_name',
         NEW.raw_user_meta_data ->> 'avatar_url'
-    );
+    )
+    ON CONFLICT (id) DO NOTHING;
     RETURN NEW;
 END;
 $$;
