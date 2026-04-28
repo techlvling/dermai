@@ -138,4 +138,19 @@ describe('POST /api/compare', () => {
       .attach('image_b', fakeImg, { filename: 'b.jpg', contentType: 'image/jpeg' });
     expect(res.status).toBe(503);
   });
+
+  it('500 on Supabase query error', async () => {
+    mockGetSupabaseAdmin.mockReturnValue({
+      from: () => makeChain({ data: null, error: { message: 'connection refused' } })
+    });
+
+    const res = await request(app)
+      .post('/api/compare')
+      .field('scan_a_id', 'uuid-a')
+      .field('scan_b_id', 'uuid-b')
+      .attach('image_a', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' })
+      .attach('image_b', fakeImg, { filename: 'b.jpg', contentType: 'image/jpeg' });
+    expect(res.status).toBe(500);
+    expect(res.body.error).toBe('connection refused');
+  });
 });

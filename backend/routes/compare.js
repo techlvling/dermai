@@ -31,7 +31,7 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
       }
 
       const client = getClient();
-      if (!client) return res.status(500).json({ error: 'OPENROUTER_API_KEY is not set' });
+      if (!client) return res.status(500).json({ error: 'AI service not configured' });
 
       const fileA = files.image_a[0];
       const fileB = files.image_b[0];
