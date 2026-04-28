@@ -52,6 +52,7 @@ if (!window.supabase) {
         options: {
           scopes: 'https://www.googleapis.com/auth/drive.file',
           redirectTo: `${window.location.origin}/login-callback.html`,
+          queryParams: { access_type: 'offline', prompt: 'consent' },
         },
       });
       if (error) console.error('[Auth] requestDriveScope error:', error.message);
