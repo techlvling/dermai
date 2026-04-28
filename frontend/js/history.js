@@ -6,7 +6,8 @@
     historyData = (Storage.get('dermAI_history') || []).slice();
 
     // Merge server scans when logged in
-    const serverScans = await Storage.server.get('/api/scans');
+    const body = await Storage.server.get('/api/scans');
+    const serverScans = body?.scans;
     if (serverScans && Array.isArray(serverScans)) {
       const localIds = new Set(historyData.map(e => String(e.id || e.date)));
       for (const scan of serverScans) {
@@ -15,7 +16,7 @@
           historyData.push({ id, date: scan.created_at, analysis: scan.result_json });
         }
       }
-      historyData.sort((a, b) => (b.id || 0) - (a.id || 0));
+      historyData.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 
     try {

@@ -530,7 +530,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="save-gate__msg" style="margin:0; font-family:\'Space Mono\',monospace; font-size:0.875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.02em;">Sign in to save this analysis across devices</p>
           <button class="btn btn-primary" id="save-gate-btn" style="white-space:nowrap;">SIGN IN WITH GOOGLE</button>
         `;
-        resultsSection.appendChild(saveGate);
+        if (!resultsSection.querySelector('.save-gate')) {
+          resultsSection.appendChild(saveGate);
+        }
         saveGate.querySelector('#save-gate-btn').addEventListener('click', () => {
           if (window.Auth) window.Auth.signInWithGoogle();
         });
