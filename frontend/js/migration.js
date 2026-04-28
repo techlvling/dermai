@@ -8,11 +8,14 @@
       'Authorization': `Bearer ${token}`
     };
 
-    // Helper: POST to an endpoint, silently swallow errors
+    // Helper: POST to an endpoint, log HTTP errors and exceptions
     async function post(url, body) {
       try {
-        await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
-      } catch (_) {}
+        const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+        if (!res.ok) console.warn('[Migration] POST', url, 'returned', res.status);
+      } catch (e) {
+        console.warn('[Migration] POST', url, 'failed:', e.message);
+      }
     }
 
     // 1. Scans (modern format only)
@@ -25,9 +28,8 @@
 
     // 2. Favorites
     const favorites = Storage.get('dermAI_favorites') || [];
-    for (const item of favorites) {
-      const product_id = item.id || item.productId;
-      if (product_id) await post('/api/favorites', { product_id: String(product_id) });
+    for (const productId of favorites) {
+      if (productId) await post('/api/favorites', { product_id: String(productId) });
     }
 
     // 3. Routine logs — convert nested format to { log_date, am_done, pm_done }
@@ -39,15 +41,16 @@
     }
 
     // 4. Reactions
-    const reactions = Storage.get('dermAI_reactions') || [];
-    for (const r of reactions) {
-      if (r.productId || r.product_id) {
-        await post('/api/reactions', {
-          product_id: String(r.product_id || r.productId),
-          severity: r.severity || 1,
-          notes: r.notes || ''
-        });
-      }
+    const reactions = Storage.get('dermAI_reactions') || {};
+    for (const [productId, entries] of Object.entries(reactions)) {
+      if (!Array.isArray(entries) || entries.length === 0) continue;
+      // Use the most recent reaction entry for this product
+      const latest = entries[entries.length - 1];
+      await post('/api/reactions', {
+        product_id: String(productId),
+        severity: latest.severity || 1,
+        notes: latest.notes || ''
+      });
     }
 
     localStorage.setItem(migrationKey, 'true');
