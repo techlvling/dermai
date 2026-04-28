@@ -43,6 +43,12 @@ describe('photos routes', () => {
     expect(res.body.photos).toEqual(photos);
   });
 
+  it('GET /api/progress-photos — 503 when database not configured', async () => {
+    mockGetSupabaseAdmin.mockReturnValue(null);
+    const res = await request(app).get('/api/progress-photos');
+    expect(res.status).toBe(503);
+  });
+
   it('POST /api/progress-photos — 200 upserts', async () => {
     const saved = { id: '1', user_id: 'user-123', photo_date: '2026-04-29', drive_file_id: 'abc', drive_url: 'https://drive.google.com/file/abc' };
     mockGetSupabaseAdmin.mockReturnValue({ from: () => makeChain({ data: saved, error: null }) });
