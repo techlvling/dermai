@@ -1,5 +1,5 @@
 // Scroll-reveal via IntersectionObserver
-(function () {
+(async function () {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Immediately show all reveals if reduced-motion is on
@@ -19,6 +19,34 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
   document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Fetch real ingredient counts and update stat tiles before count-up runs.
+  // Falls back to hardcoded data-count values on any error or timeout.
+  async function fetchHeroStats() {
+    try {
+      const ctrl = new AbortController();
+      const timeout = setTimeout(() => ctrl.abort(), 1500);
+      const res = await fetch('/api/ingredients', { signal: ctrl.signal });
+      clearTimeout(timeout);
+      if (!res.ok) return;
+      const data = await res.json();
+      const ingredients = Array.isArray(data) ? data : (data.ingredients || []);
+      if (ingredients.length === 0) return;
+      const rctTotal = ingredients.reduce(
+        (n, i) => n + (Array.isArray(i.keyStudies) ? i.keyStudies.length : 0), 0
+      );
+      const setStat = (key, value) => {
+        const el = document.querySelector(`[data-stat="${key}"]`);
+        if (!el || !Number.isFinite(value) || value <= 0) return;
+        el.dataset.count = String(value);
+        el.textContent = String(value);
+      };
+      setStat('ingredients', ingredients.length);
+      setStat('rcts', rctTotal);
+    } catch (_) { /* keep hardcoded fallback values */ }
+  }
+
+  await fetchHeroStats();
 
   // Count-up animation for stat tiles
   function animateCount(el, target, duration) {
