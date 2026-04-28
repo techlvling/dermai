@@ -32,8 +32,9 @@
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
       const id = btn.dataset.id;
-      if (btn.dataset.action === 'view') viewRoutine(id);
-      if (btn.dataset.action === 'del')  deleteEntry(id);
+      if (btn.dataset.action === 'view')    viewRoutine(id);
+      if (btn.dataset.action === 'del')     deleteEntry(id);
+      if (btn.dataset.action === 'compare') compareScans(id, btn.dataset.prevId);
     });
 
     render();
@@ -60,7 +61,8 @@
       countEl.textContent = `${historyData.length} scan${historyData.length !== 1 ? 's' : ''} stored on this device`;
     }
 
-    [...historyData].reverse().forEach(entry => {
+    const reversed = [...historyData].reverse();
+    reversed.forEach((entry, idx) => {
       const isLegacy = !entry.analysis;
       const score    = isLegacy ? entry.overallHealth    : entry.analysis.overallHealth;
       const skinType = isLegacy ? entry.skinType         : entry.analysis.skinType;
@@ -90,6 +92,16 @@
         return `<span class="hc-tag ${cls}">${c.name}</span>`;
       }).join('');
 
+      const prevEntry = idx > 0 ? reversed[idx - 1] : null;
+      const canCompare = (
+        !isLegacy &&
+        typeof entry.id === 'string' && entry.id.includes('-') &&
+        Array.isArray(entry.image_urls) && entry.image_urls[0] &&
+        prevEntry != null &&
+        typeof prevEntry.id === 'string' && prevEntry.id.includes('-') &&
+        Array.isArray(prevEntry.image_urls) && prevEntry.image_urls[0]
+      );
+
       const card = document.createElement('div');
       card.className = 'history-card';
 
@@ -111,8 +123,12 @@
             ${!isLegacy
               ? `<button class="btn btn-primary btn-sm" data-action="view" data-id="${entryId}">VIEW ROUTINE</button>`
               : ''}
+            ${canCompare
+              ? `<button class="btn-ghost btn-sm" data-action="compare" data-id="${entryId}" data-prev-id="${String(prevEntry.id)}">Compare ↕</button>`
+              : ''}
             <button class="btn-ghost btn-sm" data-action="del" data-id="${entryId}">DELETE</button>
           </div>
+          <div class="hc-compare-panel" id="compare-${entryId}" hidden></div>
         </div>
       `;
 
