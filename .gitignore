@@ -27,3 +27,6 @@ dist/
 # Worktrees
 .worktrees/
 .gstack/
+
+# Visual brainstorming sessions
+.superpowers/

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DermAI — Signing in…</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/migration.js"></script>
+</head>
+<body>
+  <main style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Space Mono',monospace;">
+    <p style="font-size:1rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">SIGNING IN…</p>
+  </main>
+  <script>
+    (function () {
+      if (!window.Auth) { window.location.href = '/'; return; }
+      window.Auth.onAuthStateChange(function (event) {
+        if (event === 'SIGNED_IN') {
+          window.location.href = sessionStorage.getItem('dermai_redirect') || '/';
+        }
+      });
+      // Fallback: if session already exists, redirect immediately
+      window.Auth.getUser().then(function (user) {
+        if (user) window.location.href = sessionStorage.getItem('dermai_redirect') || '/';
+      });
+    })();
+  </script>
+</body>
+</html>

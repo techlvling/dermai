@@ -517,6 +517,119 @@ document.addEventListener('DOMContentLoaded', () => {
 
     localStorage.setItem('dermAI_analysis', JSON.stringify(data));
     const history = saveToHistory(data);
+
+    // Capture scan ID for Drive backup (resolves asynchronously)
+    let savedScanId = null;
+    Storage.server.post('/api/scans', { result_json: data })
+      .then(r => { savedScanId = r?.scan?.id ?? null; })
+      .catch(() => {});
+
     renderHistory(history);
+
+    // Soft gate: sign-in CTA for anonymous users
+    Storage.isLoggedIn().then(async loggedIn => {
+      if (!loggedIn) {
+        const saveGate = document.createElement('div');
+        saveGate.className = 'save-gate';
+        saveGate.style.cssText = 'margin-top:1.5rem; padding:1.25rem 1.5rem; border:2px solid #000; box-shadow:4px 4px 0 #000; background:#fff; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;';
+        saveGate.innerHTML = `
+          <p class="save-gate__msg" style="margin:0; font-family:'Space Mono',monospace; font-size:0.875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.02em;">Sign in to save this analysis across devices</p>
+          <button class="btn btn-primary" id="save-gate-btn" style="white-space:nowrap;">SIGN IN WITH GOOGLE</button>
+        `;
+        if (!resultsSection.querySelector('.save-gate')) resultsSection.appendChild(saveGate);
+        saveGate.querySelector('#save-gate-btn').addEventListener('click', () => {
+          if (window.Auth) window.Auth.signInWithGoogle();
+        });
+        return;
+      }
+
+      if (typeof Drive === 'undefined') return;
+
+      // Drive backup toggle
+      const ANGLE_LABELS = ['front', 'left', 'right'];
+      const driveSection = document.createElement('div');
+      driveSection.className = 'drive-backup';
+      driveSection.innerHTML = `
+        <div class="drive-backup__row">
+          <div>
+            <div class="drive-backup__label">BACK UP PHOTOS TO DRIVE</div>
+            <div class="drive-backup__hint">Save these 3 photos to your Google Drive</div>
+          </div>
+          <button class="drive-toggle" id="drive-toggle" role="switch" aria-checked="false" aria-label="Back up photos to Drive"></button>
+        </div>
+        <div class="drive-backup__bar" id="drive-bar" style="display:none">
+          <div class="drive-backup__fill" id="drive-fill"></div>
+        </div>
+      `;
+      resultsSection.appendChild(driveSection);
+
+      const toggle = document.getElementById('drive-toggle');
+      const bar    = document.getElementById('drive-bar');
+      const fill   = document.getElementById('drive-fill');
+      const label  = driveSection.querySelector('.drive-backup__label');
+      const hint   = driveSection.querySelector('.drive-backup__hint');
+
+      toggle.addEventListener('click', async () => {
+        if (toggle.classList.contains('uploading')) return;
+        if (toggle.getAttribute('aria-checked') === 'true') return;
+
+        if (!Drive.hasScope()) {
+          // Warn user they'll be redirected (photos in memory will be lost)
+          hint.textContent = 'Redirecting to Google for permission…';
+          await Drive.requestDriveScope();
+          return; // page redirects
+        }
+
+        toggle.classList.add('uploading');
+        toggle.setAttribute('aria-checked', 'true');
+        bar.style.display = 'block';
+
+        try {
+          const folderId   = await Drive.ensureScansFolder();
+          const filesToUp  = capturedFiles.filter(Boolean);
+          const urls       = [];
+
+          for (let i = 0; i < filesToUp.length; i++) {
+            const date     = new Date(data.savedAt).toISOString().slice(0, 10);
+            const filename = `scan-${date}-${ANGLE_LABELS[i]}.jpg`;
+            hint.textContent = `Uploading ${filesToUp.length} photos… (${i + 1}/${filesToUp.length})`;
+            fill.style.width = `${Math.round(((i) / filesToUp.length) * 100)}%`;
+            const result = await Drive.uploadPhoto(filesToUp[i], filename, folderId);
+            urls.push(result.webViewLink);
+          }
+          fill.style.width = '100%';
+
+          // Update Postgres image_urls (non-fatal). savedScanId may be null if the
+          // /api/scans POST hasn't resolved yet — accepted race per spec (user must click
+          // fast before the POST returns, which is unlikely but silently skipped if so).
+          if (savedScanId) {
+            fetch(`/api/scans/${savedScanId}/images`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${await window.Auth.getToken()}`,
+              },
+              body: JSON.stringify({ image_urls: urls }),
+            }).catch(e => console.warn('[Drive] PATCH scans images failed:', e.message));
+          }
+
+          // Trigger IndexedDB migration now that scope is active
+          const user = await window.Auth.getUser();
+          if (user) Drive.migrateFromIndexedDB(user.id).catch(() => {});
+
+          label.textContent = 'BACKED UP TO DRIVE ✓';
+          const scanFolderId = localStorage.getItem('dermai-drive-folder-scans') || '';
+          hint.innerHTML = `${filesToUp.length} photos saved · <a href="https://drive.google.com/drive/folders/${encodeURIComponent(scanFolderId)}" target="_blank" rel="noopener">View in Drive →</a>`;
+          bar.style.display = 'none';
+        } catch (err) {
+          console.error('[Drive] backup failed:', err.message);
+          label.textContent = 'BACK UP PHOTOS TO DRIVE';
+          hint.textContent  = err.message.includes('quota') ? 'Google Drive is full — manage your storage.' : 'Upload failed — try again';
+          toggle.classList.remove('uploading');
+          toggle.setAttribute('aria-checked', 'false');
+          bar.style.display = 'none';
+        }
+      });
+    });
   }
 });

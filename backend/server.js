@@ -15,7 +15,13 @@ const rateLimit = require('express-rate-limit');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://dermai-livid.vercel.app'
+  ],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
@@ -63,6 +69,17 @@ function getClient() {
     }
   });
 }
+
+// ---------------------------------------------------------------------------
+// Authenticated data routes
+// ---------------------------------------------------------------------------
+const { verifyAuth } = require('./middleware/auth');
+const { getSupabaseAdmin } = require('./lib/supabase');
+app.use(require('./routes/scans')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/favorites')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/routine')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/photos')(verifyAuth, getSupabaseAdmin));
 
 // ---------------------------------------------------------------------------
 // Routes — data files

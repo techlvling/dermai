@@ -460,6 +460,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (idx >= 0) favs.splice(idx, 1);
     else favs.push(prodId);
     sSet('dermAI_favorites', favs);
+    if (isAdding) {
+      Storage.server.post('/api/favorites', { product_id: prodId }).catch(() => {});
+    } else {
+      Storage.server.delete('/api/favorites/' + encodeURIComponent(prodId)).catch(() => {});
+    }
     const isFav = favs.includes(prodId);
     btn.className = 'fav-btn' + (isFav ? ' fav-active' : '');
     btn.setAttribute('aria-pressed', String(isFav));
@@ -573,6 +578,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!reactions[prodId]) reactions[prodId] = [];
     reactions[prodId].push({ date: new Date().toISOString(), severity, symptoms, notes });
     sSet('dermAI_reactions', reactions);
+    Storage.server.post('/api/reactions', {
+      product_id: prodId,
+      severity: severity,
+      notes: symptoms.join(', ') + (notes ? ': ' + notes : '')
+    }).catch(() => {});
     window.closeReactionModal();
     if (prodId !== 'general') {
       const ind = document.getElementById(`reaction-ind-${prodId}`);
