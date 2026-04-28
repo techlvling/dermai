@@ -64,6 +64,9 @@ if (!window.supabase) {
       localStorage.setItem('dermai-drive-scope', 'true');
     } else {
       localStorage.removeItem('dermai-drive-scope');
+      localStorage.removeItem('dermai-drive-folder-root');
+      localStorage.removeItem('dermai-drive-folder-scans');
+      localStorage.removeItem('dermai-drive-folder-progress');
     }
   });
 }

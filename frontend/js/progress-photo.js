@@ -44,7 +44,7 @@
     img.src = URL.createObjectURL(file);
   }
 
-  async function _uploadAndSave(file, card) {
+  async function _uploadAndSave(file, card, streak) {
     const label = card.querySelector('.progress-card__label');
     const sub   = card.querySelector('.progress-card__sub');
     const bar   = card.querySelector('.progress-card__bar');
@@ -69,7 +69,7 @@
       });
 
       fill.style.width = '100%';
-      setTimeout(() => _renderDone(card, result.webViewLink, 1), 300);
+      setTimeout(() => _renderDone(card, result.thumbnailLink || result.webViewLink, streak + 1), 300);
     } catch (err) {
       console.error('[ProgressPhoto] upload failed:', err.message);
       bar.style.display = 'none';
@@ -120,7 +120,7 @@
 
     input.addEventListener('change', e => {
       if (e.target.files[0]) {
-        _resizeImage(e.target.files[0], file => _uploadAndSave(file, card));
+        _resizeImage(e.target.files[0], file => _uploadAndSave(file, card, streak));
         input.value = '';
       }
     });

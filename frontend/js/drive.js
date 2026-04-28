@@ -77,7 +77,7 @@
     form.append('file', file);
 
     const res = await fetch(
-      `${DRIVE_UPLOAD_API}/files?uploadType=multipart&fields=id,webViewLink`,
+      `${DRIVE_UPLOAD_API}/files?uploadType=multipart&fields=id,webViewLink,thumbnailLink`,
       { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form }
     );
     if (!res.ok) {

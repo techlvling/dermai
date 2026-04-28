@@ -40,6 +40,9 @@ function createPhotosRouter(verifyAuth, getSupabaseAdmin) {
   router.post('/api/progress-photos', async (req, res) => {
     const { photo_date, drive_file_id, drive_url } = req.body;
     if (!photo_date) return res.status(400).json({ error: 'photo_date is required' });
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(photo_date)) {
+      return res.status(400).json({ error: 'photo_date must be YYYY-MM-DD' });
+    }
     if (!drive_file_id) return res.status(400).json({ error: 'drive_file_id is required' });
     if (!drive_url) return res.status(400).json({ error: 'drive_url is required' });
     const db = getSupabaseAdmin();

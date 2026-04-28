@@ -85,4 +85,12 @@ describe('photos routes', () => {
     const res = await request(app).delete('/api/progress-photos/not-a-date');
     expect(res.status).toBe(400);
   });
+
+  it('POST /api/progress-photos — 400 when photo_date format invalid', async () => {
+    const res = await request(app)
+      .post('/api/progress-photos')
+      .send({ photo_date: 'not-a-date', drive_file_id: 'abc', drive_url: 'https://drive.google.com/file/abc' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/YYYY-MM-DD/);
+  });
 });
