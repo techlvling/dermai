@@ -442,3 +442,21 @@ ul {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+.btn-ghost {
+  background: transparent;
+  border: 2px solid var(--neutral-300);
+  color: var(--neutral-500);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.3rem 0.75rem;
+  letter-spacing: 0.03em;
+  transition: border-color var(--duration-fast), color var(--duration-fast);
+}
+
+.btn-ghost:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
