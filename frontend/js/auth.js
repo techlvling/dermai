@@ -39,6 +39,29 @@ if (!window.supabase) {
 
     onAuthStateChange(callback) {
       return _client.auth.onAuthStateChange(callback);
+    },
+
+    async getProviderToken() {
+      const { data: { session } } = await _client.auth.getSession();
+      return session?.provider_token ?? null;
+    },
+
+    async requestDriveScope() {
+      const { error } = await _client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          scopes: 'https://www.googleapis.com/auth/drive.file',
+          redirectTo: window.location.href,
+        },
+      });
+      if (error) console.error('[Auth] requestDriveScope error:', error.message);
     }
   };
+
+  // Set Drive scope flag when a session with provider_token arrives
+  _client.auth.onAuthStateChange((_event, session) => {
+    if (session?.provider_token) {
+      localStorage.setItem('dermai-drive-scope', 'true');
+    }
+  });
 }
