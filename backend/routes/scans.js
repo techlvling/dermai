@@ -28,6 +28,8 @@ router.post('/api/scans', async (req, res) => {
 
   const { result_json, image_urls } = req.body;
 
+  if (!result_json) return res.status(400).json({ error: 'result_json is required' });
+
   const { data, error } = await supabase
     .from('scans')
     .insert({
@@ -47,13 +49,14 @@ router.delete('/api/scans/:id', async (req, res) => {
   const supabase = getSupabaseAdmin();
   if (!supabase) return res.status(503).json({ error: 'Database not configured' });
 
-  const { error } = await supabase
-    .from('scans')
-    .delete()
+  const { data, error } = await supabase
+    .from('scans').delete()
     .eq('id', req.params.id)
-    .eq('user_id', req.user.id);
+    .eq('user_id', req.user.id)
+    .select();
 
   if (error) return res.status(500).json({ error: error.message });
+  if (!data || data.length === 0) return res.status(404).json({ error: 'Scan not found' });
   res.json({ success: true });
 });
 

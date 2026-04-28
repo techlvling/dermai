@@ -26,9 +26,11 @@ router.post('/api/favorites', async (req, res) => {
 
   const { product_id } = req.body;
 
+  if (!product_id) return res.status(400).json({ error: 'product_id is required' });
+
   const { data, error } = await supabase
     .from('favorites')
-    .upsert({ user_id: req.user.id, product_id }, { onConflict: 'user_id,product_id', ignoreDuplicates: true })
+    .upsert({ user_id: req.user.id, product_id }, { onConflict: 'user_id,product_id' })
     .select()
     .single();
 

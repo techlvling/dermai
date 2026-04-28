@@ -32,6 +32,8 @@ router.post('/api/routine', async (req, res) => {
 
   const { log_date, am_done, pm_done } = req.body;
 
+  if (!log_date) return res.status(400).json({ error: 'log_date is required' });
+
   const { data, error } = await supabase
     .from('routine_logs')
     .upsert(

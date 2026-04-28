@@ -26,6 +26,9 @@ router.post('/api/reactions', async (req, res) => {
 
   const { product_id, severity, notes } = req.body;
 
+  if (!product_id) return res.status(400).json({ error: 'product_id is required' });
+  if (severity === undefined || severity === null) return res.status(400).json({ error: 'severity is required' });
+
   const { data, error } = await supabase
     .from('reactions')
     .upsert(
