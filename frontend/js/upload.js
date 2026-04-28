@@ -517,6 +517,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     localStorage.setItem('dermAI_analysis', JSON.stringify(data));
     const history = saveToHistory(data);
+    Storage.server.post('/api/scans', { result_json: data }).catch(() => {});
     renderHistory(history);
+
+    // Soft gate: show save CTA for anonymous users
+    Storage.isLoggedIn().then(loggedIn => {
+      if (!loggedIn) {
+        const saveGate = document.createElement('div');
+        saveGate.className = 'save-gate';
+        saveGate.style.cssText = 'margin-top:1.5rem; padding:1.25rem 1.5rem; border:2px solid #000; box-shadow:4px 4px 0 #000; background:#fff; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;';
+        saveGate.innerHTML = `
+          <p class="save-gate__msg" style="margin:0; font-family:\'Space Mono\',monospace; font-size:0.875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.02em;">Sign in to save this analysis across devices</p>
+          <button class="btn btn-primary" id="save-gate-btn" style="white-space:nowrap;">SIGN IN WITH GOOGLE</button>
+        `;
+        resultsSection.appendChild(saveGate);
+        saveGate.querySelector('#save-gate-btn').addEventListener('click', () => {
+          if (window.Auth) window.Auth.signInWithGoogle();
+        });
+      }
+    });
   }
 });
