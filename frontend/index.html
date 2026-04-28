@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/landing.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   </head>
   <body>
     <nav class="navbar container" aria-label="Main navigation">
@@ -26,6 +27,14 @@
         <a href="#faq">FAQ</a>
       </div>
       <a href="/analyze.html" class="btn btn-primary">Analyze My Skin</a>
+      <div class="user-menu" id="user-menu">
+        <button class="user-menu__signin btn-ghost" id="user-signin-btn" style="display:none;">SIGN IN</button>
+        <div class="user-menu__chip" id="user-chip" style="display:none;">
+          <img class="user-menu__avatar" id="user-avatar" src="" alt="avatar" />
+          <span class="user-menu__email" id="user-email"></span>
+          <button class="user-menu__signout btn-ghost" id="user-signout-btn">SIGN OUT</button>
+        </div>
+      </div>
       <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-drawer">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
@@ -401,6 +410,39 @@
 
     <script src="./js/animations.js" defer></script>
     <script src="./js/nav.js" defer></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/migration.js"></script>
+    <script>
+    (function () {
+      const signinBtn  = document.getElementById('user-signin-btn');
+      const chip       = document.getElementById('user-chip');
+      const avatar     = document.getElementById('user-avatar');
+      const emailEl    = document.getElementById('user-email');
+      const signoutBtn = document.getElementById('user-signout-btn');
+
+      function update(user) {
+        if (user) {
+          signinBtn.style.display = 'none';
+          chip.style.display      = 'flex';
+          avatar.src = user.user_metadata?.avatar_url || '';
+          emailEl.textContent = user.email || user.user_metadata?.full_name || '';
+        } else {
+          signinBtn.style.display = 'block';
+          chip.style.display      = 'none';
+        }
+      }
+
+      if (window.Auth) {
+        window.Auth.getUser().then(update);
+        window.Auth.onAuthStateChange((event, session) => update(session?.user ?? null));
+        signinBtn.addEventListener('click', () => window.Auth.signInWithGoogle());
+        signoutBtn.addEventListener('click', () => window.Auth.signOut());
+      } else {
+        signinBtn.style.display = 'block';
+        signinBtn.addEventListener('click', () => alert('Auth not configured. Add Supabase keys to auth.js.'));
+      }
+    })();
+    </script>
     <script>
     (function () {
       try {

@@ -391,3 +391,54 @@ ul {
   }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* ── User menu ─────────────────────────────────────────────────────── */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.user-menu__chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--clr-ink, #111);
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+  box-shadow: 3px 3px 0 var(--clr-ink, #111);
+  background: var(--clr-bg, #fff);
+}
+
+.user-menu__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 0;
+  border: 2px solid var(--clr-ink, #111);
+  object-fit: cover;
+  display: block;
+}
+
+.user-menu__email {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-menu__signout {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.user-menu__signin {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
