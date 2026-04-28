@@ -19,7 +19,7 @@ describe('photos routes', () => {
 
   it('PATCH /api/scans/:id/images — 200 updates image_urls', async () => {
     const updated = { id: 'scan-1', user_id: 'user-123', image_urls: ['u1', 'u2', 'u3'] };
-    mockGetSupabaseAdmin.mockReturnValue({ from: () => makeChain({ data: updated, error: null }) });
+    mockGetSupabaseAdmin.mockReturnValue({ from: () => makeChain({ data: [updated], error: null }) });
 
     const res = await request(app)
       .patch('/api/scans/scan-1/images')
@@ -68,5 +68,15 @@ describe('photos routes', () => {
     const res = await request(app).delete('/api/progress-photos/2026-04-29');
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
+  });
+
+  it('PATCH /api/scans/:id/images — 400 when image_urls is empty array', async () => {
+    const res = await request(app).patch('/api/scans/scan-1/images').send({ image_urls: [] });
+    expect(res.status).toBe(400);
+  });
+
+  it('DELETE /api/progress-photos/:date — 400 when date format invalid', async () => {
+    const res = await request(app).delete('/api/progress-photos/not-a-date');
+    expect(res.status).toBe(400);
   });
 });
