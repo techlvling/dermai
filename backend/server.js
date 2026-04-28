@@ -73,10 +73,12 @@ function getClient() {
 // ---------------------------------------------------------------------------
 // Authenticated data routes
 // ---------------------------------------------------------------------------
-app.use(require('./routes/scans'));
-app.use(require('./routes/favorites'));
-app.use(require('./routes/routine'));
-app.use(require('./routes/reactions'));
+const { verifyAuth } = require('./middleware/auth');
+const { getSupabaseAdmin } = require('./lib/supabase');
+app.use(require('./routes/scans')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/favorites')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/routine')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
 
 // ---------------------------------------------------------------------------
 // Routes — data files
