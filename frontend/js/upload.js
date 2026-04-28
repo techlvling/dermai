@@ -599,7 +599,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           fill.style.width = '100%';
 
-          // Update Postgres image_urls (non-fatal if it fails)
+          // Update Postgres image_urls (non-fatal). savedScanId may be null if the
+          // /api/scans POST hasn't resolved yet — accepted race per spec (user must click
+          // fast before the POST returns, which is unlikely but silently skipped if so).
           if (savedScanId) {
             fetch(`/api/scans/${savedScanId}/images`, {
               method: 'PATCH',
@@ -617,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           label.textContent = 'BACKED UP TO DRIVE ✓';
           const scanFolderId = localStorage.getItem('dermai-drive-folder-scans') || '';
-          hint.innerHTML = `${filesToUp.length} photos saved · <a href="https://drive.google.com/drive/folders/${scanFolderId}" target="_blank" rel="noopener">View in Drive →</a>`;
+          hint.innerHTML = `${filesToUp.length} photos saved · <a href="https://drive.google.com/drive/folders/${encodeURIComponent(scanFolderId)}" target="_blank" rel="noopener">View in Drive →</a>`;
           bar.style.display = 'none';
         } catch (err) {
           console.error('[Drive] backup failed:', err.message);
