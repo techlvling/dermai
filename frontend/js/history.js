@@ -13,7 +13,7 @@
       for (const scan of serverScans) {
         const id = scan.id || new Date(scan.created_at).getTime();
         if (!localIds.has(String(id))) {
-          historyData.push({ id, date: scan.created_at, analysis: scan.result_json });
+          historyData.push({ id, date: scan.created_at, analysis: scan.result_json, image_urls: scan.image_urls || null });
         }
       }
       historyData.sort((a, b) => new Date(b.date) - new Date(a.date));
