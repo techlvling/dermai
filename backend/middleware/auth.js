@@ -1,5 +1,17 @@
 const { createClient } = require('@supabase/supabase-js');
 
+let _anonClient = null;
+
+function getAnonClient() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  if (!_anonClient) {
+    _anonClient = createClient(url, key, { auth: { persistSession: false } });
+  }
+  return _anonClient;
+}
+
 async function verifyAuth(req, res, next) {
   const header = req.headers['authorization'];
   if (!header || !header.startsWith('Bearer ')) {
@@ -7,28 +19,25 @@ async function verifyAuth(req, res, next) {
   }
 
   const token = header.slice(7);
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+  const client = getAnonClient();
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+  if (!client) {
     return res.status(500).json({ error: 'Auth not configured (missing SUPABASE_URL or SUPABASE_ANON_KEY)' });
   }
 
-  // Create a per-request client with the user's JWT so Supabase validates it
-  const client = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: { persistSession: false },
-    global: { headers: { Authorization: `Bearer ${token}` } }
-  });
-
-  const { data: { user }, error } = await client.auth.getUser();
-
-  if (error || !user) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
+  try {
+    const { data: { user }, error } = await client.auth.getUser(token);
+    if (error || !user) {
+      return res.status(401).json({ error: 'Invalid or expired token' });
+    }
+    req.user = user;
+    // token forwarded so downstream route handlers can build user-scoped RLS clients
+    req.supabaseToken = token;
+    next();
+  } catch (err) {
+    console.error('[verifyAuth] Supabase auth error:', err.message);
+    return res.status(502).json({ error: 'Auth service unavailable' });
   }
-
-  req.user = user;
-  req.supabaseToken = token;
-  next();
 }
 
 module.exports = { verifyAuth };
