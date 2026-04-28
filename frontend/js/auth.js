@@ -51,7 +51,7 @@ if (!window.supabase) {
         provider: 'google',
         options: {
           scopes: 'https://www.googleapis.com/auth/drive.file',
-          redirectTo: window.location.href,
+          redirectTo: `${window.location.origin}/login-callback.html`,
         },
       });
       if (error) console.error('[Auth] requestDriveScope error:', error.message);
