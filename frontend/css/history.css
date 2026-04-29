@@ -198,6 +198,49 @@
   border-top: 2px solid var(--neutral-900);
 }
 
+/* Compare picker */
+.hc-compare-picker {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.hc-picker-select {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 2px solid var(--neutral-300);
+  background: var(--bg-card);
+  color: var(--neutral-700);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+}
+
+.hc-picker-select:focus {
+  outline: none;
+  border-color: var(--neutral-900);
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .history-card {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .hc-thumb {
+    width: 64px;
+    min-width: 64px;
+    height: 64px;
+  }
+
+  .history-header h1 {
+    font-size: 2rem;
+  }
+}
+
 /* Mobile */
 @media (max-width: 520px) {
   .history-card {
@@ -211,6 +254,14 @@
 
   .history-header h1 {
     font-size: 1.75rem;
+  }
+
+  .hc-compare-photos {
+    flex-direction: column;
+  }
+
+  .hc-compare-photos img {
+    width: 100%;
   }
 }
 

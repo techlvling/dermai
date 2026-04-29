@@ -24,7 +24,8 @@
 }
 
 .nav-links a:hover,
-.nav-links a[aria-current="page"] {
+.nav-links a[aria-current="page"],
+.nav-links a.active {
   color: var(--neutral-900);
   border-bottom-color: var(--primary-500);
 }
@@ -727,6 +728,10 @@ details.faq-item[open] summary.faq-q::after { content: '−'; }
   .hero-actions .btn { text-align: center; justify-content: center; }
   .trust-badges  { flex-direction: column; gap: 0.5rem; }
   .hero-stats    { flex-wrap: wrap; }
+  .stat-tile     { flex: 1 1 calc(50% - 1px); }
   .section-title { font-size: 2rem; }
+  .cta-banner    { padding: 2.5rem 1rem; }
   .cta-banner h2 { font-size: 1.75rem; }
+  .page-section  { padding: 3.5rem 0; }
+  .scan-results  { position: static; margin-top: 1rem; }
 }

@@ -379,6 +379,10 @@ ul {
 .hidden      { display: none !important; }
 .text-center { text-align: center; }
 
+@media (max-width: 480px) {
+  .container { padding-left: 1rem; padding-right: 1rem; }
+}
+
 /* ── Hide decorative blobs (not brutalist) ───────────────────────── */
 .bg-blob { display: none; }
 

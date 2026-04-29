@@ -1,4 +1,14 @@
-const express = require('express');
+const express  = require('express');
+const rateLimit = require('express-rate-limit');
+
+const compareLimit = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  keyGenerator: (req) => req.user?.id || req.ip,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many comparisons. Please wait before trying again.' }
+});
 
 function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
   const router = express.Router();
@@ -6,6 +16,7 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
   router.post(
     '/api/compare',
     verifyAuth,
+    compareLimit,
     upload.fields([{ name: 'image_a', maxCount: 1 }, { name: 'image_b', maxCount: 1 }]),
     async (req, res) => {
       const { scan_a_id, scan_b_id } = req.body;
@@ -23,6 +34,20 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
 
       const db = getSupabaseAdmin();
       if (!db) return res.status(503).json({ error: 'Database not configured' });
+
+      // Check narrative cache
+      try {
+        const { data: cached } = await db
+          .from('scan_comparisons')
+          .select('narrative')
+          .eq('user_id', req.user.id)
+          .eq('scan_a_id', scan_a_id)
+          .eq('scan_b_id', scan_b_id)
+          .maybeSingle();
+        if (cached?.narrative) {
+          return res.json({ narrative: cached.narrative });
+        }
+      } catch (_) {}
 
       const { data, error } = await db
         .from('scans')
@@ -112,6 +137,14 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
         if (quotaHit) return res.status(429).json({ error: 'AI rate limit reached. Please wait a moment and try again.' });
         throw lastError || new Error('All AI models failed');
       }
+
+      // Save to cache (best-effort)
+      try {
+        await db.from('scan_comparisons').upsert(
+          { user_id: req.user.id, scan_a_id, scan_b_id, narrative },
+          { onConflict: 'user_id,scan_a_id,scan_b_id' }
+        );
+      } catch (_) {}
 
       res.json({ narrative });
     }

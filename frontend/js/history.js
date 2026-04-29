@@ -32,9 +32,21 @@
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
       const id = btn.dataset.id;
-      if (btn.dataset.action === 'view')    viewRoutine(id);
-      if (btn.dataset.action === 'del')     deleteEntry(id);
-      if (btn.dataset.action === 'compare') compareScans(id, btn.dataset.prevId);
+      if (btn.dataset.action === 'view')         viewRoutine(id);
+      if (btn.dataset.action === 'del')          deleteEntry(id);
+      if (btn.dataset.action === 'compare-pick') {
+        const picker = document.getElementById('picker-' + id);
+        if (picker) picker.hidden = !picker.hidden;
+      }
+    });
+
+    document.getElementById('history-list').addEventListener('change', e => {
+      const sel = e.target.closest('.hc-picker-select');
+      if (!sel || !sel.value) return;
+      const entryId = sel.dataset.entryId;
+      const prevId  = sel.value;
+      sel.value = '';
+      compareScans(entryId, prevId);
     });
 
     render();
@@ -92,14 +104,21 @@
         return `<span class="hc-tag ${cls}">${c.name}</span>`;
       }).join('');
 
-      const prevEntry = idx > 0 ? reversed[idx - 1] : null;
+      const eligiblePeers = historyData
+        .filter(e => String(e.id || '').includes('-') && !!e.analysis && String(e.id) !== entryId)
+        .sort((a, b) => new Date(b.id || b.date) - new Date(a.id || a.date));
+
       const canCompare = (
         !isLegacy &&
         typeof entry.id === 'string' && entry.id.includes('-') &&
-        prevEntry != null &&
-        !!prevEntry.analysis &&
-        typeof prevEntry.id === 'string' && prevEntry.id.includes('-')
+        eligiblePeers.length > 0
       );
+
+      const eligibleOptions = eligiblePeers.map(e => {
+        const d = new Date(e.id || e.date);
+        const label = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        return `<option value="${String(e.id)}">${label}</option>`;
+      }).join('');
 
       const card = document.createElement('div');
       card.className = 'history-card';
@@ -123,10 +142,17 @@
               ? `<button class="btn btn-primary btn-sm" data-action="view" data-id="${entryId}">VIEW ROUTINE</button>`
               : ''}
             ${canCompare
-              ? `<button class="btn-ghost btn-sm" data-action="compare" data-id="${entryId}" data-prev-id="${String(prevEntry.id)}">Compare ↕</button>`
+              ? `<button class="btn-ghost btn-sm" data-action="compare-pick" data-id="${entryId}">Compare ↕</button>`
               : ''}
             <button class="btn-ghost btn-sm" data-action="del" data-id="${entryId}">DELETE</button>
           </div>
+          ${canCompare ? `
+          <div class="hc-compare-picker" id="picker-${entryId}" hidden>
+            <select class="hc-picker-select" data-entry-id="${entryId}">
+              <option value="">Compare with…</option>
+              ${eligibleOptions}
+            </select>
+          </div>` : ''}
           <div class="hc-compare-panel" id="compare-${entryId}" hidden></div>
         </div>
       `;
@@ -163,11 +189,18 @@
     const panel = document.getElementById('compare-' + entryId);
     if (!panel) return;
 
-    // Toggle if already loaded
-    if (panel.dataset.loaded === 'true') {
+    // Hide the picker
+    const picker = document.getElementById('picker-' + entryId);
+    if (picker) picker.hidden = true;
+
+    // Toggle if same comparison already loaded
+    if (panel.dataset.loaded === 'true' && panel.dataset.comparedWith === String(prevEntryId)) {
       panel.hidden = !panel.hidden;
       return;
     }
+    // Reset for new comparison
+    panel.dataset.loaded = 'false';
+    panel.dataset.comparedWith = String(prevEntryId);
 
     panel.innerHTML = '<div class="hc-compare-loading"><span class="hc-spinner"></span> Comparing scans…</div>';
     panel.hidden = false;

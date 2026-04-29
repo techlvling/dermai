@@ -7,6 +7,7 @@ function makeChain(result = { data: [], error: null }) {
     catch: (reject) => Promise.resolve(result).catch(reject),
     single: () => Promise.resolve(result),
   };
+  c.maybeSingle = () => Promise.resolve(result);
   for (const m of ['select', 'insert', 'update', 'upsert', 'delete', 'eq', 'gte', 'order', 'limit', 'in']) {
     c[m] = () => c;
   }
