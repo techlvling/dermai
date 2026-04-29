@@ -96,7 +96,6 @@
       const canCompare = (
         !isLegacy &&
         typeof entry.id === 'string' && entry.id.includes('-') &&
-        !!entry.analysis &&
         prevEntry != null &&
         !!prevEntry.analysis &&
         typeof prevEntry.id === 'string' && prevEntry.id.includes('-')
