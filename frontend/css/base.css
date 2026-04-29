@@ -456,6 +456,7 @@ ul {
   font-weight: 700;
   cursor: pointer;
   padding: 0.3rem 0.75rem;
+  min-height: 44px;
   letter-spacing: 0.03em;
   transition: border-color var(--duration-fast), color var(--duration-fast);
 }
