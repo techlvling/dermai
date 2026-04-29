@@ -337,9 +337,11 @@
 
 .severity-badge {
   padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-pill);
+  border-radius: 0;
   font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .severity-low    { background: rgba(90, 216, 163, 0.12); color: #2a8a64; }
