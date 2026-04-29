@@ -215,7 +215,7 @@ ul {
   color: var(--neutral-600);
   line-height: 1.7;
 }
-.footer-minimal a { color: var(--primary-500); padding: 0.5rem 0.25rem; display: inline-block; }
+.footer-minimal a { color: var(--primary-500); padding: 0.5rem 0.25rem; display: inline-flex; align-items: center; min-height: 44px; }
 .footer-minimal a:hover { color: var(--primary-700); }
 
 /* ── Navbar base (shared across all pages) ───────────────────────── */
