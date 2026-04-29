@@ -47,6 +47,17 @@ describe('POST /api/compare', () => {
     expect(res.body.error).toMatch(/scan_b_id/);
   });
 
+  it('400 when only one image is provided', async () => {
+    const res = await request(app)
+      .post('/api/compare')
+      .field('scan_a_id', 'uuid-a')
+      .field('scan_b_id', 'uuid-b')
+      .attach('image_a', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' });
+    // image_b omitted — should 400, not silently fall to text mode
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/both image_a and image_b/i);
+  });
+
   it('text-only mode: 200 when images are missing but result_json exists', async () => {
     mockGetSupabaseAdmin.mockReturnValue({
       from: () => makeChain({

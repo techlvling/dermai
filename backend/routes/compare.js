@@ -14,6 +14,13 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
       if (!scan_a_id) return res.status(400).json({ error: 'scan_a_id is required' });
       if (!scan_b_id) return res.status(400).json({ error: 'scan_b_id is required' });
 
+      const hasA = !!files.image_a?.[0];
+      const hasB = !!files.image_b?.[0];
+      if (hasA !== hasB) {
+        return res.status(400).json({ error: 'Provide both image_a and image_b, or neither.' });
+      }
+      const isVisualMode = hasA && hasB;
+
       const db = getSupabaseAdmin();
       if (!db) return res.status(503).json({ error: 'Database not configured' });
 
@@ -30,8 +37,6 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
 
       const client = getClient();
       if (!client) return res.status(500).json({ error: 'AI service not configured' });
-
-      const isVisualMode = !!(files.image_a?.[0] && files.image_b?.[0]);
 
       let messages;
 
