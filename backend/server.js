@@ -70,6 +70,25 @@ function getClient() {
   });
 }
 
+// Groq fallback (used when OpenRouter is rate-limited or unresponsive)
+function getGroqClient() {
+  const key = process.env.GROQ_API_KEY;
+  if (!key || key === 'your_groq_key_here') return null;
+  return new OpenAI({
+    baseURL: 'https://api.groq.com/openai/v1',
+    apiKey: key
+  });
+}
+
+const GROQ_VISION_MODELS = [
+  'meta-llama/llama-4-scout-17b-16e-instruct',
+  'meta-llama/llama-4-maverick-17b-128e-instruct'
+];
+const GROQ_TEXT_MODELS = [
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant'
+];
+
 // ---------------------------------------------------------------------------
 // Routes — public (no auth required)
 // ---------------------------------------------------------------------------
@@ -209,6 +228,32 @@ app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, re
       }
     }
 
+    // Groq fallback when OpenRouter chain exhausts
+    if (!aiResponse) {
+      const groq = getGroqClient();
+      if (groq) {
+        for (const model of GROQ_VISION_MODELS) {
+          try {
+            console.log(`[analyze] groq:${model} — ${count} image(s)`);
+            const completion = await groq.chat.completions.create({
+              model,
+              messages,
+              temperature: 0.3,
+              max_tokens: 800
+            });
+            aiResponse = completion.choices[0].message.content;
+            quotaHit = false;
+            console.log(`[analyze] success: groq:${model}`);
+            break;
+          } catch (err) {
+            const msg = String(err.message || err);
+            console.warn(`[analyze] groq:${model} failed:`, msg.slice(0, 300));
+            lastError = err;
+          }
+        }
+      }
+    }
+
     if (!aiResponse) {
       if (quotaHit) {
         return res.status(429).json({
@@ -243,7 +288,7 @@ app.use(require('./routes/favorites')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/routine')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/photos')(verifyAuth, getSupabaseAdmin));
-app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getClient, upload));
+app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getClient, upload, getGroqClient));
 
 // ---------------------------------------------------------------------------
 // 404 — serve branded page for unknown HTML routes, JSON for API routes
