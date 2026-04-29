@@ -174,9 +174,11 @@ app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, re
       content: [{ type: 'text', text: prompt }, ...imageContents]
     }];
 
-    // Free vision model fallback chain — largest/best first, all :free tier on OpenRouter
+    // Free vision model fallback chain — tries 5 models so rate limits on one don't block all
     const modelsToTry = [
       'qwen/qwen2.5-vl-72b-instruct:free',
+      'meta-llama/llama-3.2-90b-vision-instruct:free',
+      'meta-llama/llama-3.2-11b-vision-instruct:free',
       'google/gemma-4-31b-it:free',
       'google/gemma-3-27b-it:free',
     ];
