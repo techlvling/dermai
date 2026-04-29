@@ -1,5 +1,6 @@
 const express  = require('express');
 const rateLimit = require('express-rate-limit');
+const { GROQ_VISION_MODELS, GROQ_TEXT_MODELS } = require('../lib/ai-models');
 
 const compareLimit = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -9,15 +10,6 @@ const compareLimit = rateLimit({
   legacyHeaders: false,
   message: { error: 'Too many comparisons. Please wait before trying again.' }
 });
-
-const GROQ_VISION_MODELS = [
-  'meta-llama/llama-4-scout-17b-16e-instruct',
-  'meta-llama/llama-4-maverick-17b-128e-instruct'
-];
-const GROQ_TEXT_MODELS = [
-  'llama-3.3-70b-versatile',
-  'llama-3.1-8b-instant'
-];
 
 function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload, getGroqClient) {
   const router = express.Router();
@@ -44,14 +36,16 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload, ge
       const db = getSupabaseAdmin();
       if (!db) return res.status(503).json({ error: 'Database not configured' });
 
-      // Check narrative cache
+      // Check narrative cache — ignore entries older than 30 days
       try {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
         const { data: cached } = await db
           .from('scan_comparisons')
           .select('narrative')
           .eq('user_id', req.user.id)
           .eq('scan_a_id', scan_a_id)
           .eq('scan_b_id', scan_b_id)
+          .gte('created_at', thirtyDaysAgo)
           .maybeSingle();
         if (cached?.narrative) {
           return res.json({ narrative: cached.narrative });
@@ -64,7 +58,10 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload, ge
         .in('id', [scan_a_id, scan_b_id])
         .eq('user_id', req.user.id);
 
-      if (error) return res.status(500).json({ error: error.message });
+      if (error) {
+        console.error('[compare] db error:', error.message);
+        return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+      }
       if (!data || data.length < 2) {
         return res.status(404).json({ error: 'Scan not found or access denied' });
       }

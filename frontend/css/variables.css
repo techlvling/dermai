@@ -1,73 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@500;700&display=swap');
+
 :root {
-  /* Primary — Strawberry Pink (brand accent, CTAs only) */
+  /* Brand — Strawberry Pink (kept) */
   --primary-50:  #fff0f5;
   --primary-100: #ffe0eb;
   --primary-200: #ffc2d6;
-  --primary-300: #ff9ec0;
-  --primary-400: #ff7aa8;
+  --primary-300: #ff85ab;
+  --primary-400: #ff6699;
   --primary-500: #f5588e;
-  --primary-600: #e63977;
-  --primary-700: #c91f5d;
-  --primary-800: #9d1648;
-  --primary-900: #6b0f31;
+  --primary-600: #d83d72;
+  --primary-700: #a82456;
+  --primary-800: #7a1540;
+  --primary-900: #4d0a28;
 
-  /* Accent — Soft Lavender */
-  --accent-50:  #f5f0ff;
-  --accent-100: #ede0ff;
-  --accent-300: #d4b8ff;
-  --accent-400: #c9b1ff;
-  --accent-500: #a07cff;
-  --accent-600: #7d50f5;
+  /* Mood accents — gethapply-inspired */
+  --coral-500:   #ff7a59;
+  --calm-500:    #5b8def;
+  --relax-500:   #8a6dd6;
 
   /* Accent — Mint */
-  --mint-300: #b8f0d8;
-  --mint-500: #5ad8a3;
+  --mint-300: #a8f0d0;
+  --mint-500: #34c4a3;
 
   /* Accent — Peach */
   --peach-300: #ffd1b8;
-  --peach-500: #ffaa7a;
-
-  /* Neutrals — Stark Zinc */
-  --neutral-50:  #fafafa;
-  --neutral-100: #f4f4f5;
-  --neutral-200: #e4e4e7;
-  --neutral-300: #d4d4d8;
-  --neutral-400: #a1a1aa;
-  --neutral-500: #71717a;
-  --neutral-600: #52525b;
-  --neutral-700: #3f3f46;
-  --neutral-800: #27272a;
-  --neutral-900: #09090b;
-
-  /* Semantic */
-  --success: #5ad8a3;
-  --warning: #ffaa7a;
-  --error:   #f5588e;
-  --info:    #a07cff;
-
-  /* Surfaces */
-  --bg-primary:   #fafafa;
-  --bg-secondary: #f4f4f5;
-  --bg-card:      #ffffff;
-  --bg-glass:     rgba(255, 255, 255, 0.95);
-  --border-glass: #09090b;
-
-  /* Typography */
-  --font-primary: 'Space Mono', monospace;
-  --font-display: 'Space Mono', monospace;
-
-  /* Radii — 0 (brutalist) */
-  --radius-sm:   0px;
-  --radius-md:   0px;
-  --radius-lg:   0px;
-  --radius-pill: 9999px;
-
-  /* Shadows — hard offset, no blur */
-  --shadow-soft: 2px 2px 0px #09090b;
-  --shadow-pop:  4px 4px 0px #09090b;
+  --peach-500: #ffb380;
 
   /* Affiliate */
   --color-amazon: #ff9900;
+
+  /* Neutrals — Warm Zinc */
+  --neutral-50:  #fafaf7;
+  --neutral-100: #f3f1ec;
+  --neutral-200: #e8e4dc;
+  --neutral-300: #d0cbc0;
+  --neutral-400: #a09890;
+  --neutral-500: #716b62;
+  --neutral-600: #524d46;
+  --neutral-700: #3a3630;
+  --neutral-800: #252220;
+  --neutral-900: #1a1714;
+
+  /* Semantic */
+  --success: #34c4a3;
+  --warning: #ffb380;
+  --error:   #f5588e;
+  --info:    #5b8def;
+
+  /* Surfaces */
+  --bg-primary:   #fafaf7;
+  --bg-secondary: #f3f1ec;
+  --bg-card:      #ffffff;
+  --bg-subtle:    #f3f1ec;
+  --bg-glass:     rgba(255, 255, 255, 0.92);
+  --border:       #e8e4dc;
+  --border-glass: #e8e4dc;
+
+  /* Text shortcuts */
+  --text-strong: #1a1714;
+  --text-body:   #3a3630;
+  --text-muted:  #716b62;
+
+  /* Typography */
+  --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'DM Sans', 'Inter', system-ui, sans-serif;
+
+  /* Radii — rounded, wellness-app feel */
+  --radius-sm:   8px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-pill: 9999px;
+
+  /* Shadows — soft elevation */
+  --shadow-sm:   0 1px 2px rgba(20, 20, 14, 0.06);
+  --shadow-soft: 0 1px 3px rgba(20, 20, 14, 0.06), 0 4px 12px rgba(20, 20, 14, 0.06);
+  --shadow-md:   0 6px 20px rgba(20, 20, 14, 0.08), 0 2px 6px rgba(20, 20, 14, 0.06);
+  --shadow-pop:  0 6px 20px rgba(20, 20, 14, 0.10), 0 2px 6px rgba(20, 20, 14, 0.06);
+  --shadow-lg:   0 16px 48px rgba(20, 20, 14, 0.12);
+  --shadow-glow: 0 0 0 3px rgba(245, 88, 142, 0.18);
 
   /* Motion — snappy */
   --duration-fast: 80ms;

@@ -543,9 +543,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!loggedIn) {
         const saveGate = document.createElement('div');
         saveGate.className = 'save-gate';
-        saveGate.style.cssText = 'margin-top:1.5rem; padding:1.25rem 1.5rem; border:2px solid #000; box-shadow:4px 4px 0 #000; background:#fff; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;';
+        saveGate.style.cssText = 'margin-top:1.5rem; padding:1.25rem 1.5rem; border:1px solid var(--border,#e8e4dc); border-radius:var(--radius-lg,24px); box-shadow:var(--shadow-md); background:var(--bg-card,#fff); display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;';
         saveGate.innerHTML = `
-          <p class="save-gate__msg" style="margin:0; font-family:'Space Mono',monospace; font-size:0.875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.02em;">Sign in to save this analysis across devices</p>
+          <p class="save-gate__msg" style="margin:0; font-family:var(--font-primary,system-ui,sans-serif); font-size:0.875rem; font-weight:600; color:var(--text-body,#3a3630);">Sign in to save this analysis across devices</p>
           <button class="btn btn-primary" id="save-gate-btn" style="white-space:nowrap;">SIGN IN WITH GOOGLE</button>
         `;
         if (!resultsSection.querySelector('.save-gate')) resultsSection.appendChild(saveGate);

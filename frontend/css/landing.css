@@ -158,13 +158,13 @@
 }
 
 .scan-card:hover {
-  box-shadow: 6px 6px 0px var(--neutral-900);
+  box-shadow: var(--shadow-pop);
 }
 
 .demo-image {
   width: 100%;
   height: auto;
-  border-radius: 0;
+  border-radius: var(--radius-lg);
   display: block;
   background: var(--bg-secondary);
 }
