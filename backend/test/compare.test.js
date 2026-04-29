@@ -94,7 +94,7 @@ describe('POST /api/compare', () => {
     expect(res.body.error).toMatch(/not available/i);
   });
 
-  it('404 when only one scan belongs to user', async () => {
+  it('text-only mode: 404 when scan does not belong to user', async () => {
     mockGetSupabaseAdmin.mockReturnValue({
       from: () => makeChain({ data: [{ id: 'uuid-a', result_json: {} }], error: null })
     });
@@ -102,9 +102,8 @@ describe('POST /api/compare', () => {
     const res = await request(app)
       .post('/api/compare')
       .field('scan_a_id', 'uuid-a')
-      .field('scan_b_id', 'uuid-b')
-      .attach('image_a', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' })
-      .attach('image_b', fakeImg, { filename: 'b.jpg', contentType: 'image/jpeg' });
+      .field('scan_b_id', 'uuid-b');
+    // no image attachments — exercises text-only ownership check
     expect(res.status).toBe(404);
     expect(res.body.error).toMatch(/access denied/i);
   });
