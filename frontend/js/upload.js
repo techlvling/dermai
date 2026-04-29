@@ -40,6 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentStep    = 0;
   let activeSlotIdx  = null; // which slot slot-file-input is targeting
 
+  // ── Inline error for upload/camera failures ───────────────────────────────
+  function showUploadError(msg) {
+    const existing = document.getElementById('upload-error');
+    if (existing) existing.remove();
+    const div = document.createElement('div');
+    div.id = 'upload-error';
+    div.style.cssText = 'margin-top:1rem; padding:0.875rem 1rem; background:rgba(245,88,142,0.08); border:1px solid rgba(245,88,142,0.25); color:var(--primary-700); font-size:0.875rem; text-align:center;';
+    div.textContent = msg;
+    dropZone.after(div);
+    setTimeout(() => div.remove(), 6000);
+  }
+
   // ── Slot icons (SVG) ──────────────────────────────────────────────────────
   function slotIcon(i) {
     const base = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>`;
@@ -175,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Fill a slot with an image file ────────────────────────────────────────
   function fillSlot(i, file) {
     if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image file.');
+      showUploadError('Please select an image file (JPG, PNG, or HEIC).');
       return;
     }
     resizeImage(file, (blob, dataURL) => {
@@ -200,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dropZone.classList.add('hidden');
         cameraContainer.classList.remove('hidden');
       } catch (err) {
-        alert('Unable to access camera. Please check permissions.');
+        showUploadError('Camera access denied. Allow camera permissions in your browser settings, or upload photos instead.');
         console.error(err);
       }
     });
@@ -377,11 +389,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (msg.includes('No image') || msg.includes('HTTP 400')) {
           userMsg = 'Image not received — please try again.';
         } else if (msg.includes('OPENROUTER_API_KEY') || msg.includes('not configured')) {
-          userMsg = 'API key missing — set OPENROUTER_API_KEY in backend/.env and restart.';
+          userMsg = 'Analysis service unavailable. Please try again later.';
         } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ERR_CONNECTION')) {
-          userMsg = 'Cannot reach the server. Is the backend running?';
+          userMsg = 'Connection failed. Check your internet and try again.';
         } else {
-          userMsg = `Error: ${msg || 'Unknown error — check the server console.'}`;
+          userMsg = 'Something went wrong. Please try again in a moment.';
         }
 
         analyzeBtn.disabled = false;

@@ -1,5 +1,43 @@
 # Changelog
 
+## [1.2.0] — 2026-04-29
+
+### Phase 2 — Google Drive photo storage + daily progress tracking
+
+- Google Drive backup: scans and daily progress photos optionally saved to user's Drive folder via OAuth scope `drive.file`
+- Daily progress photo card on home page with streak counter (IndexedDB + Drive sync)
+- `POST /api/scans/:id/images` — store Drive thumbnail + view URLs against a scan record
+- `frontend/js/drive.js` — Drive OAuth, upload, thumbnail fetch, IndexedDB migration
+- `frontend/js/progress-photo.js` — daily capture widget, streak logic, calendar heatmap
+
+### Phase 3 — AI skin comparison
+
+- `POST /api/compare` — side-by-side AI narrative comparing two scans (visual mode with Drive photos, text-only fallback)
+- Compare button on history cards with arbitrary-scan picker (choose any two scans)
+- Compare narrative cached server-side to avoid redundant AI calls
+- Per-user rate limit on `/api/compare` (5 req / 15 min)
+- Scroll-spy active nav state on all pages
+
+### Groq fallback
+
+- Added Groq as secondary AI provider (`meta-llama/llama-4-scout-17b-16e-instruct`, `llama-4-maverick`) after OpenRouter chain exhausts for both `/api/analyze` and `/api/compare`
+- `GROQ_API_KEY` added to `.env.example`
+
+### Design system overhaul
+
+- Soft Brutalist audit: eliminated all `border-radius` values from `.upload-slot`, `#camera-feed`, `.thumbnail`, `.severity-badge`, `.hc-compare-photos img` — now consistently 0px per DESIGN.md
+- Touch target fixes: `.btn-ghost` and `.footer-minimal a` both raised to `min-height: 44px`
+
+### Analytics & error messages
+
+- Vercel Analytics (`/_vercel/insights/script.js`) added to all 8 HTML pages
+- Replaced `alert()` calls for camera/file errors with inline styled error divs
+- Replaced developer-facing error messages ("Is the backend running?", "set OPENROUTER_API_KEY…") with user-safe copy
+
+### Tests
+
+- 43/43 passing (Vitest + Supertest) — added compare route tests
+
 ## [1.1.0] — 2026-04-28
 
 ### Phase 1 — Google OAuth + Supabase auth foundation
