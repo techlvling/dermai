@@ -62,6 +62,12 @@ window.Nav = {
           ${links.map(l => linkHTML(l, true)).join('')}
         </div>
         <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Analyze My Skin</a>
+        <div style="margin-top:1rem;">
+          ${isAuthed
+            ? `<button id="drawer-signout-btn" class="btn btn-ghost nav-drawer-cta" style="font-size:0.8rem;">SIGN OUT</button>`
+            : `<button id="drawer-signin-btn" class="btn btn-ghost nav-drawer-cta" style="font-size:0.8rem;">SIGN IN</button>`
+          }
+        </div>
       </nav>`;
 
     _initDrawer();
@@ -101,6 +107,11 @@ function _initDrawer() {
   closeBtn && closeBtn.addEventListener('click', closeDrawer);
   overlay.addEventListener('click', closeDrawer);
   drawer.querySelectorAll('a').forEach(link => link.addEventListener('click', closeDrawer));
+
+  const drawerSignout = document.getElementById('drawer-signout-btn');
+  const drawerSignin  = document.getElementById('drawer-signin-btn');
+  if (drawerSignout && window.Auth) drawerSignout.addEventListener('click', () => { closeDrawer(); window.Auth.signOut(); });
+  if (drawerSignin  && window.Auth) drawerSignin.addEventListener('click',  () => { closeDrawer(); sessionStorage.setItem('dermai_redirect', '/dashboard.html'); window.Auth.signInWithGoogle(); });
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();

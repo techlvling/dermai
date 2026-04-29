@@ -414,7 +414,7 @@
   font-size: 0.825rem;
   font-weight: 700;
   color: var(--neutral-900);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -492,7 +492,7 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--neutral-500);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.4rem;
 }
 
 .preview-product-name {
@@ -517,7 +517,7 @@
 .preview-rationale strong {
   color: var(--neutral-900);
   display: block;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.4rem;
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -676,7 +676,7 @@ details.faq-item[open] summary.faq-q::after { content: '−'; }
   font-size: 0.775rem;
   color: var(--neutral-500);
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────── */
@@ -726,7 +726,7 @@ details.faq-item[open] summary.faq-q::after { content: '−'; }
   .hero-title    { font-size: 2.4rem; letter-spacing: -1px; }
   .hero-actions  { flex-direction: column; align-items: stretch; }
   .hero-actions .btn { text-align: center; justify-content: center; }
-  .trust-badges  { flex-direction: column; gap: 0.5rem; }
+  .trust-badges  { flex-direction: column; gap: 0.75rem; }
   .hero-stats    { flex-wrap: wrap; }
   .stat-tile     { flex: 1 1 calc(50% - 1px); }
   .section-title { font-size: 2rem; }
