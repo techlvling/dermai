@@ -47,29 +47,56 @@ describe('POST /api/compare', () => {
     expect(res.body.error).toMatch(/scan_b_id/);
   });
 
-  it('400 when image_a is missing', async () => {
+  it('text-only mode: 200 when images are missing but result_json exists', async () => {
+    mockGetSupabaseAdmin.mockReturnValue({
+      from: () => makeChain({
+        data: [
+          { id: 'uuid-a', result_json: { overallHealth: 85, skinType: 'oily', concerns: [{ name: 'acne', severity: 60, description: 'moderate acne' }] } },
+          { id: 'uuid-b', result_json: { overallHealth: 90, skinType: 'oily', concerns: [{ name: 'acne', severity: 40, description: 'mild acne' }] } }
+        ],
+        error: null
+      })
+    });
+    mockGetClient.mockReturnValue({
+      chat: {
+        completions: {
+          create: vi.fn().mockResolvedValue({
+            choices: [{ message: { content: 'Your skin has improved significantly.' } }]
+          })
+        }
+      }
+    });
+
     const res = await request(app)
       .post('/api/compare')
       .field('scan_a_id', 'uuid-a')
-      .field('scan_b_id', 'uuid-b')
-      .attach('image_b', fakeImg, { filename: 'b.jpg', contentType: 'image/jpeg' });
-    expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/image_a/);
+      .field('scan_b_id', 'uuid-b');
+    expect(res.status).toBe(200);
+    expect(res.body.narrative).toBe('Your skin has improved significantly.');
   });
 
-  it('400 when image_b is missing', async () => {
+  it('text-only mode: 400 when result_json is missing', async () => {
+    mockGetSupabaseAdmin.mockReturnValue({
+      from: () => makeChain({
+        data: [
+          { id: 'uuid-a', result_json: null },
+          { id: 'uuid-b', result_json: null }
+        ],
+        error: null
+      })
+    });
+
     const res = await request(app)
       .post('/api/compare')
       .field('scan_a_id', 'uuid-a')
-      .field('scan_b_id', 'uuid-b')
-      .attach('image_a', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' });
+      .field('scan_b_id', 'uuid-b');
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/image_b/);
+    expect(res.body.error).toMatch(/not available/i);
   });
 
   it('404 when only one scan belongs to user', async () => {
     mockGetSupabaseAdmin.mockReturnValue({
-      from: () => makeChain({ data: [{ id: 'uuid-a' }], error: null })
+      from: () => makeChain({ data: [{ id: 'uuid-a', result_json: {} }], error: null })
     });
 
     const res = await request(app)
@@ -82,9 +109,9 @@ describe('POST /api/compare', () => {
     expect(res.body.error).toMatch(/access denied/i);
   });
 
-  it('200 returns narrative when both scans belong to user', async () => {
+  it('visual mode: 200 returns narrative when both scans with images belong to user', async () => {
     mockGetSupabaseAdmin.mockReturnValue({
-      from: () => makeChain({ data: [{ id: 'uuid-a' }, { id: 'uuid-b' }], error: null })
+      from: () => makeChain({ data: [{ id: 'uuid-a', result_json: {} }, { id: 'uuid-b', result_json: {} }], error: null })
     });
     mockGetClient.mockReturnValue({
       chat: {
@@ -108,7 +135,7 @@ describe('POST /api/compare', () => {
 
   it('429 when all OpenRouter models return rate limit error', async () => {
     mockGetSupabaseAdmin.mockReturnValue({
-      from: () => makeChain({ data: [{ id: 'uuid-a' }, { id: 'uuid-b' }], error: null })
+      from: () => makeChain({ data: [{ id: 'uuid-a', result_json: {} }, { id: 'uuid-b', result_json: {} }], error: null })
     });
     mockGetClient.mockReturnValue({
       chat: {

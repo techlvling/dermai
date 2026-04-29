@@ -13,15 +13,13 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
 
       if (!scan_a_id) return res.status(400).json({ error: 'scan_a_id is required' });
       if (!scan_b_id) return res.status(400).json({ error: 'scan_b_id is required' });
-      if (!files.image_a?.[0]) return res.status(400).json({ error: 'image_a file is required' });
-      if (!files.image_b?.[0]) return res.status(400).json({ error: 'image_b file is required' });
 
       const db = getSupabaseAdmin();
       if (!db) return res.status(503).json({ error: 'Database not configured' });
 
       const { data, error } = await db
         .from('scans')
-        .select('id')
+        .select('id, result_json')
         .in('id', [scan_a_id, scan_b_id])
         .eq('user_id', req.user.id);
 
@@ -33,28 +31,51 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
       const client = getClient();
       if (!client) return res.status(500).json({ error: 'AI service not configured' });
 
-      const fileA = files.image_a[0];
-      const fileB = files.image_b[0];
+      const isVisualMode = !!(files.image_a?.[0] && files.image_b?.[0]);
 
-      const prompt =
-        'You are a dermatologist. Image 1 is an older skin scan; Image 2 is a more recent ' +
-        'scan of the same patient. In 3–5 sentences, describe what has visibly changed — ' +
-        'improvements, regressions, or no change. Be specific about concerns like acne, ' +
-        'texture, tone, and pores. Write in plain English, directly to the patient.';
+      let messages;
 
-      const messages = [{
-        role: 'user',
-        content: [
-          { type: 'text', text: prompt },
-          { type: 'image_url', image_url: { url: `data:${fileA.mimetype};base64,${fileA.buffer.toString('base64')}` } },
-          { type: 'image_url', image_url: { url: `data:${fileB.mimetype};base64,${fileB.buffer.toString('base64')}` } },
-        ]
-      }];
+      if (isVisualMode) {
+        const fileA = files.image_a[0];
+        const fileB = files.image_b[0];
+        const prompt =
+          'You are a dermatologist. Image 1 is an older skin scan; Image 2 is a more recent ' +
+          'scan of the same patient. In 3–5 sentences, describe what has visibly changed — ' +
+          'improvements, regressions, or no change. Be specific about concerns like acne, ' +
+          'texture, tone, and pores. Write in plain English, directly to the patient.';
+        messages = [{
+          role: 'user',
+          content: [
+            { type: 'text', text: prompt },
+            { type: 'image_url', image_url: { url: `data:${fileA.mimetype};base64,${fileA.buffer.toString('base64')}` } },
+            { type: 'image_url', image_url: { url: `data:${fileB.mimetype};base64,${fileB.buffer.toString('base64')}` } },
+          ]
+        }];
+      } else {
+        const scanA = data.find(s => s.id === scan_a_id);
+        const scanB = data.find(s => s.id === scan_b_id);
+        if (!scanA?.result_json || !scanB?.result_json) {
+          return res.status(400).json({ error: 'Scan data not available for comparison.' });
+        }
+        const fmt = (r) => {
+          const concerns = (r.concerns || [])
+            .map(c => `  - ${c.name} (severity ${c.severity}/100): ${c.description}`)
+            .join('\n');
+          return `Overall health: ${r.overallHealth}/100\nSkin type: ${r.skinType}\nConcerns:\n${concerns || '  None reported'}`;
+        };
+        const prompt =
+          'You are a dermatologist reviewing AI-generated skin analyses for the same patient.\n\n' +
+          `Earlier scan:\n${fmt(scanA.result_json)}\n\n` +
+          `More recent scan:\n${fmt(scanB.result_json)}\n\n` +
+          'In 3–5 sentences, describe what has changed — improvements, regressions, or no significant change. ' +
+          'Be specific about the concerns listed. Write in plain English, directly to the patient.';
+        messages = [{ role: 'user', content: prompt }];
+      }
 
       const modelsToTry = [
-        'qwen/qwen-2.5-vl-72b-instruct',
-        'meta-llama/llama-3.2-11b-vision-instruct',
-        'openai/gpt-4o-mini',
+        'qwen/qwen2.5-vl-72b-instruct:free',
+        'google/gemma-4-31b-it:free',
+        'google/gemma-3-27b-it:free',
       ];
 
       let narrative = null;
