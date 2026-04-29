@@ -96,11 +96,10 @@
       const canCompare = (
         !isLegacy &&
         typeof entry.id === 'string' && entry.id.includes('-') &&
-        Array.isArray(entry.image_urls) && entry.image_urls[0] &&
+        !!entry.analysis &&
         prevEntry != null &&
         !!prevEntry.analysis &&
-        typeof prevEntry.id === 'string' && prevEntry.id.includes('-') &&
-        Array.isArray(prevEntry.image_urls) && prevEntry.image_urls[0]
+        typeof prevEntry.id === 'string' && prevEntry.id.includes('-')
       );
 
       const card = document.createElement('div');
@@ -175,59 +174,63 @@
     panel.hidden = false;
 
     try {
-      const googleToken = window.Auth ? await window.Auth.getProviderToken() : null;
-      if (!googleToken) {
-        panel.innerHTML = '<p class="hc-compare-error">Sign in with Google and enable Drive backup to use comparison.</p>';
-        return;
-      }
-
       const entry     = historyData.find(e => String(e.id) === String(entryId));
       const prevEntry = historyData.find(e => String(e.id) === String(prevEntryId));
       const urlOlder  = prevEntry?.image_urls?.[0];
       const urlNewer  = entry?.image_urls?.[0];
 
-      if (!urlOlder || !urlNewer) {
-        panel.innerHTML = '<p class="hc-compare-error">This scan doesn\'t have a saved photo. Enable Drive backup before scanning to use comparison.</p>';
-        return;
-      }
+      const hasPhotos = !!(urlOlder && urlNewer);
 
-      async function fetchDriveBlob(webViewLink) {
-        const match = /\/d\/([^/]+)/.exec(webViewLink);
-        if (!match) throw Object.assign(new Error('Unrecognised Drive URL'), { type: 'parse' });
-        const fileId = match[1];
-        const res = await fetch(
-          `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-          { headers: { Authorization: `Bearer ${googleToken}` } }
-        );
-        if (res.status === 401 || res.status === 403) {
-          throw Object.assign(new Error('Drive auth failed'), { type: 'auth' });
+      let objUrlOlder = null;
+      let objUrlNewer = null;
+
+      if (hasPhotos) {
+        const googleToken = window.Auth ? await window.Auth.getProviderToken() : null;
+        if (!googleToken) {
+          panel.innerHTML = '<p class="hc-compare-error">Sign in with Google and enable Drive backup to use comparison.</p>';
+          return;
         }
-        if (!res.ok) throw Object.assign(new Error(`Drive ${res.status}`), { type: 'fetch' });
-        return res.blob();
-      }
 
-      let blobOlder, blobNewer;
-      try {
-        [blobOlder, blobNewer] = await Promise.all([
-          fetchDriveBlob(urlOlder),
-          fetchDriveBlob(urlNewer),
-        ]);
-      } catch (err) {
-        if (err.type === 'auth') {
-          panel.innerHTML = '<p class="hc-compare-error">Drive access expired. Re-enable Drive backup to refresh access.</p>';
-        } else {
-          panel.innerHTML = '<p class="hc-compare-error">Couldn\'t load photo from Drive. Try again.</p>';
+        async function fetchDriveBlob(webViewLink) {
+          const match = /\/d\/([^/]+)/.exec(webViewLink);
+          if (!match) throw Object.assign(new Error('Unrecognised Drive URL'), { type: 'parse' });
+          const fileId = match[1];
+          const res = await fetch(
+            `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+            { headers: { Authorization: `Bearer ${googleToken}` } }
+          );
+          if (res.status === 401 || res.status === 403) {
+            throw Object.assign(new Error('Drive auth failed'), { type: 'auth' });
+          }
+          if (!res.ok) throw Object.assign(new Error(`Drive ${res.status}`), { type: 'fetch' });
+          return res.blob();
         }
-        return;
-      }
 
-      const objUrlOlder = URL.createObjectURL(blobOlder);
-      const objUrlNewer = URL.createObjectURL(blobNewer);
+        let blobOlder, blobNewer;
+        try {
+          [blobOlder, blobNewer] = await Promise.all([
+            fetchDriveBlob(urlOlder),
+            fetchDriveBlob(urlNewer),
+          ]);
+        } catch (err) {
+          if (err.type === 'auth') {
+            panel.innerHTML = '<p class="hc-compare-error">Drive access expired. Re-enable Drive backup to refresh access.</p>';
+          } else {
+            panel.innerHTML = '<p class="hc-compare-error">Couldn\'t load photo from Drive. Try again.</p>';
+          }
+          return;
+        }
+
+        objUrlOlder = URL.createObjectURL(blobOlder);
+        objUrlNewer = URL.createObjectURL(blobNewer);
+      }
 
       const supabaseToken = window.Auth ? await window.Auth.getToken() : null;
       if (!supabaseToken) {
-        URL.revokeObjectURL(objUrlOlder);
-        URL.revokeObjectURL(objUrlNewer);
+        if (hasPhotos) {
+          URL.revokeObjectURL(objUrlOlder);
+          URL.revokeObjectURL(objUrlNewer);
+        }
         panel.innerHTML = '<p class="hc-compare-error">Sign in to use comparison.</p>';
         return;
       }
@@ -235,8 +238,10 @@
       const form = new FormData();
       form.append('scan_a_id', String(prevEntryId));  // older scan = image_a
       form.append('scan_b_id', String(entryId));       // newer scan = image_b
-      form.append('image_a', blobOlder, 'scan_a.jpg');
-      form.append('image_b', blobNewer, 'scan_b.jpg');
+      if (hasPhotos) {
+        form.append('image_a', blobOlder, 'scan_a.jpg');
+        form.append('image_b', blobNewer, 'scan_b.jpg');
+      }
 
       const apiRes = await fetch('/api/compare', {
         method: 'POST',
@@ -245,8 +250,10 @@
       });
 
       if (!apiRes.ok) {
-        URL.revokeObjectURL(objUrlOlder);
-        URL.revokeObjectURL(objUrlNewer);
+        if (hasPhotos) {
+          URL.revokeObjectURL(objUrlOlder);
+          URL.revokeObjectURL(objUrlNewer);
+        }
         if (apiRes.status === 404) {
           panel.innerHTML = '<p class="hc-compare-error">Scan not found.</p>';
         } else if (apiRes.status === 429) {
@@ -263,10 +270,10 @@
       narrativeEl.className = 'hc-compare-narrative';
       narrativeEl.textContent = narrative;
       panel.innerHTML = `
-        <div class="hc-compare-photos">
+        ${hasPhotos ? `<div class="hc-compare-photos">
           <img src="${objUrlOlder}" alt="Earlier scan" />
           <img src="${objUrlNewer}" alt="Recent scan" />
-        </div>
+        </div>` : ''}
         <button class="btn-ghost btn-sm hc-compare-close">Close</button>
       `;
       panel.insertBefore(narrativeEl, panel.querySelector('.hc-compare-close'));
@@ -276,10 +283,12 @@
         panel.hidden = true;
       });
 
-      window.addEventListener('beforeunload', () => {
-        URL.revokeObjectURL(objUrlOlder);
-        URL.revokeObjectURL(objUrlNewer);
-      }, { once: true });
+      if (hasPhotos) {
+        window.addEventListener('beforeunload', () => {
+          URL.revokeObjectURL(objUrlOlder);
+          URL.revokeObjectURL(objUrlNewer);
+        }, { once: true });
+      }
 
     } catch (err) {
       console.error('[compareScans]', err);
