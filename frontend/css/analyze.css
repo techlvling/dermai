@@ -87,7 +87,7 @@
 .upload-slot {
   aspect-ratio: 3/4;
   border: 2px dashed rgba(245, 88, 142, 0.20);
-  border-radius: 0;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -197,7 +197,7 @@
 #camera-feed {
   width: 100%;
   max-width: 500px;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   margin: 0 auto 1.5rem;
   display: block;
 }
@@ -337,7 +337,7 @@
 
 .severity-badge {
   padding: 0.25rem 0.75rem;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -415,7 +415,7 @@
   width: 140px;
   height: 140px;
   object-fit: cover;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   border: 2px solid var(--border-glass);
 }
 

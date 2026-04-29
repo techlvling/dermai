@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5588e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DermAI | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/history.css" />
+    <link rel="stylesheet" href="./css/ingredients.css" />
+    <link rel="stylesheet" href="./css/recommendations.css" />
+    <link rel="stylesheet" href="./css/dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  </head>
+  <body class="dash-body">
+
+    <!-- ── Mobile top bar ──────────────────────────────────────────── -->
+    <div class="dash-topbar">
+      <span class="dash-topbar-brand">DermAI</span>
+      <button class="dash-hamburger" id="dash-hamburger" aria-label="Open navigation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- ── Sidebar ──────────────────────────────────────────────────── -->
+    <aside class="dash-sidebar" id="dash-sidebar">
+      <div class="dash-brand">
+        <a href="/" style="text-decoration:none">
+          <span class="dash-brand-name">DermAI</span>
+        </a>
+      </div>
+
+      <nav class="dash-nav" aria-label="Dashboard navigation">
+        <a data-section="overview" class="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Overview
+        </a>
+        <a data-section="history">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          History
+        </a>
+        <a data-section="ingredients">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Ingredients
+        </a>
+        <a data-section="shopping">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Shopping
+        </a>
+        <a data-section="compare">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Compare
+        </a>
+
+        <a href="/analyze.html" style="margin-top:auto; background:rgba(245,88,142,0.08); color:var(--primary-600);">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          New Scan
+        </a>
+      </nav>
+
+      <div class="dash-user">
+        <div class="dash-user-info">
+          <img class="dash-user-avatar" id="dash-avatar" src="" alt="Your avatar" />
+          <span class="dash-user-name" id="dash-username"></span>
+        </div>
+        <button class="dash-signout-btn" id="dash-signout">Sign out</button>
+      </div>
+    </aside>
+
+    <!-- ── Mobile sidebar overlay ───────────────────────────────────── -->
+    <div class="dash-overlay" id="dash-overlay"></div>
+
+    <!-- ── Main content ─────────────────────────────────────────────── -->
+    <main class="dash-main">
+
+      <!-- OVERVIEW ─────────────────────────────────────────────────── -->
+      <section class="dash-section active" data-section="overview">
+        <div class="dash-welcome">
+          <h1>Your Skin Dashboard</h1>
+          <p>Track progress, browse ingredients, and manage your routine.</p>
+        </div>
+
+        <div class="dash-stats">
+          <div class="stat-card">
+            <span class="stat-card-value stat-card-accent" id="stat-total-scans">—</span>
+            <span class="stat-card-label">Total Scans</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-value stat-card-mint" id="stat-streak">—</span>
+            <span class="stat-card-label">Day Streak</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-value stat-card-calm" id="stat-latest-score">—</span>
+            <span class="stat-card-label">Latest Score</span>
+          </div>
+        </div>
+
+        <div class="dash-recent-header">
+          <h2>Recent Scans</h2>
+          <button class="dash-recent-link" id="dash-view-all">View all →</button>
+        </div>
+        <div class="dash-recent-grid" id="dash-recent-grid">
+          <!-- Populated by dashboard.js -->
+        </div>
+      </section>
+
+      <!-- HISTORY ──────────────────────────────────────────────────── -->
+      <section class="dash-section" data-section="history">
+        <div class="history-header">
+          <h1>Scan History</h1>
+          <p id="history-count"></p>
+        </div>
+
+        <div id="history-empty" class="hidden history-empty-state">
+          <p>No scans recorded yet.</p>
+          <a href="/analyze.html" class="btn btn-primary">Analyze Now</a>
+        </div>
+
+        <div id="history-list" aria-live="polite"></div>
+
+        <div id="history-bulk" class="hidden history-bulk-actions">
+          <button class="btn btn-outline" onclick="exportJSON()">Export JSON</button>
+          <button class="btn-ghost" onclick="clearAll()">Clear All History</button>
+        </div>
+      </section>
+
+      <!-- INGREDIENTS ──────────────────────────────────────────────── -->
+      <section class="dash-section" data-section="ingredients">
+        <div class="text-center encyclopedia-header">
+          <h1>Clinical Ingredient <span style="color:var(--primary-500)">Encyclopedia</span></h1>
+          <p>Explore the active ingredients backed by gold-standard PubMed clinical trials.</p>
+          <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search ingredients (e.g., Salicylic Acid)..."
+                   class="glass-input" aria-label="Search ingredients" />
+          </div>
+        </div>
+
+        <div id="loading-indicator" class="text-center hidden">
+          <div class="spinner"></div>
+          <p>Loading clinical data...</p>
+        </div>
+
+        <div id="ingredients-grid" class="ingredients-grid" role="list" aria-label="Clinical ingredients">
+        </div>
+      </section>
+
+      <!-- SHOPPING ─────────────────────────────────────────────────── -->
+      <section class="dash-section" data-section="shopping">
+        <div class="rec-header">
+          <h1>Your <span style="color:var(--primary-500)">Shopping List</span></h1>
+          <p>Products saved from your routine. Go to your routine and tap <strong>Save</strong> to add products here.</p>
+        </div>
+
+        <div id="shopping-loading" class="text-center">
+          <div class="spinner"></div>
+          <p>Loading saved products...</p>
+        </div>
+
+        <div id="shopping-empty" class="hidden text-center glass-panel" style="padding:3rem; border-radius:var(--radius-lg);">
+          <h2>Nothing saved yet</h2>
+          <p style="margin-top:0.75rem; color:var(--neutral-500);">Go to your routine and tap <strong>Save</strong> on any product.</p>
+          <a href="/recommendations.html" class="btn btn-primary" style="margin-top:1.5rem;">View Your Routine</a>
+        </div>
+
+        <div id="shopping-list" class="hidden">
+          <div style="display:flex; gap:0.75rem; margin-bottom:2rem; flex-wrap:wrap;">
+            <button id="copy-list-btn" class="btn btn-outline" onclick="Shopping.copyList()">Copy as Text</button>
+            <a href="/recommendations.html" class="btn btn-outline">Back to Routine</a>
+          </div>
+          <div id="shopping-items"></div>
+          <p style="font-size:0.7rem; color:var(--neutral-400); margin-top:1.5rem; text-align:center;">
+            Affiliate links — DermAI may earn from qualifying purchases at no extra cost to you.
+          </p>
+        </div>
+      </section>
+
+      <!-- COMPARE ──────────────────────────────────────────────────── -->
+      <section class="dash-section" data-section="compare">
+        <div class="history-header">
+          <h1>Compare Scans</h1>
+          <p>Select two scans from your history to generate an AI comparison.</p>
+        </div>
+
+        <div id="compare-empty" class="hidden history-empty-state">
+          <p>You need at least 2 scans to compare.</p>
+          <a href="/analyze.html" class="btn btn-primary">Analyze Now</a>
+        </div>
+
+        <div id="compare-picker-ui" class="hidden">
+          <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:2rem;">
+            <div style="flex:1; min-width:200px;">
+              <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:0.5rem;">Earlier scan</label>
+              <select id="compare-select-a" class="hc-picker-select" style="width:100%;">
+                <option value="">Select scan A…</option>
+              </select>
+            </div>
+            <div style="flex:1; min-width:200px;">
+              <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:0.5rem;">Later scan</label>
+              <select id="compare-select-b" class="hc-picker-select" style="width:100%;">
+                <option value="">Select scan B…</option>
+              </select>
+            </div>
+          </div>
+          <button id="compare-run-btn" class="btn btn-primary" disabled>Compare →</button>
+          <div id="compare-result-panel" class="hidden" style="margin-top:2rem;"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <script src="./js/storage.js"></script>
+    <script src="./js/photo-db.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/migration.js"></script>
+    <script src="./js/history.js"></script>
+    <script src="./js/ingredients.js"></script>
+    <script src="./js/shopping.js"></script>
+    <script src="./js/dashboard.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </body>
+</html>

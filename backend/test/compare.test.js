@@ -6,6 +6,7 @@ const { makeChain } = require('./helpers.js');
 
 const mockGetSupabaseAdmin = vi.fn();
 const mockGetClient = vi.fn();
+const mockGetGroqClient = vi.fn();
 const mockVerifyAuth = (req, res, next) => {
   req.user = { id: 'user-123' };
   req.supabaseToken = 'tok';
@@ -15,7 +16,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 const app = express();
 app.use(express.json());
-app.use(createCompareRouter(mockVerifyAuth, mockGetSupabaseAdmin, mockGetClient, upload));
+app.use(createCompareRouter(mockVerifyAuth, mockGetSupabaseAdmin, mockGetClient, upload, mockGetGroqClient));
 
 // Error handler so 500s don't crash the test process
 app.use((err, _req, res, _next) => {
@@ -176,7 +177,7 @@ describe('POST /api/compare', () => {
     expect(res.status).toBe(503);
   });
 
-  it('500 on Supabase query error', async () => {
+  it('500 on Supabase query error returns user-safe message', async () => {
     mockGetSupabaseAdmin.mockReturnValue({
       from: () => makeChain({ data: null, error: { message: 'connection refused' } })
     });
@@ -188,6 +189,41 @@ describe('POST /api/compare', () => {
       .attach('image_a', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' })
       .attach('image_b', fakeImg, { filename: 'b.jpg', contentType: 'image/jpeg' });
     expect(res.status).toBe(500);
-    expect(res.body.error).toBe('connection refused');
+    expect(res.body.error).toBe('Something went wrong. Please try again.');
+  });
+
+  it('falls back to Groq when all OpenRouter models fail (text mode)', async () => {
+    mockGetSupabaseAdmin.mockReturnValue({
+      from: () => makeChain({
+        data: [
+          { id: 'uuid-a', result_json: { overallHealth: 80, skinType: 'Oily', concerns: [] } },
+          { id: 'uuid-b', result_json: { overallHealth: 88, skinType: 'Oily', concerns: [] } }
+        ],
+        error: null
+      })
+    });
+    mockGetClient.mockReturnValue({
+      chat: {
+        completions: {
+          create: vi.fn().mockRejectedValue(new Error('Model unavailable'))
+        }
+      }
+    });
+    mockGetGroqClient.mockReturnValue({
+      chat: {
+        completions: {
+          create: vi.fn().mockResolvedValue({
+            choices: [{ message: { content: 'Your skin has improved significantly.' } }]
+          })
+        }
+      }
+    });
+
+    const res = await request(app)
+      .post('/api/compare')
+      .field('scan_a_id', 'uuid-a')
+      .field('scan_b_id', 'uuid-b');
+    expect(res.status).toBe(200);
+    expect(res.body.narrative).toBe('Your skin has improved significantly.');
   });
 });

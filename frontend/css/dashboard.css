@@ -1,0 +1,403 @@
+/* ── Dashboard layout ────────────────────────────────────────────── */
+
+.dash-body {
+  display: flex;
+  min-height: 100dvh;
+  background: var(--bg-primary);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────── */
+.dash-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  z-index: 20;
+  overflow-y: auto;
+  padding: 1.5rem 1rem;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem 1.75rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+}
+
+.dash-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary-500);
+}
+
+/* ── Sidebar nav ─────────────────────────────────────────────────── */
+.dash-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.dash-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.875rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--neutral-600);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.dash-nav a:hover {
+  background: var(--bg-subtle);
+  color: var(--neutral-900);
+}
+
+.dash-nav a.active {
+  background: rgba(245, 88, 142, 0.08);
+  color: var(--primary-600);
+  font-weight: 600;
+}
+
+.dash-nav a .nav-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.dash-nav a.active .nav-icon {
+  opacity: 1;
+}
+
+/* ── Sidebar user chip ───────────────────────────────────────────── */
+.dash-user {
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dash-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.875rem;
+}
+
+.dash-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg-subtle);
+  flex-shrink: 0;
+}
+
+.dash-user-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--neutral-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-signout-btn {
+  width: 100%;
+  padding: 0.6rem 0.875rem;
+  border-radius: var(--radius-md);
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--neutral-500);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--duration-fast), color var(--duration-fast), border-color var(--duration-fast);
+}
+
+.dash-signout-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--neutral-800);
+  border-color: var(--neutral-300);
+}
+
+/* ── Main content area ───────────────────────────────────────────── */
+.dash-main {
+  margin-left: 260px;
+  flex: 1;
+  min-width: 0;
+  padding: 2.5rem 2rem;
+  max-width: 100%;
+}
+
+/* ── Sections ────────────────────────────────────────────────────── */
+.dash-section {
+  display: none;
+}
+
+.dash-section.active {
+  display: block;
+}
+
+/* ── Overview section ────────────────────────────────────────────── */
+.dash-welcome {
+  margin-bottom: 2.5rem;
+}
+
+.dash-welcome h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin-bottom: 0.25rem;
+}
+
+.dash-welcome p {
+  color: var(--neutral-500);
+  font-size: 0.9rem;
+}
+
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--neutral-900);
+  line-height: 1;
+}
+
+.stat-card-label {
+  font-size: 0.78rem;
+  color: var(--neutral-500);
+  font-weight: 500;
+}
+
+.stat-card-accent { color: var(--primary-500); }
+.stat-card-mint   { color: var(--mint-500); }
+.stat-card-calm   { color: var(--calm-500); }
+
+.dash-recent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.dash-recent-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--neutral-800);
+}
+
+.dash-recent-link {
+  font-size: 0.82rem;
+  color: var(--primary-500);
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.dash-recent-link:hover { color: var(--primary-700); }
+
+/* Recent scans mini-cards */
+.dash-recent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.dash-scan-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: box-shadow var(--duration-fast), transform var(--duration-fast);
+}
+
+.dash-scan-card:hover {
+  box-shadow: var(--shadow-pop);
+  transform: translateY(-2px);
+}
+
+.dash-scan-date {
+  font-size: 0.75rem;
+  color: var(--neutral-400);
+}
+
+.dash-scan-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--neutral-900);
+}
+
+.dash-scan-concerns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.dash-scan-concern-tag {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: rgba(245, 88, 142, 0.08);
+  color: var(--primary-700);
+  border: 1px solid rgba(245, 88, 142, 0.15);
+}
+
+/* Empty state */
+.dash-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.dash-empty h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--neutral-800);
+}
+
+.dash-empty p {
+  color: var(--neutral-500);
+  margin-bottom: 1.5rem;
+}
+
+/* ── Mobile hamburger in dashboard ──────────────────────────────── */
+.dash-topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 25;
+}
+
+.dash-topbar-brand {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-500);
+}
+
+.dash-hamburger {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 0.4rem;
+  color: var(--neutral-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--duration-fast);
+}
+
+.dash-hamburger:hover { background: var(--bg-subtle); }
+
+/* ── Sidebar overlay (mobile) ────────────────────────────────────── */
+.dash-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 14, 0.5);
+  z-index: 19;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dash-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .dash-sidebar.open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .dash-topbar {
+    display: flex;
+  }
+
+  .dash-overlay {
+    display: block;
+  }
+
+  .dash-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .dash-main {
+    margin-left: 0;
+    padding: 1.5rem 1rem;
+  }
+
+  .dash-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dash-recent-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dash-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dash-main {
+    padding: 1.25rem 0.875rem;
+  }
+}

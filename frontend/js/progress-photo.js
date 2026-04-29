@@ -140,7 +140,7 @@
         </div>
         <div style="display:flex;flex-direction:column;gap:0.4rem;align-items:flex-end;flex-shrink:0;">
           <button class="btn btn-ghost progress-card__retake" id="progress-retake-btn" style="font-size:0.7rem;padding:4px 8px;">RETAKE</button>
-          <a href="https://drive.google.com/drive/folders/${encodeURIComponent(progFolderId)}" target="_blank" rel="noopener" style="font-family:'Space Mono',monospace;font-size:0.65rem;color:#666;">View →</a>
+          <a href="https://drive.google.com/drive/folders/${encodeURIComponent(progFolderId)}" target="_blank" rel="noopener" style="font-family:var(--font-primary,system-ui,sans-serif);font-size:0.65rem;color:var(--text-muted,#716b62);">View →</a>
         </div>
       </div>`;
 

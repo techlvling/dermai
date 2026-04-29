@@ -1,11 +1,12 @@
-(async function () {
-  let historyData = [];
+window.History = (function () {
+  let historyData  = [];
   const photosByDay = {};
+  let _mounted     = false;
+  let _compareMounted = false;
 
-  async function init() {
+  async function _init() {
     historyData = (Storage.get('dermAI_history') || []).slice();
 
-    // Merge server scans when logged in
     const body = await Storage.server.get('/api/scans');
     const serverScans = body?.scans;
     if (serverScans && Array.isArray(serverScans)) {
@@ -32,8 +33,8 @@
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
       const id = btn.dataset.id;
-      if (btn.dataset.action === 'view')         viewRoutine(id);
-      if (btn.dataset.action === 'del')          deleteEntry(id);
+      if (btn.dataset.action === 'view')         _viewRoutine(id);
+      if (btn.dataset.action === 'del')          _deleteEntry(id);
       if (btn.dataset.action === 'compare-pick') {
         const picker = document.getElementById('picker-' + id);
         if (picker) picker.hidden = !picker.hidden;
@@ -46,13 +47,13 @@
       const entryId = sel.dataset.entryId;
       const prevId  = sel.value;
       sel.value = '';
-      compareScans(entryId, prevId);
+      _compareScans(entryId, prevId);
     });
 
-    render();
+    _render();
   }
 
-  function render() {
+  function _render() {
     const listEl  = document.getElementById('history-list');
     const emptyEl = document.getElementById('history-empty');
     const bulkEl  = document.getElementById('history-bulk');
@@ -70,11 +71,11 @@
     emptyEl.classList.add('hidden');
     bulkEl.classList.remove('hidden');
     if (countEl) {
-      countEl.textContent = `${historyData.length} scan${historyData.length !== 1 ? 's' : ''} stored on this device`;
+      countEl.textContent = `${historyData.length} scan${historyData.length !== 1 ? 's' : ''} stored`;
     }
 
     const reversed = [...historyData].reverse();
-    reversed.forEach((entry, idx) => {
+    reversed.forEach(entry => {
       const isLegacy = !entry.analysis;
       const score    = isLegacy ? entry.overallHealth    : entry.analysis.overallHealth;
       const skinType = isLegacy ? entry.skinType         : entry.analysis.skinType;
@@ -122,7 +123,6 @@
 
       const card = document.createElement('div');
       card.className = 'history-card';
-
       card.innerHTML = `
         <div class="hc-thumb${thumbSrc ? '' : ' hc-thumb--empty'}">
           ${thumbSrc
@@ -154,26 +154,24 @@
             </select>
           </div>` : ''}
           <div class="hc-compare-panel" id="compare-${entryId}" hidden></div>
-        </div>
-      `;
+        </div>`;
 
       listEl.appendChild(card);
     });
   }
 
-  function viewRoutine(id) {
+  function _viewRoutine(id) {
     const entry = historyData.find(e => String(e.id || e.date) === id);
     if (!entry || !entry.analysis) return;
     localStorage.setItem('dermAI_analysis', JSON.stringify({ ...entry.analysis, savedAt: Date.now() }));
     window.location.href = '/recommendations.html';
   }
 
-  function deleteEntry(id) {
+  function _deleteEntry(id) {
     const idx = historyData.findIndex(e => String(e.id || e.date) === id);
     if (idx === -1) return;
     const entry = historyData.splice(idx, 1)[0];
     Storage.set('dermAI_history', historyData);
-
     const entryMs = entry.id || new Date(entry.date).getTime();
     PhotoDB.getAll()
       .then(photos => {
@@ -181,24 +179,20 @@
         if (match) return PhotoDB.remove(match.id);
       })
       .catch(() => {});
-
-    render();
+    _render();
   }
 
-  async function compareScans(entryId, prevEntryId) {
+  async function _compareScans(entryId, prevEntryId) {
     const panel = document.getElementById('compare-' + entryId);
     if (!panel) return;
 
-    // Hide the picker
     const picker = document.getElementById('picker-' + entryId);
     if (picker) picker.hidden = true;
 
-    // Toggle if same comparison already loaded
     if (panel.dataset.loaded === 'true' && panel.dataset.comparedWith === String(prevEntryId)) {
       panel.hidden = !panel.hidden;
       return;
     }
-    // Reset for new comparison
     panel.dataset.loaded = 'false';
     panel.dataset.comparedWith = String(prevEntryId);
 
@@ -210,11 +204,9 @@
       const prevEntry = historyData.find(e => String(e.id) === String(prevEntryId));
       const urlOlder  = prevEntry?.image_urls?.[0];
       const urlNewer  = entry?.image_urls?.[0];
-
       const hasPhotos = !!(urlOlder && urlNewer);
 
-      let objUrlOlder = null;
-      let objUrlNewer = null;
+      let objUrlOlder = null, objUrlNewer = null;
 
       if (hasPhotos) {
         const googleToken = window.Auth ? await window.Auth.getProviderToken() : null;
@@ -231,25 +223,18 @@
             `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
             { headers: { Authorization: `Bearer ${googleToken}` } }
           );
-          if (res.status === 401 || res.status === 403) {
-            throw Object.assign(new Error('Drive auth failed'), { type: 'auth' });
-          }
+          if (res.status === 401 || res.status === 403) throw Object.assign(new Error('Drive auth failed'), { type: 'auth' });
           if (!res.ok) throw Object.assign(new Error(`Drive ${res.status}`), { type: 'fetch' });
           return res.blob();
         }
 
         let blobOlder, blobNewer;
         try {
-          [blobOlder, blobNewer] = await Promise.all([
-            fetchDriveBlob(urlOlder),
-            fetchDriveBlob(urlNewer),
-          ]);
+          [blobOlder, blobNewer] = await Promise.all([fetchDriveBlob(urlOlder), fetchDriveBlob(urlNewer)]);
         } catch (err) {
-          if (err.type === 'auth') {
-            panel.innerHTML = '<p class="hc-compare-error">Drive access expired. Re-enable Drive backup to refresh access.</p>';
-          } else {
-            panel.innerHTML = '<p class="hc-compare-error">Couldn\'t load photo from Drive. Try again.</p>';
-          }
+          panel.innerHTML = err.type === 'auth'
+            ? '<p class="hc-compare-error">Drive access expired. Re-enable Drive backup to refresh access.</p>'
+            : '<p class="hc-compare-error">Couldn\'t load photo from Drive. Try again.</p>';
           return;
         }
 
@@ -259,17 +244,14 @@
 
       const supabaseToken = window.Auth ? await window.Auth.getToken() : null;
       if (!supabaseToken) {
-        if (hasPhotos) {
-          URL.revokeObjectURL(objUrlOlder);
-          URL.revokeObjectURL(objUrlNewer);
-        }
+        if (hasPhotos) { URL.revokeObjectURL(objUrlOlder); URL.revokeObjectURL(objUrlNewer); }
         panel.innerHTML = '<p class="hc-compare-error">Sign in to use comparison.</p>';
         return;
       }
 
       const form = new FormData();
-      form.append('scan_a_id', String(prevEntryId));  // older scan = image_a
-      form.append('scan_b_id', String(entryId));       // newer scan = image_b
+      form.append('scan_a_id', String(prevEntryId));
+      form.append('scan_b_id', String(entryId));
       if (hasPhotos) {
         form.append('image_a', blobOlder, 'scan_a.jpg');
         form.append('image_b', blobNewer, 'scan_b.jpg');
@@ -282,17 +264,10 @@
       });
 
       if (!apiRes.ok) {
-        if (hasPhotos) {
-          URL.revokeObjectURL(objUrlOlder);
-          URL.revokeObjectURL(objUrlNewer);
-        }
-        if (apiRes.status === 404) {
-          panel.innerHTML = '<p class="hc-compare-error">Scan not found.</p>';
-        } else if (apiRes.status === 429) {
-          panel.innerHTML = '<p class="hc-compare-error">AI rate limit reached. Wait a moment and try again.</p>';
-        } else {
-          panel.innerHTML = '<p class="hc-compare-error">Comparison failed. Try again.</p>';
-        }
+        if (hasPhotos) { URL.revokeObjectURL(objUrlOlder); URL.revokeObjectURL(objUrlNewer); }
+        if (apiRes.status === 404)      panel.innerHTML = '<p class="hc-compare-error">Scan not found.</p>';
+        else if (apiRes.status === 429) panel.innerHTML = '<p class="hc-compare-error">AI rate limit reached. Wait a moment and try again.</p>';
+        else                            panel.innerHTML = '<p class="hc-compare-error">Comparison failed. Try again.</p>';
         return;
       }
 
@@ -306,14 +281,11 @@
           <img src="${objUrlOlder}" alt="Earlier scan" />
           <img src="${objUrlNewer}" alt="Recent scan" />
         </div>` : ''}
-        <button class="btn-ghost btn-sm hc-compare-close">Close</button>
-      `;
+        <button class="btn-ghost btn-sm hc-compare-close">Close</button>`;
       panel.insertBefore(narrativeEl, panel.querySelector('.hc-compare-close'));
       panel.dataset.loaded = 'true';
 
-      panel.querySelector('.hc-compare-close').addEventListener('click', () => {
-        panel.hidden = true;
-      });
+      panel.querySelector('.hc-compare-close').addEventListener('click', () => { panel.hidden = true; });
 
       if (hasPhotos) {
         window.addEventListener('beforeunload', () => {
@@ -328,6 +300,93 @@
     }
   }
 
+  // ── Compare section: standalone picker UI in dashboard ───────────
+  async function _mountCompare() {
+    if (_compareMounted) return;
+    _compareMounted = true;
+
+    // Need history data loaded for compare to work
+    if (!_mounted) await _init().catch(() => {});
+
+    const emptyEl  = document.getElementById('compare-empty');
+    const pickerUi = document.getElementById('compare-picker-ui');
+    const selectA  = document.getElementById('compare-select-a');
+    const selectB  = document.getElementById('compare-select-b');
+    const runBtn   = document.getElementById('compare-run-btn');
+    const resultEl = document.getElementById('compare-result-panel');
+
+    const eligible = historyData
+      .filter(e => typeof e.id === 'string' && e.id.includes('-') && !!e.analysis)
+      .sort((a, b) => new Date(b.id || b.date) - new Date(a.id || a.date));
+
+    if (eligible.length < 2) {
+      if (emptyEl) emptyEl.classList.remove('hidden');
+      return;
+    }
+
+    if (pickerUi) pickerUi.classList.remove('hidden');
+
+    function buildOptions(sel) {
+      const opts = eligible.map(e => {
+        const d = new Date(e.id || e.date);
+        return `<option value="${e.id}">${d.toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric', year:'numeric' })}</option>`;
+      }).join('');
+      sel.innerHTML = `<option value="">Select a scan…</option>${opts}`;
+    }
+
+    buildOptions(selectA);
+    buildOptions(selectB);
+
+    function checkReady() {
+      runBtn.disabled = !(selectA.value && selectB.value && selectA.value !== selectB.value);
+    }
+    selectA.addEventListener('change', checkReady);
+    selectB.addEventListener('change', checkReady);
+
+    runBtn.addEventListener('click', async () => {
+      if (!selectA.value || !selectB.value) return;
+      resultEl.innerHTML = '<div class="hc-compare-loading"><span class="hc-spinner"></span> Comparing…</div>';
+      resultEl.classList.remove('hidden');
+
+      // Determine which is older/newer by date
+      const entryA = eligible.find(e => String(e.id) === selectA.value);
+      const entryB = eligible.find(e => String(e.id) === selectB.value);
+      const older  = new Date(entryA.id) < new Date(entryB.id) ? entryA : entryB;
+      const newer  = older === entryA ? entryB : entryA;
+
+      await _compareScansToEl(String(older.id), String(newer.id), resultEl);
+    });
+  }
+
+  async function _compareScansToEl(olderEntryId, newerEntryId, resultEl) {
+    try {
+      const supabaseToken = window.Auth ? await window.Auth.getToken() : null;
+      if (!supabaseToken) {
+        resultEl.innerHTML = '<p class="hc-compare-error">Sign in to use comparison.</p>';
+        return;
+      }
+      const form = new FormData();
+      form.append('scan_a_id', olderEntryId);
+      form.append('scan_b_id', newerEntryId);
+      const apiRes = await fetch('/api/compare', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${supabaseToken}` },
+        body: form,
+      });
+      if (!apiRes.ok) {
+        resultEl.innerHTML = apiRes.status === 429
+          ? '<p class="hc-compare-error">Rate limit reached. Wait a moment.</p>'
+          : '<p class="hc-compare-error">Comparison failed. Try again.</p>';
+        return;
+      }
+      const { narrative } = await apiRes.json();
+      resultEl.innerHTML = `<p class="hc-compare-narrative">${narrative}</p>`;
+    } catch (err) {
+      resultEl.innerHTML = '<p class="hc-compare-error">Comparison failed. Try again.</p>';
+    }
+  }
+
+  // ── Public exports ───────────────────────────────────────────────
   window.clearAll = function () {
     if (!confirm('Delete all scan history and saved photos? This cannot be undone.')) return;
     historyData = [];
@@ -335,24 +394,27 @@
     PhotoDB.getAll()
       .then(photos => Promise.all(photos.map(p => PhotoDB.remove(p.id))))
       .catch(() => {});
-    render();
+    _render();
   };
 
   window.exportJSON = function () {
-    const payload = JSON.stringify(
-      { history: historyData, exportedAt: new Date().toISOString(), version: 2 },
-      null, 2
-    );
+    const payload = JSON.stringify({ history: historyData, exportedAt: new Date().toISOString(), version: 2 }, null, 2);
     const url = URL.createObjectURL(new Blob([payload], { type: 'application/json' }));
-    const a   = Object.assign(document.createElement('a'), {
-      href: url,
-      download: `dermAI-history-${Date.now()}.json`
-    });
+    const a   = Object.assign(document.createElement('a'), { href: url, download: `dermAI-history-${Date.now()}.json` });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
-  init();
+  return {
+    mount() {
+      if (_mounted) return;
+      _mounted = true;
+      _init();
+    },
+    mountCompare() {
+      _mountCompare();
+    }
+  };
 })();
