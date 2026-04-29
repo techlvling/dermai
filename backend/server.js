@@ -71,19 +71,7 @@ function getClient() {
 }
 
 // ---------------------------------------------------------------------------
-// Authenticated data routes
-// ---------------------------------------------------------------------------
-const { verifyAuth } = require('./middleware/auth');
-const { getSupabaseAdmin } = require('./lib/supabase');
-app.use(require('./routes/scans')(verifyAuth, getSupabaseAdmin));
-app.use(require('./routes/favorites')(verifyAuth, getSupabaseAdmin));
-app.use(require('./routes/routine')(verifyAuth, getSupabaseAdmin));
-app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
-app.use(require('./routes/photos')(verifyAuth, getSupabaseAdmin));
-app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getClient, upload));
-
-// ---------------------------------------------------------------------------
-// Routes — data files
+// Routes — public (no auth required)
 // ---------------------------------------------------------------------------
 
 app.get('/api/health', (_req, res) => {
@@ -186,11 +174,11 @@ app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, re
       content: [{ type: 'text', text: prompt }, ...imageContents]
     }];
 
-    // Model fallback chain — cheapest first, all support vision via OpenRouter
+    // Free vision model fallback chain — largest/best first, all :free tier on OpenRouter
     const modelsToTry = [
-      'qwen/qwen-2.5-vl-72b-instruct',
-      'meta-llama/llama-3.2-11b-vision-instruct',
-      'openai/gpt-4o-mini'
+      'qwen/qwen2.5-vl-72b-instruct:free',
+      'google/gemma-4-31b-it:free',
+      'google/gemma-3-27b-it:free',
     ];
 
     let aiResponse  = null;
@@ -242,6 +230,18 @@ app.post('/api/analyze', analyzeLimit, upload.array('images', 3), async (req, re
     res.status(500).json({ error: String(err.message || err) });
   }
 });
+
+// ---------------------------------------------------------------------------
+// Authenticated data routes
+// ---------------------------------------------------------------------------
+const { verifyAuth } = require('./middleware/auth');
+const { getSupabaseAdmin } = require('./lib/supabase');
+app.use(require('./routes/scans')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/favorites')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/routine')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/photos')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getClient, upload));
 
 // ---------------------------------------------------------------------------
 // 404 — serve branded page for unknown HTML routes, JSON for API routes
