@@ -309,7 +309,7 @@
 
 .hc-compare-photos img {
   width: 50%;
-  border-radius: 8px;
+  border-radius: 0;
   object-fit: cover;
   aspect-ratio: 1;
 }
