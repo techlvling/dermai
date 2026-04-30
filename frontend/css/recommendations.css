@@ -230,6 +230,14 @@
   color: var(--neutral-700);
   line-height: 1.5;
 }
+.evidence-extra-trials {
+  margin: 0.4rem 0 0;
+  font-size: 0.7rem;
+  color: var(--neutral-500);
+}
+.evidence-extra-trials a {
+  margin: 0 0.15rem;
+}
 
 .evidence-rationale-body {
   font-size: 0.8rem;

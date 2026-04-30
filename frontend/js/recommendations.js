@@ -427,10 +427,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const matchedConcerns = prod.concerns.filter(pc => userConcernNames.includes(pc));
     if (!matchedConcerns.length || !ingredient) return '';
 
-    // Find the first PubMed study for this ingredient
-    const study = ingredient.keyStudies && ingredient.keyStudies[0];
+    // Citation order: prefer product-specific trials (curated via the
+    // enrichProductTrials script — PMIDs that mention the brand or this
+    // exact formulation) over generic ingredient-level trials.
+    const productTrial = Array.isArray(prod.productTrials) && prod.productTrials.length
+      ? prod.productTrials[0]
+      : null;
+    const study = productTrial || (ingredient.keyStudies && ingredient.keyStudies[0]);
     const studyLink = study
       ? `<a href="${study.link}" target="_blank" rel="noopener noreferrer" style="color:var(--primary-400); text-decoration:underline;">[PMID ${study.pubmedId}]</a>`
+      : '';
+    // Show extra brand-named PMIDs (up to 2 more) as a small "more trials"
+    // line for products that actually have published clinical evidence.
+    const extraTrialLinks = Array.isArray(prod.productTrials) && prod.productTrials.length > 1
+      ? prod.productTrials.slice(1, 3).map(t =>
+          `<a href="${t.link}" target="_blank" rel="noopener noreferrer" style="color:var(--primary-400); text-decoration:underline;">[PMID ${t.pubmedId}]</a>`
+        ).join(' · ')
       : '';
 
     // Build rationale from concerns.json
@@ -448,6 +460,10 @@ document.addEventListener('DOMContentLoaded', () => {
       ? `<p class="evidence-trial-note">📋 ${prod.trialNote}</p>`
       : '';
 
+    const extraTrialsHTML = extraTrialLinks
+      ? `<p class="evidence-extra-trials">More trials of this product: ${extraTrialLinks}</p>`
+      : '';
+
     return `
       <div class="evidence-rationale">
         <div class="evidence-rationale-head">
@@ -459,6 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <p class="evidence-rationale-body">${rationaleText} ${studyLink}</p>
         ${trialNoteHTML}
+        ${extraTrialsHTML}
       </div>`;
   }
 
