@@ -1,34 +1,46 @@
 {
   "Acne": {
-    "targetIngredients": ["salicylic_acid", "benzoyl_peroxide", "tretinoin", "niacinamide", "azelaic_acid", "glycolic_acid"],
-    "rationale": "Salicylic acid (BHA) unclogs pores; benzoyl peroxide kills acne bacteria; adapalene/tretinoin normalises cell turnover; niacinamide reduces sebum and inflammation; azelaic acid is antimicrobial and anti-inflammatory."
+    "targetIngredients": ["salicylic_acid", "benzoyl_peroxide", "tretinoin", "niacinamide", "azelaic_acid", "glycolic_acid", "sulfur", "mandelic_acid"],
+    "rationale": "Salicylic acid (BHA) unclogs pores; benzoyl peroxide kills acne bacteria; adapalene/tretinoin normalises cell turnover; niacinamide reduces sebum and inflammation; azelaic acid is antimicrobial and anti-inflammatory; sulfur dries active lesions; mandelic acid exfoliates without the irritation glycolic can cause."
   },
   "Hyperpigmentation": {
-    "targetIngredients": ["niacinamide", "vitamin_c", "alpha_arbutin", "kojic_acid", "tretinoin", "azelaic_acid", "lactic_acid", "glycolic_acid"],
-    "rationale": "Vitamin C inhibits tyrosinase (the enzyme that produces melanin); niacinamide blocks melanosome transfer; alpha arbutin and kojic acid are tyrosinase inhibitors; tretinoin accelerates cell renewal to shed pigmented cells."
+    "targetIngredients": ["niacinamide", "vitamin_c", "alpha_arbutin", "kojic_acid", "tretinoin", "azelaic_acid", "lactic_acid", "glycolic_acid", "tranexamic_acid", "mandelic_acid"],
+    "rationale": "Vitamin C inhibits tyrosinase (the enzyme that produces melanin); niacinamide blocks melanosome transfer; alpha arbutin and kojic acid are tyrosinase inhibitors; tretinoin accelerates cell renewal to shed pigmented cells; tranexamic acid blocks plasmin-mediated melanogenesis (strong RCT evidence for melasma); mandelic acid lifts surface pigment gently."
   },
   "Pores": {
-    "targetIngredients": ["salicylic_acid", "niacinamide", "glycolic_acid"],
-    "rationale": "Salicylic acid dissolves the sebum and debris that stretches pores; niacinamide tightens pore walls and regulates oil production; glycolic acid exfoliates the surface to reduce their appearance."
+    "targetIngredients": ["salicylic_acid", "niacinamide", "glycolic_acid", "mandelic_acid", "polyhydroxy_acids"],
+    "rationale": "Salicylic acid dissolves the sebum and debris that stretches pores; niacinamide tightens pore walls and regulates oil production; AHAs (glycolic, mandelic) and PHAs exfoliate the surface to reduce their appearance."
   },
   "Fine Lines": {
-    "targetIngredients": ["tretinoin", "retinol", "peptides", "hyaluronic_acid", "vitamin_c", "lactic_acid"],
-    "rationale": "Tretinoin and retinol are the only topical ingredients with gold-standard RCT evidence for stimulating collagen and reducing wrinkle depth; peptides signal fibroblasts to produce collagen; vitamin C is a cofactor in collagen synthesis; hyaluronic acid provides immediate plumping hydration."
+    "targetIngredients": ["tretinoin", "retinol", "peptides", "hyaluronic_acid", "vitamin_c", "lactic_acid", "bakuchiol", "copper_peptides", "adenosine"],
+    "rationale": "Tretinoin and retinol have gold-standard RCT evidence for stimulating collagen and reducing wrinkle depth; bakuchiol is a plant-derived alternative with smaller but supportive RCTs and better tolerance; peptides and copper peptides signal fibroblasts to produce collagen; vitamin C is a cofactor in collagen synthesis; hyaluronic acid provides immediate plumping hydration."
   },
   "Texture": {
-    "targetIngredients": ["salicylic_acid", "glycolic_acid", "lactic_acid", "tretinoin", "retinol"],
-    "rationale": "Chemical exfoliation with AHAs (glycolic, lactic) and BHA (salicylic) smooths rough surface texture by dissolving the bonds between dead skin cells; tretinoin normalises keratinisation for long-term refinement."
+    "targetIngredients": ["salicylic_acid", "glycolic_acid", "lactic_acid", "tretinoin", "retinol", "mandelic_acid", "polyhydroxy_acids", "urea"],
+    "rationale": "Chemical exfoliation with AHAs (glycolic, lactic, mandelic) and BHA (salicylic) smooths rough surface texture by dissolving the bonds between dead skin cells; PHAs offer a gentler exfoliation suitable for sensitive skin; urea is keratolytic at higher concentrations; tretinoin normalises keratinisation for long-term refinement."
   },
   "Dryness": {
-    "targetIngredients": ["hyaluronic_acid", "ceramides", "lactic_acid", "peptides"],
-    "rationale": "Hyaluronic acid attracts and holds water in the skin; ceramides seal the lipid barrier to prevent trans-epidermal water loss; lactic acid is a natural moisturising factor (NMF) component."
+    "targetIngredients": ["hyaluronic_acid", "ceramides", "lactic_acid", "peptides", "squalane", "urea", "panthenol", "allantoin"],
+    "rationale": "Hyaluronic acid attracts and holds water in the skin; ceramides seal the lipid barrier to prevent trans-epidermal water loss; squalane mimics the skin's own sebum to reinforce the barrier; urea is a natural moisturising factor (NMF) component; panthenol and allantoin soothe and accelerate barrier repair."
   },
   "Oiliness": {
-    "targetIngredients": ["niacinamide", "salicylic_acid", "azelaic_acid"],
-    "rationale": "Niacinamide suppresses sebum production; salicylic acid penetrates the follicle to clear excess oil; azelaic acid normalises keratinisation and reduces abnormal sebum output."
+    "targetIngredients": ["niacinamide", "salicylic_acid", "azelaic_acid", "sulfur", "mandelic_acid"],
+    "rationale": "Niacinamide suppresses sebum production; salicylic acid penetrates the follicle to clear excess oil; azelaic acid normalises keratinisation and reduces abnormal sebum output; sulfur and mandelic acid help degrease without stripping the barrier."
   },
   "Sensitivity": {
-    "targetIngredients": ["niacinamide", "ceramides", "hyaluronic_acid", "azelaic_acid"],
-    "rationale": "Niacinamide calms redness and reinforces the barrier; ceramides restore disrupted lipid layers; hyaluronic acid hydrates without irritants; azelaic acid is anti-inflammatory and well-tolerated by sensitive skin."
+    "targetIngredients": ["niacinamide", "ceramides", "hyaluronic_acid", "azelaic_acid", "centella_asiatica", "panthenol", "allantoin", "beta_glucan", "snail_mucin"],
+    "rationale": "Niacinamide calms redness and reinforces the barrier; ceramides restore disrupted lipid layers; centella asiatica (cica) reduces inflammation via asiaticoside; panthenol and allantoin soothe; beta-glucan and snail mucin support repair; azelaic acid is anti-inflammatory and well-tolerated."
+  },
+  "Rosacea": {
+    "targetIngredients": ["azelaic_acid", "niacinamide", "sulfur", "centella_asiatica", "ceramides", "panthenol"],
+    "rationale": "Azelaic acid is FDA-approved for papulopustular rosacea (15% formulation has strong RCT evidence); niacinamide reduces flushing and reinforces a notoriously fragile barrier; sulfur is a classic anti-rosacea active; centella, ceramides, and panthenol calm inflammation and restore the barrier."
+  },
+  "Sun Damage": {
+    "targetIngredients": ["vitamin_c", "tranexamic_acid", "retinol", "tretinoin", "niacinamide", "zinc_oxide", "azelaic_acid"],
+    "rationale": "Daily zinc-oxide (or chemical) sunscreen is the only intervention that prevents further damage; vitamin C neutralises UV-induced free radicals; tranexamic acid and niacinamide fade sun-induced pigmentation; retinoids reverse photoaging by stimulating collagen and accelerating turnover."
+  },
+  "Eczema-prone": {
+    "targetIngredients": ["ceramides", "panthenol", "allantoin", "beta_glucan", "centella_asiatica", "urea", "squalane", "hyaluronic_acid"],
+    "rationale": "Eczema-prone barriers leak water and react to irritants. Ceramides restore the lipid matrix; panthenol, allantoin, and centella reduce inflammation; beta-glucan and snail mucin support repair; urea (low %) and hyaluronic acid hydrate; squalane is a gentle occlusive."
   }
 }

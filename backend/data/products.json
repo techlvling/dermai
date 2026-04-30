@@ -228,5 +228,405 @@
     "bestTimeOfDay": "AM",
     "concerns": ["Sensitivity", "Acne", "Hyperpigmentation"],
     "priceTier": "$$$"
+  },
+  {
+    "id": "prod_cle_04",
+    "name": "Gentle Skin Cleanser",
+    "brand": "Cetaphil",
+    "primaryIngredientId": "panthenol",
+    "category": "cleanser",
+    "bestTimeOfDay": "both",
+    "concerns": ["Sensitivity", "Dryness", "Eczema-prone"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_cle_05",
+    "name": "Low pH Good Morning Gel Cleanser",
+    "brand": "COSRX",
+    "primaryIngredientId": "centella_asiatica",
+    "category": "cleanser",
+    "bestTimeOfDay": "both",
+    "concerns": ["Sensitivity", "Acne", "Rosacea"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_cle_06",
+    "name": "Green Plum Refreshing Cleanser",
+    "brand": "Beauty of Joseon",
+    "primaryIngredientId": "centella_asiatica",
+    "category": "cleanser",
+    "bestTimeOfDay": "both",
+    "concerns": ["Oiliness", "Texture"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_cle_07",
+    "name": "Effaclar Purifying Foaming Gel",
+    "brand": "La Roche-Posay",
+    "primaryIngredientId": "zinc_oxide",
+    "category": "cleanser",
+    "bestTimeOfDay": "both",
+    "concerns": ["Acne", "Oiliness"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_cle_08",
+    "name": "Sensibio H2O Micellar Water",
+    "brand": "Bioderma",
+    "primaryIngredientId": "allantoin",
+    "category": "cleanser",
+    "bestTimeOfDay": "both",
+    "concerns": ["Sensitivity", "Dryness", "Rosacea"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_bak_01",
+    "name": "Bakuchiol Moisturizer",
+    "brand": "The Inkey List",
+    "primaryIngredientId": "bakuchiol",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Fine Lines", "Sensitivity"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_bak_02",
+    "name": "Bakuchiol Retinol Alternative Serum",
+    "brand": "Herbivore",
+    "primaryIngredientId": "bakuchiol",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Fine Lines", "Sensitivity"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_cu_01",
+    "name": "Copper Amino Isolate Serum 1%",
+    "brand": "NIOD",
+    "primaryIngredientId": "copper_peptides",
+    "category": "treatment",
+    "bestTimeOfDay": "both",
+    "concerns": ["Fine Lines", "Texture"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_cica_01",
+    "name": "Centella Blemish Cream",
+    "brand": "COSRX",
+    "primaryIngredientId": "centella_asiatica",
+    "category": "treatment",
+    "bestTimeOfDay": "both",
+    "concerns": ["Acne", "Sensitivity", "Rosacea"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_cica_02",
+    "name": "Centella Asiatica Calming Mask",
+    "brand": "Beauty of Joseon",
+    "primaryIngredientId": "centella_asiatica",
+    "category": "treatment",
+    "bestTimeOfDay": "both",
+    "concerns": ["Sensitivity", "Rosacea", "Eczema-prone"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_snail_01",
+    "name": "Advanced Snail 96 Mucin Power Essence",
+    "brand": "COSRX",
+    "primaryIngredientId": "snail_mucin",
+    "category": "treatment",
+    "bestTimeOfDay": "both",
+    "concerns": ["Texture", "Dryness", "Sensitivity"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_snail_02",
+    "name": "Snail Repair Intensive Ampoule",
+    "brand": "Mizon",
+    "primaryIngredientId": "snail_mucin",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Fine Lines", "Texture"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_egf_01",
+    "name": "EGF Activating Serum",
+    "brand": "BIOEFFECT",
+    "primaryIngredientId": "egf",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Fine Lines", "Texture"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_man_01",
+    "name": "Mandelic Acid 10% Treatment",
+    "brand": "The Inkey List",
+    "primaryIngredientId": "mandelic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Texture", "Hyperpigmentation", "Acne"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_man_02",
+    "name": "Mandelic Pigmentation Corrector Night Serum",
+    "brand": "Allies of Skin",
+    "primaryIngredientId": "mandelic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Hyperpigmentation", "Texture", "Sun Damage"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_pha_01",
+    "name": "PHA Topical Acid 12%",
+    "brand": "Naturium",
+    "primaryIngredientId": "polyhydroxy_acids",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Texture", "Sensitivity", "Pores"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_txa_01",
+    "name": "Lytera 2.0 Pigment Correcting Serum",
+    "brand": "SkinMedica",
+    "primaryIngredientId": "tranexamic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "both",
+    "concerns": ["Hyperpigmentation", "Sun Damage"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_txa_02",
+    "name": "Tranexamic Acid Overnight Treatment",
+    "brand": "The Inkey List",
+    "primaryIngredientId": "tranexamic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Hyperpigmentation", "Sun Damage"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_sul_01",
+    "name": "Drying Lotion",
+    "brand": "Mario Badescu",
+    "primaryIngredientId": "sulfur",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Acne"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_sul_02",
+    "name": "Saturn Sulfur Acne Treatment Mask",
+    "brand": "Sunday Riley",
+    "primaryIngredientId": "sulfur",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Acne", "Pores", "Rosacea"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_moi_04",
+    "name": "Moisturizing Cream",
+    "brand": "CeraVe",
+    "primaryIngredientId": "ceramides",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Dryness", "Eczema-prone", "Sensitivity"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_moi_05",
+    "name": "Toleriane Double Repair Moisturizer",
+    "brand": "La Roche-Posay",
+    "primaryIngredientId": "ceramides",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Sensitivity", "Dryness", "Rosacea"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_moi_06",
+    "name": "Ultra Repair Cream",
+    "brand": "First Aid Beauty",
+    "primaryIngredientId": "allantoin",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Eczema-prone", "Sensitivity", "Dryness"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_moi_07",
+    "name": "Cicalfate+ Restorative Protective Cream",
+    "brand": "Avene",
+    "primaryIngredientId": "centella_asiatica",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Sensitivity", "Eczema-prone", "Rosacea"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_moi_08",
+    "name": "Calm + Restore Oat Gel Moisturizer",
+    "brand": "Aveeno",
+    "primaryIngredientId": "beta_glucan",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Sensitivity", "Eczema-prone"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_moi_09",
+    "name": "Advanced Repair Cream",
+    "brand": "Eucerin",
+    "primaryIngredientId": "urea",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Dryness", "Texture"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_moi_10",
+    "name": "Lala Retro Whipped Cream",
+    "brand": "Drunk Elephant",
+    "primaryIngredientId": "squalane",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Dryness", "Fine Lines"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_moi_11",
+    "name": "100% Plant-Derived Squalane",
+    "brand": "The Ordinary",
+    "primaryIngredientId": "squalane",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Dryness", "Sensitivity"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_moi_12",
+    "name": "Aqua Bomb Hydrating Gel Cream",
+    "brand": "Belif",
+    "primaryIngredientId": "panthenol",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Dryness", "Oiliness"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_moi_13",
+    "name": "Barrier+ Triple Lipid-Peptide Cream",
+    "brand": "Skinfix",
+    "primaryIngredientId": "peptides",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Eczema-prone", "Dryness", "Fine Lines"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_sun_04",
+    "name": "Relief Sun Rice + Probiotics SPF 50",
+    "brand": "Beauty of Joseon",
+    "primaryIngredientId": "centella_asiatica",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Sensitivity", "Sun Damage", "Rosacea"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_sun_05",
+    "name": "Anthelios Melt-In Milk SPF 60",
+    "brand": "La Roche-Posay",
+    "primaryIngredientId": "zinc_oxide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Sun Damage", "Sensitivity"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_sun_06",
+    "name": "UV Clear Broad-Spectrum SPF 46",
+    "brand": "EltaMD",
+    "primaryIngredientId": "niacinamide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Acne", "Rosacea", "Sensitivity"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_sun_07",
+    "name": "Birch Juice Moisturizing Sunscreen SPF 50",
+    "brand": "Round Lab",
+    "primaryIngredientId": "panthenol",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Dryness", "Sensitivity"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_sun_08",
+    "name": "Hyaluronic Acid Watery Sun Gel SPF 50",
+    "brand": "Isntree",
+    "primaryIngredientId": "hyaluronic_acid",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Dryness", "Sensitivity", "Acne"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_sun_09",
+    "name": "Daily UV Defense Sunscreen Mineral Origin SPF 36",
+    "brand": "Innisfree",
+    "primaryIngredientId": "zinc_oxide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Sensitivity", "Sun Damage"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_sun_10",
+    "name": "Tone Up UV Essence SPF 50",
+    "brand": "Skin Aqua",
+    "primaryIngredientId": "niacinamide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation", "Sun Damage"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_sun_11",
+    "name": "Mineral Sunscreen SPF 50+",
+    "brand": "Avene",
+    "primaryIngredientId": "zinc_oxide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Rosacea", "Sensitivity", "Sun Damage"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_sun_12",
+    "name": "Essential-C Day Moisture SPF 30",
+    "brand": "Murad",
+    "primaryIngredientId": "vitamin_c",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Sun Damage", "Hyperpigmentation"],
+    "priceTier": "$$$"
+  },
+  {
+    "id": "prod_sun_13",
+    "name": "Umbra Sheer Physical Daily Defense SPF 30",
+    "brand": "Drunk Elephant",
+    "primaryIngredientId": "zinc_oxide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Sensitivity", "Sun Damage"],
+    "priceTier": "$$$"
   }
 ]

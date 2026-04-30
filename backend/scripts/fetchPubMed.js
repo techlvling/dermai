@@ -20,12 +20,14 @@ const ingredients = [
     id: 'salicylic_acid',
     name: 'Salicylic Acid',
     aliases: ['salicylic acid', 'BHA', 'beta hydroxy acid'],
+    evidenceTier: 1,
     query: '"salicylic acid"[Title/Abstract] AND (acne[Title/Abstract] OR skin[Title/Abstract]) AND (clinical trial[ptyp] OR randomized controlled trial[ptyp])'
   },
   {
     id: 'niacinamide',
     name: 'Niacinamide',
     aliases: ['niacinamide', 'nicotinamide', 'vitamin b3'],
+    evidenceTier: 1,
     query: 'niacinamide[Title/Abstract] AND skin[Title/Abstract] AND (clinical trial[ptyp] OR randomized controlled trial[ptyp])'
   },
   {
@@ -104,7 +106,113 @@ const ingredients = [
     id: 'peptides',
     name: 'Peptides',
     aliases: ['peptide', 'peptides', 'palmitoyl'],
+    evidenceTier: 1,
     query: '(peptide[Title/Abstract] OR palmitoyl[Title/Abstract]) AND skin[Title/Abstract] AND (aging[Title/Abstract] OR collagen[Title/Abstract] OR wrinkle*[Title/Abstract]) AND clinical trial[ptyp]'
+  },
+  {
+    id: 'bakuchiol',
+    name: 'Bakuchiol',
+    aliases: ['bakuchiol'],
+    evidenceTier: 2,
+    query: 'bakuchiol[Title/Abstract] AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'copper_peptides',
+    name: 'Copper Peptides',
+    aliases: ['copper peptide', 'GHK-Cu', 'GHK'],
+    evidenceTier: 2,
+    query: '("copper peptide"[Title/Abstract] OR GHK[Title/Abstract]) AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'panthenol',
+    name: 'Panthenol',
+    aliases: ['panthenol', 'pantothenic acid', 'provitamin b5'],
+    evidenceTier: 2,
+    query: '(panthenol[Title/Abstract] OR "provitamin B5"[Title/Abstract]) AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'allantoin',
+    name: 'Allantoin',
+    aliases: ['allantoin'],
+    evidenceTier: 2,
+    query: 'allantoin[Title/Abstract] AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'centella_asiatica',
+    name: 'Centella Asiatica',
+    aliases: ['centella asiatica', 'centella', 'asiaticoside', 'gotu kola', 'cica'],
+    evidenceTier: 2,
+    query: '("centella asiatica"[Title/Abstract] OR asiaticoside[Title/Abstract] OR madecassoside[Title/Abstract]) AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'snail_mucin',
+    name: 'Snail Mucin',
+    aliases: ['snail mucin', 'snail secretion', 'snail filtrate'],
+    evidenceTier: 3,
+    query: '("snail mucin"[Title/Abstract] OR "snail secretion filtrate"[Title/Abstract] OR "Helix aspersa"[Title/Abstract]) AND skin[Title/Abstract]'
+  },
+  {
+    id: 'egf',
+    name: 'Epidermal Growth Factor',
+    aliases: ['epidermal growth factor', 'EGF', 'rh-EGF'],
+    evidenceTier: 2,
+    query: '("epidermal growth factor"[Title/Abstract] OR "EGF"[Title/Abstract]) AND skin[Title/Abstract] AND (aging[Title/Abstract] OR wound[Title/Abstract] OR cosmetic[Title/Abstract]) AND clinical trial[ptyp]'
+  },
+  {
+    id: 'mandelic_acid',
+    name: 'Mandelic Acid',
+    aliases: ['mandelic acid'],
+    evidenceTier: 2,
+    query: '"mandelic acid"[Title/Abstract] AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'urea',
+    name: 'Urea',
+    aliases: ['urea'],
+    evidenceTier: 2,
+    query: 'urea[Title/Abstract] AND skin[Title/Abstract] AND (xerosis[Title/Abstract] OR moistur*[Title/Abstract] OR keratolytic[Title/Abstract]) AND clinical trial[ptyp]'
+  },
+  {
+    id: 'squalane',
+    name: 'Squalane',
+    aliases: ['squalane', 'squalene'],
+    evidenceTier: 2,
+    query: '(squalane[Title/Abstract] OR squalene[Title/Abstract]) AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'polyhydroxy_acids',
+    name: 'Polyhydroxy Acids',
+    aliases: ['polyhydroxy acid', 'gluconolactone', 'lactobionic acid', 'PHA'],
+    evidenceTier: 2,
+    query: '(polyhydroxy[Title/Abstract] OR gluconolactone[Title/Abstract] OR "lactobionic acid"[Title/Abstract]) AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'tranexamic_acid',
+    name: 'Tranexamic Acid',
+    aliases: ['tranexamic acid', 'TXA'],
+    evidenceTier: 1,
+    query: '"tranexamic acid"[Title/Abstract] AND (melasma[Title/Abstract] OR pigment*[Title/Abstract] OR skin[Title/Abstract]) AND clinical trial[ptyp]'
+  },
+  {
+    id: 'sulfur',
+    name: 'Sulfur',
+    aliases: ['sulfur', 'sulphur'],
+    evidenceTier: 2,
+    query: '(sulfur[Title/Abstract] OR sulphur[Title/Abstract]) AND (acne[Title/Abstract] OR rosacea[Title/Abstract]) AND clinical trial[ptyp]'
+  },
+  {
+    id: 'beta_glucan',
+    name: 'Beta-Glucan',
+    aliases: ['beta-glucan', 'beta glucan'],
+    evidenceTier: 2,
+    query: '"beta-glucan"[Title/Abstract] AND skin[Title/Abstract] AND clinical trial[ptyp]'
+  },
+  {
+    id: 'adenosine',
+    name: 'Adenosine',
+    aliases: ['adenosine'],
+    evidenceTier: 3,
+    query: 'adenosine[Title/Abstract] AND skin[Title/Abstract] AND (aging[Title/Abstract] OR wrinkle*[Title/Abstract] OR cosmetic[Title/Abstract]) AND clinical trial[ptyp]'
   }
 ];
 
@@ -170,7 +278,7 @@ async function fetchPubMedStudies() {
       results.push({
         id: ingredient.id,
         name: ingredient.name,
-        evidenceTier: 1,
+        evidenceTier: ingredient.evidenceTier || 1,
         evidenceType: "Peer-Reviewed Clinical Trials (PubMed)",
         keyStudies: studies
       });

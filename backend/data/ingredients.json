@@ -68,14 +68,6 @@
         "pubmedId": "33683070",
         "link": "https://pubmed.ncbi.nlm.nih.gov/33683070/",
         "authors": "Aschoff R, Möller S, Haase R et al."
-      },
-      {
-        "title": "Liposomal tretinoin for uncomplicated acne vulgaris.",
-        "journal": "The Clinical investigator",
-        "year": "1994",
-        "pubmedId": "7711421",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/7711421/",
-        "authors": "Schäfer-Korting M, Korting HC, Ponce-Pöschl E"
       }
     ]
   },
@@ -222,20 +214,28 @@
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
     "keyStudies": [
       {
-        "title": "Topical 8% glycolic acid and 8% L-lactic acid creams for the treatment of photodamaged skin. A double-blind vehicle-controlled clinical trial.",
-        "journal": "Archives of dermatology",
-        "year": "1996",
-        "pubmedId": "8712075",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/8712075/",
-        "authors": "Stiller MJ, Bartolone J, Stern R et al."
+        "title": "Effectiveness and Safety of Sculptra Poly-L-Lactic Acid Injectable Implant in the Correction of Cheek Wrinkles.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2024",
+        "pubmedId": "38206151",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38206151/",
+        "authors": "Fabi S, Hamilton T, LaTowsky B et al."
       },
       {
-        "title": "Epidermal and dermal effects of topical lactic acid.",
-        "journal": "Journal of the American Academy of Dermatology",
-        "year": "1996",
-        "pubmedId": "8708950",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/8708950/",
-        "authors": "Smith WP"
+        "title": "Microneedling Radiofrequency Enhances Poly-L-Lactic Acid Penetration That Effectively Improves Facial Skin Laxity without Lipolysis.",
+        "journal": "Plastic and reconstructive surgery",
+        "year": "2024",
+        "pubmedId": "38051121",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38051121/",
+        "authors": "Wu X, Cen Q, Wang X et al."
+      },
+      {
+        "title": "Comparative Bulk RNA-Seq Analysis of Poly-l-Lactic Acid Versus Calcium Hydroxylapatite Reveals a Novel, Adipocyte-Mediated Regenerative Mechanism of Action Unique to PLLA.",
+        "journal": "Dermatologic surgery : official publication for American Society for Dermatologic Surgery [et al.]",
+        "year": "2024",
+        "pubmedId": "39480040",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/39480040/",
+        "authors": "Waibel J, Ziegler M, Nguyen TQ et al."
       }
     ]
   },
@@ -350,5 +350,279 @@
         "authors": "Seong SH, Lee YI, Lee J et al."
       }
     ]
+  },
+  {
+    "id": "bakuchiol",
+    "name": "Bakuchiol",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Prospective, randomized, double-blind assessment of topical bakuchiol and retinol for facial photoageing.",
+        "journal": "The British journal of dermatology",
+        "year": "2019",
+        "pubmedId": "29947134",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/29947134/",
+        "authors": "Dhaliwal S, Rybak I, Ellis SR et al."
+      },
+      {
+        "title": "Clinical Evaluation of a Nature-Based Bakuchiol Anti-Aging Moisturizer for Sensitive Skin.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2020",
+        "pubmedId": "33346506",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/33346506/",
+        "authors": "Draelos ZD, Gunt H, Zeichner J et al."
+      }
+    ]
+  },
+  {
+    "id": "copper_peptides",
+    "name": "Copper Peptides",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": []
+  },
+  {
+    "id": "panthenol",
+    "name": "Panthenol",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Prebiotic and panthenol-containing dermocosmetic improves tolerance from artificial daylight photodynamic therapy: A randomized controlled trial in patients with actinic keratosis.",
+        "journal": "Photodiagnosis and photodynamic therapy",
+        "year": "2024",
+        "pubmedId": "39528008",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/39528008/",
+        "authors": "Fredman G, Jacobsen K, Philipsen PA et al."
+      },
+      {
+        "title": "Skin moisturizing effects of panthenol-based formulations.",
+        "journal": "Journal of cosmetic science",
+        "year": "2011",
+        "pubmedId": "21982351",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/21982351/",
+        "authors": "Camargo FB Jr, Gaspar LR, Maia Campos PM"
+      },
+      {
+        "title": "Evaluation of the Efficacy and Safety of a Panthenol-Enriched Mask for Skin Barrier Recovery After Facial Laser Treatment: Results of a Double-Blind Randomized Controlled Study.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2025",
+        "pubmedId": "40613435",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/40613435/",
+        "authors": "Gao M, Gao N, Wang L et al."
+      }
+    ]
+  },
+  {
+    "id": "allantoin",
+    "name": "Allantoin",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Efficacy and Safety of Topical Compound Heparin Sodium Allantoin Gel (Main Components: Onion Extract Quercetin) for the Treatment of Rosacea.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2025",
+        "pubmedId": "40177799",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/40177799/",
+        "authors": "Xu Z, Yu B, Qing Y et al."
+      },
+      {
+        "title": "Natural oil-based emulsion containing allantoin versus aqueous cream for managing radiation-induced skin reactions in patients with cancer: a phase 3, double-blind, randomized, controlled trial.",
+        "journal": "International journal of radiation oncology, biology, physics",
+        "year": "2014",
+        "pubmedId": "25151541",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/25151541/",
+        "authors": "Chan RJ, Mann J, Tripcony L et al."
+      },
+      {
+        "title": "Efficacy and tolerability of the investigational topical cream SD-101 (6% allantoin) in patients with epidermolysis bullosa: a phase 3, randomized, double-blind, vehicle-controlled trial (ESSENCE study).",
+        "journal": "Orphanet journal of rare diseases",
+        "year": "2020",
+        "pubmedId": "32576219",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/32576219/",
+        "authors": "Paller AS, Browning J, Nikolic M et al."
+      }
+    ]
+  },
+  {
+    "id": "centella_asiatica",
+    "name": "Centella Asiatica",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": []
+  },
+  {
+    "id": "snail_mucin",
+    "name": "Snail Mucin",
+    "evidenceTier": 3,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": []
+  },
+  {
+    "id": "egf",
+    "name": "Epidermal Growth Factor",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Effectiveness of an epidermal growth factor-containing cream on postinflammatory hyperpigmentation after 1064-nm Q-switched neodymium-doped yttrium aluminum garnet laser treatment of acquired bilateral nevus of Ota-like macules (Hori's nevus) in Asians: A split-face, double-blinded, randomized controlled study.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2022",
+        "pubmedId": "35066982",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/35066982/",
+        "authors": "Wattanakrai P, Sindhusen S, Ploydaeng M"
+      }
+    ]
+  },
+  {
+    "id": "mandelic_acid",
+    "name": "Mandelic Acid",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": []
+  },
+  {
+    "id": "urea",
+    "name": "Urea",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Effectiveness and Tolerability of an Emollient \"Plus\" Compared to Urea 10% in Patients With Mild-to-Moderate Atopic Dermatitis.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2025",
+        "pubmedId": "39973079",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/39973079/",
+        "authors": "Prakoeswa CRS, Huda BKN, Indrawati D et al."
+      },
+      {
+        "title": "Urea and sodium chloride in moisturisers for skin of the elderly--a comparative, double-blind, randomised study.",
+        "journal": "Skin pharmacology and applied skin physiology",
+        "year": "2002",
+        "pubmedId": "12077469",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/12077469/",
+        "authors": "Kuzmina N, Hagströmer L, Emtestam L"
+      }
+    ]
+  },
+  {
+    "id": "squalane",
+    "name": "Squalane",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Clinical evaluation of fullerene-C60 dissolved in squalane for anti-wrinkle cosmetics.",
+        "journal": "Journal of nanoscience and nanotechnology",
+        "year": "2010",
+        "pubmedId": "21137794",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/21137794/",
+        "authors": "Kato S, Taira H, Aoshima H et al."
+      },
+      {
+        "title": "High-dose squalene ingestion increases type I procollagen and decreases ultraviolet-induced DNA damage in human skin in vivo but is associated with transient adverse effects.",
+        "journal": "Clinical and experimental dermatology",
+        "year": "2009",
+        "pubmedId": "19522983",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/19522983/",
+        "authors": "Cho S, Choi CW, Lee DH et al."
+      }
+    ]
+  },
+  {
+    "id": "polyhydroxy_acids",
+    "name": "Polyhydroxy Acids",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Comparison of Efficacy and Willingness to a 5% Gluconolactone-Based Topical Serum and Intense Pulsed Light in Mild Erythema of Rosacea: A Paired Control Study.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2025",
+        "pubmedId": "40111222",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/40111222/",
+        "authors": "Peng Y, Mao M, Huang Z et al."
+      },
+      {
+        "title": "Efficacy and safety of a new peeling formulated with a pool of PHAs for the treatment of all skin types, even sensitive.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2023",
+        "pubmedId": "35796684",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/35796684/",
+        "authors": "Gentili G, Perugini P, Bugliaro S et al."
+      },
+      {
+        "title": "A comparative study of gluconolactone versus benzoyl peroxide in the treatment of acne.",
+        "journal": "The Australasian journal of dermatology",
+        "year": "1992",
+        "pubmedId": "1303072",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/1303072/",
+        "authors": "Hunt MJ, Barnetson RS"
+      }
+    ]
+  },
+  {
+    "id": "tranexamic_acid",
+    "name": "Tranexamic Acid",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Oral tranexamic acid treats papulopustular rosacea by improving the skin barrier.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2024",
+        "pubmedId": "38712728",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38712728/",
+        "authors": "Xu Z, Yu B, Xu B et al."
+      },
+      {
+        "title": "The effectiveness and safety of 3% tranexamic acid cream vs. 4% hydroquinone cream for mixed-type melasma in skin of color: a double-blind, split-face, randomized controlled trial.",
+        "journal": "Acta dermatovenerologica Alpina, Pannonica, et Adriatica",
+        "year": "2024",
+        "pubmedId": "38918942",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38918942/",
+        "authors": "Yasnova N, Sirait SP, Rahmayunita G"
+      },
+      {
+        "title": "Tranexamic Acid for Melasma Treatment: A Split-Face Study.",
+        "journal": "Dermatologic surgery : official publication for American Society for Dermatologic Surgery [et al.]",
+        "year": "2020",
+        "pubmedId": "32701529",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/32701529/",
+        "authors": "Ebrahim HM, Said Abdelshafy A, Khattab F et al."
+      }
+    ]
+  },
+  {
+    "id": "sulfur",
+    "name": "Sulfur",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": [
+      {
+        "title": "Combination sodium sulfacetamide 10% and sulfur 5% cream with sunscreens versus metronidazole 0.75% cream for rosacea.",
+        "journal": "Cutis",
+        "year": "2005",
+        "pubmedId": "16047874",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/16047874/",
+        "authors": "Torok HM, Webster G, Dunlap FE et al."
+      }
+    ]
+  },
+  {
+    "id": "beta_glucan",
+    "name": "Beta-Glucan",
+    "evidenceTier": 2,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": []
+  },
+  {
+    "id": "adenosine",
+    "name": "Adenosine",
+    "evidenceTier": 3,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": []
   }
 ]
