@@ -95,6 +95,89 @@
     }
   }
 
+  async function testDriveConnection() {
+    const out = document.getElementById('conn-drive-test-output');
+    if (!out) return;
+    out.style.display = 'block';
+    out.textContent = '';
+    const log = (msg, ok) => {
+      const icon = ok === true ? '✓' : ok === false ? '✗' : '·';
+      out.textContent += `${icon} ${msg}\n`;
+    };
+
+    log('Starting Drive diagnostic…');
+    log('');
+
+    // Step 1: scope flag
+    const scoped = Drive.hasScope();
+    log(`Step 1: Drive.hasScope() = ${scoped}`, scoped);
+    if (!scoped) { log('Stop: scope flag not set. Click "Connect Google Drive" first.', false); return; }
+
+    // Step 2: provider_token
+    let token = null;
+    try { token = await window.Auth.getProviderToken(); } catch (e) { log(`Step 2: getProviderToken threw: ${e.message}`, false); return; }
+    if (!token) { log('Step 2: provider_token is null. Sign out + sign in to refresh.', false); return; }
+    log(`Step 2: provider_token present (len=${token.length})`, true);
+
+    // Step 3: ping Drive about-me to confirm token is valid + which account
+    try {
+      const aboutRes = await fetch('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress,displayName),storageQuota', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!aboutRes.ok) {
+        const body = await aboutRes.text();
+        log(`Step 3: Drive about endpoint returned ${aboutRes.status}: ${body.slice(0, 200)}`, false);
+        return;
+      }
+      const about = await aboutRes.json();
+      log(`Step 3: Drive sees you as ${about.user.emailAddress} (${about.user.displayName})`, true);
+      const used = Math.round(Number(about.storageQuota?.usage || 0) / 1e6);
+      const total = about.storageQuota?.limit ? Math.round(Number(about.storageQuota.limit) / 1e6) : '?';
+      log(`         storage: ${used} MB used of ${total} MB`);
+    } catch (e) { log(`Step 3: about call threw: ${e.message}`, false); return; }
+
+    // Step 4: ensureScansFolder
+    let folderId = null;
+    try {
+      folderId = await Drive.ensureScansFolder();
+      log(`Step 4: ensureScansFolder() = ${folderId}`, true);
+    } catch (e) { log(`Step 4: ensureScansFolder threw: ${e.message}`, false); return; }
+
+    // Step 5: list files in folder
+    try {
+      const q = `'${folderId}' in parents and trashed=false`;
+      const listRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name,createdTime,webViewLink)&pageSize=10`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!listRes.ok) { log(`Step 5: list files returned ${listRes.status}`, false); return; }
+      const list = await listRes.json();
+      log(`Step 5: folder contains ${list.files.length} file(s):`, true);
+      list.files.slice(0, 5).forEach(f => log(`         · ${f.name} (${f.createdTime?.slice(0, 10)})`));
+    } catch (e) { log(`Step 5: list files threw: ${e.message}`, false); return; }
+
+    // Step 6: upload a tiny test file
+    let testFileId = null;
+    try {
+      const blob = new Blob([`DermAI Drive test ${new Date().toISOString()}`], { type: 'text/plain' });
+      const file = new File([blob], `dermai-test-${Date.now()}.txt`, { type: 'text/plain' });
+      const result = await Drive.uploadPhoto(file, file.name, folderId);
+      testFileId = result?.id;
+      log(`Step 6: uploaded test file → ${testFileId} (${result?.webViewLink || 'no link'})`, true);
+    } catch (e) { log(`Step 6: uploadPhoto threw: ${e.message}`, false); return; }
+
+    // Step 7: clean up the test file
+    if (testFileId) {
+      try {
+        await Drive.deletePhoto(testFileId);
+        log(`Step 7: deleted test file ${testFileId}`, true);
+      } catch (e) { log(`Step 7: deletePhoto threw: ${e.message}`, false); }
+    }
+
+    log('');
+    log('Done. If steps 1-6 all show ✓, Drive backup is working end-to-end.', true);
+    log('If real scan backups still aren\'t showing in Drive, the issue is in the post-scan flow, not the Drive auth.');
+  }
+
   function renderConnections() {
     const statusEl  = document.getElementById('conn-drive-status');
     const actionsEl = document.getElementById('conn-drive-actions');
@@ -114,10 +197,13 @@
       actionsEl.innerHTML = `
         <p class="conn-help">Future scans will save to <code>DermAI Photos/Scans/</code> in your Drive.</p>
         <div class="conn-actions-row">
+          <button type="button" class="btn btn-primary" id="conn-drive-test">Test Drive connection</button>
           <button type="button" class="btn btn-outline" id="conn-drive-forget">Forget this connection</button>
           <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener" class="link-btn">Revoke at Google →</a>
         </div>
+        <pre id="conn-drive-test-output" style="display:none; margin-top:1rem; padding:0.875rem; background:#0f172a; color:#e2e8f0; border-radius:8px; font-family:ui-monospace, monospace; font-size:0.72rem; line-height:1.45; white-space:pre-wrap; max-height:280px; overflow:auto;"></pre>
       `;
+      document.getElementById('conn-drive-test').addEventListener('click', () => testDriveConnection());
       document.getElementById('conn-drive-forget').addEventListener('click', () => {
         // Local-only forget. Tells user to revoke at Google for a clean cut.
         localStorage.setItem('dermAI_drive_declined', 'true');
