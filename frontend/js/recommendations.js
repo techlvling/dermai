@@ -122,25 +122,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function init() {
-    // Source-of-truth fix: when logged in, the server's most-recent scan
-    // is authoritative. localStorage is only a fallback for anonymous users.
-    // Otherwise routine drifts from history (the bug screenshotted on
-    // 2026-04-30 — routine showed Oily/Acne when /api/scans was empty).
+    // Source-of-truth: when logged in, prefer the server's most-recent scan.
+    // BUT if the server is empty AND localStorage has fresh data (within the
+    // last hour), trust localStorage with a "sync pending" badge. This fixes
+    // the regression where a /api/scans POST failure on iOS destroyed the
+    // user's just-finished scan and the routine page showed no-analysis.
     const loggedIn = window.Storage ? await Storage.isLoggedIn() : false;
+    const FRESH_LOCAL_MS = 60 * 60 * 1000; // 1 hour
+
+    function readLocal() {
+      const raw = localStorage.getItem('dermAI_analysis');
+      if (!raw) return null;
+      try { return JSON.parse(raw); } catch { return null; }
+    }
+
+    function isFresh(local) {
+      if (!local || !local.savedAt) return false;
+      return (Date.now() - local.savedAt) < FRESH_LOCAL_MS;
+    }
+
+    let syncPending = false;
 
     if (loggedIn) {
       const latest = await Storage.fetchLatestScan();
-      if (!latest) {
-        // Server says no scans for this user — don't render stale local data.
-        noAnalysisWarning.classList.remove('hidden');
-        // Clear stale local cache so other surfaces (badges/streak) don't
-        // disagree with history either.
-        localStorage.removeItem('dermAI_analysis');
-        return;
+      if (latest) {
+        userAnalysis = latest.result_json;
+        localStorage.setItem('dermAI_analysis', JSON.stringify({ ...userAnalysis, savedAt: userAnalysis.savedAt || Date.now() }));
+      } else {
+        // Server is empty. If localStorage has a recent unsynced scan,
+        // trust it — the POST probably failed in flight. Otherwise show CTA.
+        const local = readLocal();
+        if (isFresh(local)) {
+          userAnalysis = local;
+          syncPending = true;
+        } else {
+          noAnalysisWarning.classList.remove('hidden');
+          // Stale local cache — prune so badges/streak don't disagree.
+          if (local) localStorage.removeItem('dermAI_analysis');
+          return;
+        }
       }
-      userAnalysis = latest.result_json;
-      // Refresh local cache from server so subsequent loads are fast.
-      localStorage.setItem('dermAI_analysis', JSON.stringify(userAnalysis));
     } else {
       const savedData = localStorage.getItem('dermAI_analysis');
       if (!savedData) {
@@ -148,6 +169,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       userAnalysis = JSON.parse(savedData);
+    }
+
+    if (syncPending) {
+      const banner = document.createElement('div');
+      banner.className = 'sync-pending-banner';
+      banner.style.cssText = 'margin-bottom:1rem; padding:0.75rem 1rem; background:rgba(255,170,122,0.12); border:1px solid rgba(255,170,122,0.35); border-radius:var(--radius-md,12px); font-size:0.78rem; color:#9a5416;';
+      banner.innerHTML = '⚠ This scan hasn\'t synced to your account yet. <button id="sync-retry" style="background:none;border:none;color:var(--primary-700);text-decoration:underline;cursor:pointer;font-weight:600;">Retry sync</button>';
+      const target = document.getElementById('routine-content') || document.body;
+      target.prepend(banner);
+      document.getElementById('sync-retry')?.addEventListener('click', async () => {
+        if (!Storage.server) return;
+        const r = await Storage.server.post('/api/scans', { result_json: userAnalysis });
+        if (r?.scan?.id) {
+          banner.innerHTML = '✓ Synced!';
+          setTimeout(() => banner.remove(), 1500);
+        } else {
+          banner.querySelector('button').textContent = 'Sync failed — try again';
+        }
+      });
     }
 
     // Show staleness banner if analysis is older than 30 days

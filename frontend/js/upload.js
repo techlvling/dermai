@@ -627,26 +627,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ingredientsReady.then(() => renderIngredientLayer(data.concerns));
 
+    // Stamp savedAt so the routine page can tell "just scanned" from "stale
+    // cache" when deciding whether to trust localStorage over an empty server.
+    if (!data.savedAt) data.savedAt = Date.now();
     localStorage.setItem('dermAI_analysis', JSON.stringify(data));
     const history = saveToHistory(data);
 
-    // Capture scan ID for Drive backup (resolves asynchronously). When the
-    // user is logged in, also clear the stale localStorage cache if the POST
-    // failed — otherwise the routine page would render a scan that doesn't
-    // exist on the server (the source-of-truth bug fix in P1 depends on this).
-    // We expose a promise so the auto-Drive-backup code below can await the
-    // scan ID before patching image_urls into Postgres.
-    const savedScanIdPromise = Storage.isLoggedIn().then(loggedIn =>
-      Storage.server.post('/api/scans', { result_json: data })
-        .then(r => {
-          if (loggedIn && !r) localStorage.removeItem('dermAI_analysis');
-          return r?.scan?.id ?? null;
-        })
-        .catch(() => {
-          if (loggedIn) localStorage.removeItem('dermAI_analysis');
-          return null;
-        })
-    );
+    // Capture scan ID for Drive backup (resolves asynchronously). The POST
+    // is fire-and-forget for the UI — if it fails we keep the localStorage
+    // copy so the user's just-finished scan still works on the routine page,
+    // and routine.init() will trust fresh-stamp local data when the server
+    // returns nothing.
+    const savedScanIdPromise = Storage.server.post('/api/scans', { result_json: data })
+      .then(r => r?.scan?.id ?? null)
+      .catch(() => null);
 
     renderHistory(history);
 
@@ -737,13 +731,26 @@ document.addEventListener('DOMContentLoaded', () => {
           hint.innerHTML     = `${filesToUp.length} photos saved · <a href="https://drive.google.com/drive/folders/${encodeURIComponent(scanFolderId)}" target="_blank" rel="noopener">View in Drive →</a>`;
           bar.style.display  = 'none';
         } catch (err) {
-          console.error('[Drive] backup failed:', err.message);
+          console.error('[Drive] backup failed:', err);
           label.textContent  = 'BACKUP FAILED';
           status.textContent = '⚠';
-          hint.textContent   = err.message.includes('quota')
-            ? 'Google Drive is full — free up space and reload to retry.'
-            : 'Couldn\'t save to Drive — your scan is still in History.';
+          // Surface the actual error so we can diagnose. Common cases:
+          // - "no provider_token" → Drive scope expired or never granted
+          // - "Drive API 401" → token expired, need re-grant
+          // - "quota" → Drive is full
+          const msg = String(err?.message || err || 'Unknown error');
+          let userMsg;
+          if (msg.includes('quota')) {
+            userMsg = 'Google Drive is full — free up space and reload to retry.';
+          } else if (msg.includes('provider_token') || msg.includes('401')) {
+            userMsg = 'Drive permission expired. <button id="drive-retry-grant" class="link-btn">Reconnect Drive</button> to retry.';
+          } else {
+            userMsg = `Couldn't save to Drive: ${msg.slice(0, 80)}`;
+          }
+          hint.innerHTML     = userMsg;
           bar.style.display  = 'none';
+          const retryBtn = document.getElementById('drive-retry-grant');
+          if (retryBtn) retryBtn.addEventListener('click', () => Drive.requestDriveScope());
         }
       }
 
