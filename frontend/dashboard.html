@@ -37,6 +37,10 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Overview
         </a>
+        <a data-section="routine">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Routine
+        </a>
         <a data-section="history">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           History
@@ -103,6 +107,102 @@
         </div>
         <div class="dash-recent-grid" id="dash-recent-grid">
           <!-- Populated by dashboard.js -->
+        </div>
+      </section>
+
+      <!-- ROUTINE ──────────────────────────────────────────────────── -->
+      <section class="dash-section" data-section="routine">
+        <div class="rec-container">
+          <div class="rec-header">
+            <h1>Your Personalized <span class="gradient-text">Routine</span></h1>
+            <div id="streak-counter" class="streak-counter hidden" aria-live="polite"></div>
+            <p>Based on your AI skin analysis, here are clinically proven products tailored to your skin concerns.</p>
+            <p style="font-size:0.75rem; color:var(--neutral-500); margin-top:0.5rem;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              As an Amazon Associate, DermAI earns from qualifying purchases. This does not affect our recommendations — we only suggest ingredients backed by clinical trials.
+            </p>
+            <p id="detected-region" style="font-size:0.75rem; color:var(--neutral-400); margin-top:0.75rem;"></p>
+          </div>
+
+          <div id="no-analysis-warning" class="hidden text-center glass-panel" style="padding: 3rem;">
+            <h2>We need to analyze your skin first!</h2>
+            <p>Please go back and upload a photo so we can recommend the right ingredients for you.</p>
+            <a href="/analyze.html" class="btn btn-primary" style="margin-top: 1rem;">Analyze My Skin</a>
+            <p style="margin-top:1rem; font-size:0.875rem; color:var(--neutral-500);">Already scanned before? <a href="#history" onclick="showSection('history'); return false;" style="color:var(--primary-500);">View your scan history →</a></p>
+          </div>
+
+          <div id="routine-loading-indicator" class="text-center hidden">
+            <div class="spinner"></div>
+            <p>Finding the best products in your region...</p>
+          </div>
+
+          <div id="stale-banner" class="hidden"></div>
+          <div id="reorder-banner" class="stale-banner hidden" style="background:rgba(90,216,163,0.08);border-color:var(--mint-500);color:#1a6647;"></div>
+
+          <div id="badges-row" class="badges-row hidden"></div>
+
+          <div id="routine-content" class="routine-content hidden">
+            <div id="patch-test-banner" class="stale-banner hidden" style="margin-bottom:1.5rem;"></div>
+            <div id="conflict-warnings" class="conflict-warnings hidden" style="margin-bottom:2rem;"></div>
+
+            <div class="skin-profile-summary glass-panel" style="margin-bottom: 2rem;">
+              <h3 style="margin-bottom:1rem; color:var(--primary-600);">Your Skin Profile</h3>
+              <p style="margin-bottom:0.5rem;"><strong>Skin Type:</strong> <span id="user-skin-type" style="text-transform: capitalize; color:var(--neutral-800);"></span></p>
+              <div style="display:flex; align-items:center; gap:1rem;">
+                <strong>Targeting:</strong>
+                <ul id="user-concerns-list" class="concerns-tags"></ul>
+              </div>
+            </div>
+
+            <div class="routine-timeline">
+              <div class="routine-time-block">
+                <h2>☀️ Morning Routine</h2>
+                <div id="am-cleanser" class="routine-step"></div>
+                <div id="am-treatment" class="routine-step"></div>
+                <div id="am-moisturizer" class="routine-step"></div>
+                <div id="am-sunscreen" class="routine-step"></div>
+              </div>
+
+              <div class="routine-time-block" style="margin-top: 4rem;">
+                <h2>🌙 Evening Routine</h2>
+                <div id="pm-cleanser" class="routine-step"></div>
+                <div id="pm-treatment" class="routine-step"></div>
+                <div id="pm-moisturizer" class="routine-step"></div>
+              </div>
+
+              <div class="routine-actions-row">
+                <button class="btn print-btn" onclick="window.print()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  Print Routine
+                </button>
+                <button class="btn share-card-btn" onclick="window.shareRoutineCard()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                  Share Card
+                </button>
+              </div>
+
+              <div id="notif-widget" class="notif-widget hidden" style="margin-top:1.25rem;">
+                <div class="notif-row">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  <span class="notif-label">DAILY REMINDERS</span>
+                  <label class="notif-switch" aria-label="Toggle daily routine reminders">
+                    <input type="checkbox" id="notif-toggle">
+                    <span class="notif-track"></span>
+                  </label>
+                </div>
+                <div id="notif-times-row" class="notif-times-row hidden">
+                  <label class="notif-time-label">AM <input type="time" id="notif-am" value="08:00" class="notif-time-input"></label>
+                  <label class="notif-time-label">PM <input type="time" id="notif-pm" value="21:00" class="notif-time-input"></label>
+                </div>
+                <p id="notif-hint" class="notif-hint"></p>
+              </div>
+
+              <div id="adherence-heatmap" class="adherence-heatmap hidden"></div>
+              <div id="weather-widget" class="hidden" style="margin-top:2rem;"></div>
+              <div id="photos-section" class="photos-section hidden" style="margin-top:3rem;"></div>
+              <div id="diary-section" class="diary-section hidden" style="margin-top:3rem;"></div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -209,6 +309,77 @@
       </section>
 
     </main>
+
+    <!-- ── Reaction log modal (used by Routine section) ────────────── -->
+    <div id="reaction-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="reaction-modal-title">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h3 class="reaction-modal-title" id="reaction-modal-title">Log a reaction</h3>
+          <button class="modal-close" onclick="window.closeReactionModal()" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label class="modal-label">Severity</label>
+          <div class="severity-picker">
+            <input type="range" class="reaction-severity-input" min="1" max="5" value="3" aria-label="Reaction severity 1 to 5"
+              oninput="this.closest('.severity-picker').querySelector('.severity-display').textContent = this.value">
+            <div class="severity-scale">
+              <span>1 mild</span><span class="severity-display">3</span><span>5 severe</span>
+            </div>
+          </div>
+          <label class="modal-label" style="margin-top:1.25rem;">Symptoms</label>
+          <div class="symptom-chips">
+            <button class="reaction-symptom" data-symptom="redness" onclick="this.classList.toggle('active')">Redness</button>
+            <button class="reaction-symptom" data-symptom="stinging" onclick="this.classList.toggle('active')">Stinging</button>
+            <button class="reaction-symptom" data-symptom="breakout" onclick="this.classList.toggle('active')">Breakout</button>
+            <button class="reaction-symptom" data-symptom="peeling" onclick="this.classList.toggle('active')">Peeling</button>
+            <button class="reaction-symptom" data-symptom="itching" onclick="this.classList.toggle('active')">Itching</button>
+            <button class="reaction-symptom" data-symptom="dryness" onclick="this.classList.toggle('active')">Dryness</button>
+          </div>
+          <label class="modal-label" for="reaction-notes" style="margin-top:1.25rem;">Notes (optional)</label>
+          <textarea id="reaction-notes" class="reaction-notes" rows="3" placeholder="Describe what you noticed..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button onclick="window.closeReactionModal()" class="btn btn-outline">Cancel</button>
+          <button onclick="window.saveReaction()" class="btn btn-primary">Save Reaction</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Reorder reminder modal (used by Routine section) ────────── -->
+    <div id="reorder-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="reorder-modal-title">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h3 id="reorder-modal-title">Set reorder reminder</h3>
+          <button class="modal-close" onclick="window.closeReorderModal()" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="reorder-modal-product" class="modal-subtitle"></p>
+          <label class="modal-label" for="reorder-size">Bottle size</label>
+          <select id="reorder-size" class="glass-select" style="width:100%">
+            <option value="30">30 ml</option>
+            <option value="50" selected>50 ml</option>
+            <option value="100">100 ml</option>
+            <option value="150">150 ml</option>
+            <option value="200">200 ml</option>
+          </select>
+          <label class="modal-label" for="reorder-freq" style="margin-top:1rem;">Uses per day</label>
+          <select id="reorder-freq" class="glass-select" style="width:100%">
+            <option value="1" selected>Once a day</option>
+            <option value="2">Twice a day</option>
+          </select>
+          <p class="modal-hint">We'll remind you 7 days before your estimated empty date.</p>
+        </div>
+        <div class="modal-footer">
+          <button onclick="window.closeReorderModal()" class="btn btn-outline">Skip</button>
+          <button onclick="window.saveReorderReminder()" class="btn btn-primary">Set Reminder</button>
+        </div>
+      </div>
+    </div>
+
     <footer class="footer-minimal container">
       Cosmetic analysis only &mdash; not a substitute for professional medical advice.
       &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
@@ -219,9 +390,11 @@
     <script src="./js/photo-db.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/migration.js"></script>
+    <script src="./js/notifications.js"></script>
     <script src="./js/history.js"></script>
     <script src="./js/ingredients.js"></script>
     <script src="./js/shopping.js"></script>
+    <script src="./js/recommendations.js"></script>
     <script src="./js/dashboard.js"></script>
     <script defer src="/_vercel/insights/script.js"></script>
   </body>

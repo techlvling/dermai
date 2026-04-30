@@ -22,7 +22,7 @@
   if (signoutBtn) signoutBtn.addEventListener('click', () => window.Auth.signOut().then(() => { window.location.href = '/'; }));
 
   // ── Section routing ──────────────────────────────────────────────
-  const SECTIONS = ['overview', 'history', 'ingredients', 'shopping', 'compare'];
+  const SECTIONS = ['overview', 'routine', 'history', 'ingredients', 'shopping', 'compare'];
   const mounted  = {};
 
   function showSection(key) {

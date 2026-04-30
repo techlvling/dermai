@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const loadingIndicator = document.getElementById('loading-indicator');
+  // #routine-loading-indicator avoids collision with ingredients.js's
+  // #loading-indicator when both scripts run on dashboard.html.
+  const loadingIndicator = document.getElementById('routine-loading-indicator');
   const routineContent = document.getElementById('routine-content');
   const noAnalysisWarning = document.getElementById('no-analysis-warning');
   const userConcernsList = document.getElementById('user-concerns-list');
