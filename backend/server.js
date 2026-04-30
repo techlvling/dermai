@@ -149,9 +149,45 @@ app.get('/api/health-ai', async (_req, res) => {
   }
 });
 
-app.get('/api/ingredients', (_req, res) => {
+// Need the admin client up here for the cache-aware /api/ingredients handler;
+// mounted routes below also use it.
+const { getSupabaseAdmin: _getSupabaseAdmin } = require('./lib/supabase');
+
+// Tiny in-memory cache so we don't hit Supabase on every /api/ingredients
+// request. The weekly cron is the only writer, so a 5-minute TTL is plenty.
+let _ingCacheValue = null;
+let _ingCacheAt    = 0;
+const ING_CACHE_TTL_MS = 5 * 60 * 1000;
+
+app.get('/api/ingredients', async (_req, res) => {
   res.set('Cache-Control', 'public, max-age=3600');
-  res.json(DATA.ingredients);
+
+  const now = Date.now();
+  if (_ingCacheValue && (now - _ingCacheAt) < ING_CACHE_TTL_MS) {
+    return res.json(_ingCacheValue);
+  }
+
+  // Try the DB cache (populated by /api/cron/refresh-evidence). Fall back to
+  // the on-disk baseline if the cache is empty or DB is unreachable.
+  try {
+    const supabase = _getSupabaseAdmin();
+    if (supabase) {
+      const { data } = await supabase
+        .from('evidence_cache')
+        .select('ingredients, last_refreshed')
+        .eq('id', 'singleton')
+        .maybeSingle();
+      if (data?.ingredients && Array.isArray(data.ingredients) && data.ingredients.length) {
+        _ingCacheValue = data.ingredients;
+        _ingCacheAt    = now;
+        return res.json(_ingCacheValue);
+      }
+    }
+  } catch (_) { /* fall through to file */ }
+
+  _ingCacheValue = DATA.ingredients;
+  _ingCacheAt    = now;
+  res.json(_ingCacheValue);
 });
 
 app.get('/api/concerns', (_req, res) => {
@@ -179,7 +215,16 @@ app.use(require('./routes/analyze')(upload, analyzeLimit, getClient, getGroqClie
 // Authenticated data routes
 // ---------------------------------------------------------------------------
 const { verifyAuth } = require('./middleware/auth');
-const { getSupabaseAdmin } = require('./lib/supabase');
+const getSupabaseAdmin = _getSupabaseAdmin;
+
+// Cron route is mounted DIRECTLY on app (not via a sub-router) so it lands
+// before any router.use(verifyAuth) middleware that would otherwise intercept
+// it. Vercel's weekly cron hits this path with `Authorization: Bearer
+// ${CRON_SECRET}`. Manual testing via curl works the same way.
+const cronHandler = require('./routes/cron').handler(getSupabaseAdmin);
+app.get('/api/cron/refresh-evidence', cronHandler);
+app.post('/api/cron/refresh-evidence', cronHandler);
+
 app.use(require('./routes/scans')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/favorites')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/routine')(verifyAuth, getSupabaseAdmin));
