@@ -99,26 +99,40 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   async function detectRegionByIP() {
+    // Timezone first — it's instant and works offline. ipapi.co was failing
+    // on iOS Safari (CORS / ITP), and even when it worked it could be wrong
+    // (mobile carrier IPs sometimes geo-locate to the carrier's HQ country).
+    // Default is now 'IN' (India) since this is our primary market — fall
+    // back to ipapi only if the local timezone doesn't tell us anything.
+    const fromTz = fallbackByTimezone();
+    if (fromTz) return fromTz;
+
     try {
       const res = await fetch('https://ipapi.co/json/');
       userLocation = await res.json();
       const code = (userLocation.country_code || '').toUpperCase();
-      return COUNTRY_TO_REGION[code] || fallbackByTimezone();
+      return COUNTRY_TO_REGION[code] || 'IN';
     } catch (err) {
-      console.warn('IP geolocation failed, falling back to timezone', err);
-      return fallbackByTimezone();
+      console.warn('IP geolocation failed, defaulting to IN', err);
+      return 'IN';
     }
   }
 
   function fallbackByTimezone() {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    if (tz.includes('Kolkata') || tz.includes('India')) return 'IN';
-    if (tz.includes('London') || tz.includes('Europe/London')) return 'UK';
-    if (tz.includes('Europe')) return 'DE';
+    // India: both 'Asia/Kolkata' (modern IANA) and 'Asia/Calcutta' (legacy)
+    // resolve to IST. iOS sometimes still reports 'Asia/Calcutta'.
+    if (tz.includes('Kolkata') || tz.includes('Calcutta') || tz.includes('India')) return 'IN';
+    if (tz.includes('London')) return 'UK';
     if (tz.includes('Australia')) return 'AU';
     if (tz.includes('Tokyo')) return 'JP';
     if (tz.includes('Singapore')) return 'SG';
-    return 'US';
+    if (tz.includes('Dubai') || tz.includes('Abu_Dhabi')) return 'AE';
+    if (tz.includes('Riyadh')) return 'SA';
+    if (tz.includes('Europe')) return 'DE'; // generic European fallback
+    if (tz.includes('America/Toronto') || tz.includes('America/Vancouver') || tz.includes('America/Halifax')) return 'CA';
+    if (tz.includes('America')) return 'US';
+    return null; // ambiguous (UTC, etc) — let ipapi try
   }
 
   async function init() {
@@ -399,7 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Search on Amazon
         </a>
-        <p class="prod-disclosure">Affiliate link — DermAI may earn from qualifying purchases.</p>
       </div>`;
   }
 
