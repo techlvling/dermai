@@ -133,12 +133,58 @@
   border-left: 3px solid var(--accent-500);
 }
 
+.evidence-rationale-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
 .evidence-rationale-label {
   font-size: 0.75rem;
   color: var(--accent-600);
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  margin: 0;
 }
+
+/* Freshness pill — green/yellow/red dot indicating how recently the
+   ingredient's PubMed citations were refreshed by the weekly cron. */
+.freshness-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.freshness-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.freshness-pill.fresh-good {
+  background: rgba(90, 216, 163, 0.15);
+  color: #1f6c4a;
+}
+.freshness-pill.fresh-good::before { background: #2a8a64; }
+
+.freshness-pill.fresh-aging {
+  background: rgba(255, 170, 122, 0.18);
+  color: #8a4810;
+}
+.freshness-pill.fresh-aging::before { background: #e08a3e; }
+
+.freshness-pill.fresh-stale {
+  background: rgba(245, 88, 142, 0.12);
+  color: var(--primary-700);
+}
+.freshness-pill.fresh-stale::before { background: var(--primary-500); }
 
 .evidence-rationale-body {
   font-size: 0.8rem;

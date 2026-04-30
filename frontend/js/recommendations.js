@@ -245,7 +245,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const region = amazonRegions[currentRegionCode];
       if (detectedRegionEl) {
-        detectedRegionEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Showing products on amazon.${region.tld} (${region.name}).`;
+        // Newest per-ingredient last_refreshed = the cron's last successful run.
+        const refreshedTimes = allIngredients
+          .map(i => i.last_refreshed)
+          .filter(Boolean)
+          .map(t => new Date(t).getTime());
+        let evidenceLine = '';
+        if (refreshedTimes.length) {
+          const newest = Math.max(...refreshedTimes);
+          const days = Math.floor((Date.now() - newest) / 86400000);
+          const ago = days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
+          evidenceLine = ` &nbsp;·&nbsp; Evidence last checked: <strong>${ago}</strong>`;
+        }
+        detectedRegionEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Showing products on amazon.${region.tld} (${region.name}).${evidenceLine}`;
       }
 
       await loadUserProducts();
@@ -349,6 +361,32 @@ document.addEventListener('DOMContentLoaded', () => {
     ].filter(Boolean);
   }
 
+  // Freshness pill — shows how recently the cited evidence was refreshed
+  // from PubMed. Backed by ingredient.last_refreshed which is stamped by the
+  // weekly Vercel cron. When the cron has never run (or this ingredient was
+  // served from the on-disk fallback), there's no last_refreshed and we
+  // surface "Not yet checked" so the user knows the source might be stale.
+  function freshnessPillHTML(lastRefreshed) {
+    let cls, text;
+    if (!lastRefreshed) {
+      cls = 'fresh-stale';
+      text = 'Not yet checked';
+    } else {
+      const days = Math.floor((Date.now() - new Date(lastRefreshed).getTime()) / 86400000);
+      if (days < 14) {
+        cls = 'fresh-good';
+        text = days === 0 ? 'Refreshed today' : `Fresh · ${days}d ago`;
+      } else if (days < 60) {
+        cls = 'fresh-aging';
+        text = `Aging · ${days}d ago`;
+      } else {
+        cls = 'fresh-stale';
+        text = `Stale · ${days}d ago`;
+      }
+    }
+    return `<span class="freshness-pill ${cls}" title="When PubMed was last queried for this ingredient">${text}</span>`;
+  }
+
   function buildEvidenceHTML(prod, ingredient) {
     const userConcernNames = userAnalysis.concerns.map(c => c.name);
     const matchedConcerns = prod.concerns.filter(pc => userConcernNames.includes(pc));
@@ -368,10 +406,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!rationales.length && !studyLink) return '';
 
     const rationaleText = rationales[0] || `${ingredient.name} is clinically studied for ${matchedConcerns.join(', ')}.`;
+    const pillHTML = freshnessPillHTML(ingredient.last_refreshed);
 
     return `
       <div class="evidence-rationale">
-        <p class="evidence-rationale-label">WHY THIS?</p>
+        <div class="evidence-rationale-head">
+          <p class="evidence-rationale-label">WHY THIS?</p>
+          ${pillHTML}
+        </div>
         <p class="evidence-rationale-body">${rationaleText} ${studyLink}</p>
       </div>`;
   }
