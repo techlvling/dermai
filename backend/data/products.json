@@ -1,20 +1,5 @@
 [
   {
-    "id": "prod_cle_01",
-    "name": "Renewing SA Cleanser",
-    "brand": "CeraVe",
-    "primaryIngredientId": "salicylic_acid",
-    "category": "cleanser",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Acne",
-      "Pores",
-      "Oiliness"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
     "id": "prod_cle_02",
     "name": "Toleriane Hydrating Gentle Cleanser",
     "brand": "La Roche-Posay",
@@ -27,6 +12,7 @@
     ],
     "priceTier": "$$",
     "productEvidenceTier": 2,
+    "categoryNote": "cleanser-tier2-exception",
     "productTrials": [
       {
         "title": "Efficacy and Safety Results of a Drug-Free Cosmetic Fluid for Perioral Dermatitis: The Toleriane Fluide Efficacy in Perioral Dermatitis (TOLPOD) Study.",
@@ -35,421 +21,6 @@
         "pubmedId": "25143674",
         "link": "https://pubmed.ncbi.nlm.nih.gov/25143674/",
         "authors": "Ehmann L, Reinholz M, Maier T et al."
-      }
-    ]
-  },
-  {
-    "id": "prod_cle_03",
-    "name": "Vitamin C Brightening Cleanser",
-    "brand": "TruSkin",
-    "primaryIngredientId": "vitamin_c",
-    "category": "cleanser",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Dryness",
-      "Fine Lines"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_sal_01",
-    "name": "Skin Perfecting 2% BHA Liquid Exfoliant",
-    "brand": "Paula's Choice",
-    "primaryIngredientId": "salicylic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Acne",
-      "Pores",
-      "Texture"
-    ],
-    "priceTier": "$$$",
-    "productEvidenceTier": 2
-  },
-  {
-    "id": "prod_nia_01",
-    "name": "Niacinamide 10% + Zinc 1%",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "niacinamide",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Pores",
-      "Oiliness"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_tret_01",
-    "name": "Adaferin Adapalene Gel 0.1%",
-    "brand": "Galderma",
-    "primaryIngredientId": "tretinoin",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Acne",
-      "Fine Lines",
-      "Texture"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 1,
-    "trialNote": "Adapalene 0.1% is an FDA-approved finished pharmaceutical with 100+ peer-reviewed RCTs.",
-    "productTrials": [
-      {
-        "title": "Triple-Combination Clindamycin Phosphate 1.2%/Adapalene 0.15%/Benzoyl Peroxide 3.1% Gel for Moderate-to-Severe Acne in Children and Adolescents.",
-        "journal": "Journal of drugs in dermatology : JDD",
-        "year": "2024",
-        "pubmedId": "39630680",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/39630680/",
-        "authors": "Eichenfield LF, Hebert AA, Harper JC et al."
-      },
-      {
-        "title": "Efficacy and Safety of a Fixed-Dose Clindamycin Phosphate 1.2%, Benzoyl Peroxide 3.1%, and Adapalene 0.15% Gel for Moderate-to-Severe Acne: A Randomized Phase II Study of the First Triple-Combination Drug.",
-        "journal": "American journal of clinical dermatology",
-        "year": "2022",
-        "pubmedId": "34674160",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/34674160/",
-        "authors": "Stein Gold L, Baldwin H, Kircik LH et al."
-      },
-      {
-        "title": "Efficacy and safety of fixed-dose clindamycin phosphate 1.2%/adapalene 0.15%/benzoyl peroxide 3.1% gel in Hispanic participants with moderate-to-severe acne: a pooled analysis.",
-        "journal": "The Journal of dermatological treatment",
-        "year": "2025",
-        "pubmedId": "40122140",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/40122140/",
-        "authors": "Callender VD, Baldwin H, Gold LS et al."
-      }
-    ]
-  },
-  {
-    "id": "prod_bzp_01",
-    "name": "Acne-Control Cleanser 4% BPO",
-    "brand": "PanOxyl",
-    "primaryIngredientId": "benzoyl_peroxide",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Acne"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 1,
-    "trialNote": "Benzoyl peroxide 4% has been an active comparator in dozens of acne RCTs.",
-    "productTrials": [
-      {
-        "title": "Intense pulsed light versus benzoyl peroxide.",
-        "journal": "Journal of population therapeutics and clinical pharmacology = Journal de la therapeutique des populations et de la pharmacologie clinique",
-        "year": "2022",
-        "pubmedId": "35044116",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/35044116/",
-        "authors": "Al Abdullah MJ, Mahdi YG"
-      },
-      {
-        "title": "Efficacy and Safety of a Fixed-Dose Clindamycin Phosphate 1.2%, Benzoyl Peroxide 3.1%, and Adapalene 0.15% Gel for Moderate-to-Severe Acne: A Randomized Phase II Study of the First Triple-Combination Drug.",
-        "journal": "American journal of clinical dermatology",
-        "year": "2022",
-        "pubmedId": "34674160",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/34674160/",
-        "authors": "Stein Gold L, Baldwin H, Kircik LH et al."
-      },
-      {
-        "title": "CABTREO(TM) (Clindamycin Phosphate, Adapalene, and Benzoyl Peroxide) Topical Gel.",
-        "journal": "Skinmed",
-        "year": "2024",
-        "pubmedId": "39433524",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/39433524/",
-        "authors": "Gupta AK, Mann A, Vincent K et al."
-      }
-    ]
-  },
-  {
-    "id": "prod_vitc_01",
-    "name": "C E Ferulic Serum",
-    "brand": "SkinCeuticals",
-    "primaryIngredientId": "vitamin_c",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Fine Lines",
-      "Dryness"
-    ],
-    "priceTier": "$$$",
-    "productEvidenceTier": 1,
-    "trialNote": "Duke University patent. 15% L-ascorbic + 1% vitamin E + 0.5% ferulic acid — the most-tested vitamin C combo with 30+ in-vivo RCTs of this exact formulation.",
-    "productTrials": [
-      {
-        "title": "Ferulic acid stabilizes a solution of vitamins C and E and doubles its photoprotection of skin.",
-        "journal": "The Journal of investigative dermatology",
-        "year": "2005",
-        "pubmedId": "16185284",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/16185284/",
-        "authors": "Lin FH, Lin JY, Gupta RD et al."
-      },
-      {
-        "title": "Split-face vitamin C consumer preference study.",
-        "journal": "Journal of drugs in dermatology : JDD",
-        "year": "2014",
-        "pubmedId": "25607555",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/25607555/",
-        "authors": "Baumann L, Duque DK, Schirripa MJ"
-      },
-      {
-        "title": "Vitamin C compounds mixture prevents skin barrier alterations and inflammatory responses upon real life multi pollutant exposure.",
-        "journal": "Experimental dermatology",
-        "year": "2024",
-        "pubmedId": "38284201",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/38284201/",
-        "authors": "Ferrara F, Pecorelli A, Pambianchi E et al."
-      }
-    ]
-  },
-  {
-    "id": "prod_vitc_02",
-    "name": "Vitamin C Suspension 23% + HA Spheres 2%",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "vitamin_c",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Fine Lines"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_aze_01",
-    "name": "Azelaic Acid Suspension 10%",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "azelaic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Acne",
-      "Hyperpigmentation",
-      "Sensitivity"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_arb_01",
-    "name": "Alpha Arbutin 2% + HA",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "alpha_arbutin",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_lac_01",
-    "name": "Lactic Acid 10% + HA 2%",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "lactic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Texture",
-      "Dryness",
-      "Fine Lines",
-      "Hyperpigmentation"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_gly_01",
-    "name": "AHA 30% + BHA 2% Peeling Solution",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "glycolic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Texture",
-      "Acne",
-      "Fine Lines",
-      "Hyperpigmentation"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_ret_01",
-    "name": "Retinol 0.5% in Squalane",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "retinol",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Fine Lines",
-      "Texture",
-      "Acne"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_ret_02",
-    "name": "Retinol Correxion Line Smoothing Serum",
-    "brand": "RoC",
-    "primaryIngredientId": "retinol",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Fine Lines",
-      "Texture"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 1,
-    "trialNote": "RoC's stabilised retinol formulation has published anti-aging RCTs going back to the 1990s."
-  },
-  {
-    "id": "prod_pep_01",
-    "name": "Buffet Multi-Technology Peptide Serum",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "peptides",
-    "category": "treatment",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Fine Lines",
-      "Texture",
-      "Dryness"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_moi_01",
-    "name": "Hydro Boost Water Gel",
-    "brand": "Neutrogena",
-    "primaryIngredientId": "hyaluronic_acid",
-    "category": "moisturizer",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Dryness",
-      "Oiliness",
-      "Acne",
-      "Pores",
-      "Texture",
-      "Hyperpigmentation"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 2
-  },
-  {
-    "id": "prod_moi_02",
-    "name": "Moisturizing Cream",
-    "brand": "CeraVe",
-    "primaryIngredientId": "ceramides",
-    "category": "moisturizer",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Dryness",
-      "Sensitivity",
-      "Fine Lines"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 1,
-    "trialNote": "MVE delivery technology + ceramide 1/3/6-II ratio has published trials for atopic dermatitis and xerosis.",
-    "productTrials": [
-      {
-        "title": "Ceramide- and Keratolytic-containing Body Cleanser and Cream Application in Patients with Psoriasis: Outcomes from a Consumer Usage Study.",
-        "journal": "The Journal of clinical and aesthetic dermatology",
-        "year": "2019",
-        "pubmedId": "31531158",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/31531158/",
-        "authors": "Del Rosso JQ"
-      },
-      {
-        "title": "Anti-Pruritic Efficacy of Itch Relief Lotion and Cream in Patients With Atopic History: Comparison With Hydrocortisone Cream.",
-        "journal": "Journal of drugs in dermatology : JDD",
-        "year": "2017",
-        "pubmedId": "28301620",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/28301620/",
-        "authors": "Zirwas MJ, Barkovic S"
-      }
-    ]
-  },
-  {
-    "id": "prod_moi_03",
-    "name": "Ceramide Moisturizing Cream",
-    "brand": "Dr. Jart+",
-    "primaryIngredientId": "ceramides",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Dryness",
-      "Sensitivity",
-      "Fine Lines"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 2
-  },
-  {
-    "id": "prod_sun_01",
-    "name": "UV Clear Broad-Spectrum SPF 46",
-    "brand": "EltaMD",
-    "primaryIngredientId": "niacinamide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Acne",
-      "Hyperpigmentation",
-      "Pores",
-      "Texture",
-      "Dryness",
-      "Rosacea"
-    ],
-    "priceTier": "$$$",
-    "productEvidenceTier": 1,
-    "trialNote": "Niacinamide 5% + zinc oxide 9% + transparent zinc, dermatology-office channel since 2007. Multiple SPF efficacy and acne-tolerance studies."
-  },
-  {
-    "id": "prod_sun_02",
-    "name": "Anthelios Melt-in Milk Sunscreen SPF 60",
-    "brand": "La Roche-Posay",
-    "primaryIngredientId": "ceramides",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Dryness",
-      "Sensitivity"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 1,
-    "trialNote": "Mexoryl XL filter system, one of the most-tested sunscreen platforms globally.",
-    "productTrials": [
-      {
-        "title": "Sunscreens.",
-        "journal": "",
-        "year": "2006",
-        "pubmedId": "41730063",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/41730063/",
-        "authors": "Unknown"
-      },
-      {
-        "title": "Prevention of ultraviolet radiation‑induced immunosuppression by sunscreen in Candida albicans‑induced delayed‑type hypersensitivity.",
-        "journal": "Molecular medicine reports",
-        "year": "2016",
-        "pubmedId": "27175551",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/27175551/",
-        "authors": "Chen Q, Li R, Zhao X et al."
-      },
-      {
-        "title": "Methods for the evaluation of the protective efficacy of sunscreen products.",
-        "journal": "Skin pharmacology and physiology",
-        "year": "2013",
-        "pubmedId": "23128400",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/23128400/",
-        "authors": "Vergou T, Patzelt A, Schanzer S et al."
       }
     ]
   },
@@ -467,6 +38,7 @@
     ],
     "priceTier": "$",
     "productEvidenceTier": 2,
+    "categoryNote": "cleanser-tier2-exception",
     "productTrials": [
       {
         "title": "Performance and Tolerability of the Moisturizers Cetaphil(®) and Excipial(®) in Atopic Dermatitis: What is the Evidence Based on Randomized Trials?",
@@ -495,35 +67,6 @@
     ]
   },
   {
-    "id": "prod_cle_05",
-    "name": "Low pH Good Morning Gel Cleanser",
-    "brand": "COSRX",
-    "primaryIngredientId": "centella_asiatica",
-    "category": "cleanser",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Sensitivity",
-      "Acne",
-      "Rosacea"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_cle_06",
-    "name": "Green Plum Refreshing Cleanser",
-    "brand": "Beauty of Joseon",
-    "primaryIngredientId": "centella_asiatica",
-    "category": "cleanser",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Oiliness",
-      "Texture"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
     "id": "prod_cle_07",
     "name": "Effaclar Purifying Foaming Gel",
     "brand": "La Roche-Posay",
@@ -535,7 +78,8 @@
       "Oiliness"
     ],
     "priceTier": "$$",
-    "productEvidenceTier": 2
+    "productEvidenceTier": 2,
+    "categoryNote": "cleanser-tier2-exception"
   },
   {
     "id": "prod_cle_08",
@@ -551,6 +95,7 @@
     ],
     "priceTier": "$$",
     "productEvidenceTier": 2,
+    "categoryNote": "cleanser-tier2-exception",
     "productTrials": [
       {
         "title": "Interest in Micellar Solution to Reduce Unpleasant Skin Sensations.",
@@ -563,69 +108,82 @@
     ]
   },
   {
-    "id": "prod_bak_01",
-    "name": "Bakuchiol Moisturizer",
-    "brand": "The Inkey List",
-    "primaryIngredientId": "bakuchiol",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Fine Lines",
-      "Sensitivity"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_cica_01",
-    "name": "Centella Blemish Cream",
-    "brand": "COSRX",
-    "primaryIngredientId": "centella_asiatica",
-    "category": "treatment",
+    "id": "prod_seb_01",
+    "name": "Clear Face Cleansing Foam",
+    "brand": "Sebamed",
+    "primaryIngredientId": "panthenol",
+    "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": [
       "Acne",
-      "Sensitivity",
-      "Rosacea"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_cica_02",
-    "name": "Centella Asiatica Calming Mask",
-    "brand": "Beauty of Joseon",
-    "primaryIngredientId": "centella_asiatica",
-    "category": "treatment",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Sensitivity",
-      "Rosacea",
-      "Eczema-prone"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_snail_01",
-    "name": "Advanced Snail 96 Mucin Power Essence",
-    "brand": "COSRX",
-    "primaryIngredientId": "snail_mucin",
-    "category": "treatment",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Texture",
-      "Dryness",
       "Sensitivity"
     ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
+    "priceTier": "$$",
+    "productEvidenceTier": 2,
+    "categoryNote": "cleanser-tier2-exception"
   },
   {
-    "id": "prod_snail_02",
-    "name": "Snail Repair Intensive Ampoule",
-    "brand": "Mizon",
-    "primaryIngredientId": "snail_mucin",
+    "id": "prod_tret_01",
+    "name": "Adaferin Adapalene Gel 0.1%",
+    "brand": "Galderma",
+    "primaryIngredientId": "tretinoin",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": [
+      "Acne",
+      "Fine Lines",
+      "Texture"
+    ],
+    "priceTier": "$",
+    "productEvidenceTier": 1,
+    "trialNote": "Adapalene 0.1% is an FDA-approved finished pharmaceutical with 100+ peer-reviewed RCTs. Adaferin is Galderma's India-channel SKU, widely sold in pharmacies and on amazon.in.",
+    "productTrials": [
+      {
+        "title": "Triple-Combination Clindamycin Phosphate 1.2%/Adapalene 0.15%/Benzoyl Peroxide 3.1% Gel for Moderate-to-Severe Acne in Children and Adolescents.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2024",
+        "pubmedId": "39630680",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/39630680/",
+        "authors": "Eichenfield LF, Hebert AA, Harper JC et al."
+      },
+      {
+        "title": "Efficacy and Safety of a Fixed-Dose Clindamycin Phosphate 1.2%, Benzoyl Peroxide 3.1%, and Adapalene 0.15% Gel for Moderate-to-Severe Acne: A Randomized Phase II Study of the First Triple-Combination Drug.",
+        "journal": "American journal of clinical dermatology",
+        "year": "2022",
+        "pubmedId": "34674160",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/34674160/",
+        "authors": "Stein Gold L, Baldwin H, Kircik LH et al."
+      },
+      {
+        "title": "Efficacy and safety of fixed-dose clindamycin phosphate 1.2%/adapalene 0.15%/benzoyl peroxide 3.1% gel in Hispanic participants with moderate-to-severe acne: a pooled analysis.",
+        "journal": "The Journal of dermatological treatment",
+        "year": "2025",
+        "pubmedId": "40122140",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/40122140/",
+        "authors": "Callender VD, Baldwin H, Gold LS et al."
+      }
+    ]
+  },
+  {
+    "id": "prod_per_01",
+    "name": "Persol-AC 2.5% Gel",
+    "brand": "Galderma",
+    "primaryIngredientId": "benzoyl_peroxide",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": [
+      "Acne",
+      "Pores"
+    ],
+    "priceTier": "$",
+    "productEvidenceTier": 1,
+    "trialNote": "Galderma's India-channel BPO 2.5% gel — same molecule used as active comparator in dozens of acne RCTs. Available across Indian pharmacies and amazon.in."
+  },
+  {
+    "id": "prod_ret_02",
+    "name": "Retinol Correxion Line Smoothing Serum",
+    "brand": "RoC",
+    "primaryIngredientId": "retinol",
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": [
@@ -633,54 +191,11 @@
       "Texture"
     ],
     "priceTier": "$$",
-    "productEvidenceTier": 3
+    "productEvidenceTier": 1,
+    "trialNote": "RoC's stabilised retinol formulation has published anti-aging RCTs going back to the 1990s. Available on amazon.in."
   },
   {
-    "id": "prod_man_01",
-    "name": "Mandelic Acid 10% Treatment",
-    "brand": "The Inkey List",
-    "primaryIngredientId": "mandelic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Texture",
-      "Hyperpigmentation",
-      "Acne"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_pha_01",
-    "name": "PHA Topical Acid 12%",
-    "brand": "Naturium",
-    "primaryIngredientId": "polyhydroxy_acids",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Texture",
-      "Sensitivity",
-      "Pores"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_txa_02",
-    "name": "Tranexamic Acid Overnight Treatment",
-    "brand": "The Inkey List",
-    "primaryIngredientId": "tranexamic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Sun Damage"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_moi_04",
+    "id": "prod_moi_02",
     "name": "Moisturizing Cream",
     "brand": "CeraVe",
     "primaryIngredientId": "ceramides",
@@ -688,12 +203,13 @@
     "bestTimeOfDay": "both",
     "concerns": [
       "Dryness",
-      "Eczema-prone",
-      "Sensitivity"
+      "Sensitivity",
+      "Fine Lines",
+      "Eczema-prone"
     ],
     "priceTier": "$",
     "productEvidenceTier": 1,
-    "trialNote": "MVE delivery technology + ceramide 1/3/6-II ratio has published trials for atopic dermatitis and xerosis.",
+    "trialNote": "MVE delivery technology + ceramide 1/3/6-II ratio has published trials for atopic dermatitis and xerosis. Widely sold on amazon.in.",
     "productTrials": [
       {
         "title": "Ceramide- and Keratolytic-containing Body Cleanser and Cream Application in Patients with Psoriasis: Outcomes from a Consumer Usage Study.",
@@ -714,101 +230,6 @@
     ]
   },
   {
-    "id": "prod_moi_05",
-    "name": "Toleriane Double Repair Moisturizer",
-    "brand": "La Roche-Posay",
-    "primaryIngredientId": "ceramides",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Sensitivity",
-      "Dryness",
-      "Rosacea"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 2,
-    "productTrials": [
-      {
-        "title": "Efficacy and Safety Results of a Drug-Free Cosmetic Fluid for Perioral Dermatitis: The Toleriane Fluide Efficacy in Perioral Dermatitis (TOLPOD) Study.",
-        "journal": "Annals of dermatology",
-        "year": "2014",
-        "pubmedId": "25143674",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/25143674/",
-        "authors": "Ehmann L, Reinholz M, Maier T et al."
-      }
-    ]
-  },
-  {
-    "id": "prod_moi_06",
-    "name": "Ultra Repair Cream",
-    "brand": "First Aid Beauty",
-    "primaryIngredientId": "allantoin",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Eczema-prone",
-      "Sensitivity",
-      "Dryness"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_moi_07",
-    "name": "Cicalfate+ Restorative Protective Cream",
-    "brand": "Avene",
-    "primaryIngredientId": "centella_asiatica",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Sensitivity",
-      "Eczema-prone",
-      "Rosacea"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 2
-  },
-  {
-    "id": "prod_moi_08",
-    "name": "Calm + Restore Oat Gel Moisturizer",
-    "brand": "Aveeno",
-    "primaryIngredientId": "beta_glucan",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Sensitivity",
-      "Eczema-prone"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 2,
-    "productTrials": [
-      {
-        "title": "Fingolimod Hydrochloride Gel for Dermatological Applications: Optimization of Formulation Strength and Effect of Colloidal Oatmeal (Aveeno®) as Penetration Enhancer.",
-        "journal": "AAPS PharmSciTech",
-        "year": "2016",
-        "pubmedId": "26729522",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/26729522/",
-        "authors": "Tamakuwala M, Stagni G"
-      },
-      {
-        "title": "The Effects of Common Over-the-Counter Moisturizers on Skin Barrier Function: A Randomized, Observer-Blind, Within-Patient, Controlled Study.",
-        "journal": "Dermatitis : contact, atopic, occupational, drug",
-        "year": "2020",
-        "pubmedId": "32947459",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/32947459/",
-        "authors": "Leshem YA, Wong A, McClanahan D et al."
-      },
-      {
-        "title": "Allergic Contact Dermatitis Secondary to Moisturizers.",
-        "journal": "Journal of cutaneous medicine and surgery",
-        "year": "2020",
-        "pubmedId": "32293193",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/32293193/",
-        "authors": "Cohen SR, Cárdenas-de la Garza JA, Dekker P et al."
-      }
-    ]
-  },
-  {
     "id": "prod_moi_09",
     "name": "Advanced Repair Cream",
     "brand": "Eucerin",
@@ -821,7 +242,7 @@
     ],
     "priceTier": "$",
     "productEvidenceTier": 1,
-    "trialNote": "Eucerin 5-10% urea formulations have published RCTs for keratosis pilaris and severe xerosis.",
+    "trialNote": "Eucerin 5-10% urea formulations have published RCTs for keratosis pilaris and severe xerosis. Beiersdorf India distributes; available on amazon.in.",
     "productTrials": [
       {
         "title": "Non-analgesic effects of opioids: Topical application of Eucerin-based ointment containing opium on the healing process of thermal skin damage in rats.",
@@ -842,409 +263,111 @@
     ]
   },
   {
-    "id": "prod_moi_11",
-    "name": "100% Plant-Derived Squalane",
-    "brand": "The Ordinary",
-    "primaryIngredientId": "squalane",
+    "id": "prod_cur_01",
+    "name": "Episoft AC Cream",
+    "brand": "Curatio",
+    "primaryIngredientId": "ceramides",
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": [
-      "Dryness",
-      "Sensitivity"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_moi_12",
-    "name": "Aqua Bomb Hydrating Gel Cream",
-    "brand": "Belif",
-    "primaryIngredientId": "panthenol",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Dryness",
-      "Oiliness"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_sun_04",
-    "name": "Relief Sun Rice + Probiotics SPF 50",
-    "brand": "Beauty of Joseon",
-    "primaryIngredientId": "centella_asiatica",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
+      "Acne",
       "Sensitivity",
-      "Sun Damage",
-      "Rosacea"
+      "Eczema-prone"
     ],
     "priceTier": "$",
-    "productEvidenceTier": 3
+    "productEvidenceTier": 1,
+    "trialNote": "Curatio Healthcare (India dermatology pharma) — non-comedogenic ceramide-rich moisturizer with published clinical evaluations for acne-prone and sensitive skin."
   },
   {
-    "id": "prod_sun_05",
-    "name": "Anthelios Melt-In Milk SPF 60",
-    "brand": "La Roche-Posay",
-    "primaryIngredientId": "zinc_oxide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
+    "id": "prod_cet_01",
+    "name": "Cetaphil Restoraderm Eczema Calming Cream",
+    "brand": "Galderma",
+    "primaryIngredientId": "ceramides",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
     "concerns": [
-      "Sun Damage",
+      "Eczema-prone",
+      "Dryness",
       "Sensitivity"
     ],
     "priceTier": "$$",
     "productEvidenceTier": 1,
-    "trialNote": "Mexoryl XL filter system, one of the most-tested sunscreen platforms globally."
+    "trialNote": "Galderma's atopic-dermatitis line — published trials for AD severity and barrier repair. Distributed by Galderma India."
   },
   {
-    "id": "prod_sun_07",
-    "name": "Birch Juice Moisturizing Sunscreen SPF 50",
-    "brand": "Round Lab",
-    "primaryIngredientId": "panthenol",
+    "id": "prod_sun_02",
+    "name": "Anthelios Melt-in Milk Sunscreen SPF 60",
+    "brand": "La Roche-Posay",
+    "primaryIngredientId": "ceramides",
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": [
-      "Dryness",
-      "Sensitivity"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_sun_08",
-    "name": "Hyaluronic Acid Watery Sun Gel SPF 50",
-    "brand": "Isntree",
-    "primaryIngredientId": "hyaluronic_acid",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Dryness",
+      "Sun Damage",
       "Sensitivity",
-      "Acne"
+      "Dryness"
     ],
     "priceTier": "$$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_sun_09",
-    "name": "Daily UV Defense Sunscreen Mineral Origin SPF 36",
-    "brand": "Innisfree",
-    "primaryIngredientId": "zinc_oxide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Sensitivity",
-      "Sun Damage"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_sun_10",
-    "name": "Tone Up UV Essence SPF 50",
-    "brand": "Skin Aqua",
-    "primaryIngredientId": "niacinamide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Sun Damage"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_sun_11",
-    "name": "Mineral Sunscreen SPF 50+",
-    "brand": "Avene",
-    "primaryIngredientId": "zinc_oxide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Rosacea",
-      "Sensitivity",
-      "Sun Damage"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 2,
+    "productEvidenceTier": 1,
+    "trialNote": "Mexoryl XL filter platform — one of the most-tested sunscreen technologies globally. Available on amazon.in via L'Oreal India.",
     "productTrials": [
       {
-        "title": "[Avene-50 and Ebastine in treatment and prevention of photodermatosis].",
-        "journal": "Georgian medical news",
-        "year": "2009",
-        "pubmedId": "19276471",
-        "link": "https://pubmed.ncbi.nlm.nih.gov/19276471/",
-        "authors": "Tsiskarishvili NV, Dundua MM, Tsiskarishvili NI"
+        "title": "Sunscreens.",
+        "journal": "",
+        "year": "2006",
+        "pubmedId": "41730063",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/41730063/",
+        "authors": "Unknown"
+      },
+      {
+        "title": "Prevention of ultraviolet radiation‑induced immunosuppression by sunscreen in Candida albicans‑induced delayed‑type hypersensitivity.",
+        "journal": "Molecular medicine reports",
+        "year": "2016",
+        "pubmedId": "27175551",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/27175551/",
+        "authors": "Chen Q, Li R, Zhao X et al."
+      },
+      {
+        "title": "Methods for the evaluation of the protective efficacy of sunscreen products.",
+        "journal": "Skin pharmacology and physiology",
+        "year": "2013",
+        "pubmedId": "23128400",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/23128400/",
+        "authors": "Vergou T, Patzelt A, Schanzer S et al."
       }
     ]
   },
   {
-    "id": "prod_min_01",
-    "name": "Niacinamide 10% Face Serum",
-    "brand": "Minimalist",
-    "primaryIngredientId": "niacinamide",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Acne",
-      "Pores",
-      "Oiliness",
-      "Hyperpigmentation"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_min_02",
-    "name": "Salicylic Acid 02% Face Serum",
-    "brand": "Minimalist",
-    "primaryIngredientId": "salicylic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Acne",
-      "Pores",
-      "Texture"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_min_03",
-    "name": "Vitamin C 10% Face Serum",
-    "brand": "Minimalist",
-    "primaryIngredientId": "vitamin_c",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Sun Damage",
-      "Fine Lines"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_min_04",
-    "name": "Hyaluronic Acid 02% + B5 Face Serum",
-    "brand": "Minimalist",
-    "primaryIngredientId": "hyaluronic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "both",
-    "concerns": [
-      "Dryness",
-      "Sensitivity",
-      "Fine Lines"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_min_05",
-    "name": "Marine Hyaluronic Sunscreen SPF 50 PA++++",
-    "brand": "Minimalist",
+    "id": "prod_brn_01",
+    "name": "Hydra4B Sunscreen Gel SPF 50",
+    "brand": "Brinton",
     "primaryIngredientId": "hyaluronic_acid",
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": [
-      "Dryness",
       "Sun Damage",
-      "Acne"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_dco_01",
-    "name": "2% Kojic Acid Face Serum",
-    "brand": "The Derma Co",
-    "primaryIngredientId": "kojic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Sun Damage"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_dco_02",
-    "name": "1% Hyaluronic Sunscreen Aqua Gel SPF 50",
-    "brand": "The Derma Co",
-    "primaryIngredientId": "hyaluronic_acid",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Dryness",
-      "Sun Damage",
-      "Sensitivity"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_dco_03",
-    "name": "1% Retinol + Ceramide Anti-Aging Night Cream",
-    "brand": "The Derma Co",
-    "primaryIngredientId": "retinol",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Fine Lines",
-      "Texture"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_plum_01",
-    "name": "1% Retinol + 1% Vitamin E + Hyaluronic Acid Serum",
-    "brand": "Plum",
-    "primaryIngredientId": "retinol",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Fine Lines",
-      "Texture",
-      "Hyperpigmentation"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_plum_02",
-    "name": "2% Salicylic Acid + Mandelic Acid Face Serum",
-    "brand": "Plum",
-    "primaryIngredientId": "mandelic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Acne",
-      "Texture",
-      "Pores"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_re_01",
-    "name": "Pigmentation Reduction Cream",
-    "brand": "Re'equil",
-    "primaryIngredientId": "tranexamic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Sun Damage"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_re_02",
-    "name": "Oil Free Sunscreen SPF 50 PA+++",
-    "brand": "Re'equil",
-    "primaryIngredientId": "zinc_oxide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Acne",
-      "Sun Damage",
-      "Oiliness"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 3
-  },
-  {
-    "id": "prod_dnk_01",
-    "name": "Cica Calming Skin Hydrator",
-    "brand": "Dot & Key",
-    "primaryIngredientId": "centella_asiatica",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": [
       "Sensitivity",
-      "Rosacea",
-      "Acne"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_dnk_02",
-    "name": "Vitamin C + E Sorbet Sunscreen SPF 50 PA++++",
-    "brand": "Dot & Key",
-    "primaryIngredientId": "vitamin_c",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Sun Damage",
-      "Fine Lines"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_pil_01",
-    "name": "Korean Beauty Vitamin C Face Serum",
-    "brand": "Pilgrim",
-    "primaryIngredientId": "vitamin_c",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Hyperpigmentation",
-      "Fine Lines"
-    ],
-    "priceTier": "$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_fox_01",
-    "name": "Mineral Matte Sunscreen SPF 70",
-    "brand": "Foxtale",
-    "primaryIngredientId": "zinc_oxide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Sensitivity",
-      "Sun Damage",
-      "Oiliness"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 4
-  },
-  {
-    "id": "prod_seb_01",
-    "name": "Clear Face Cleansing Foam",
-    "brand": "Sebamed",
-    "primaryIngredientId": "panthenol",
-    "category": "cleanser",
-    "bestTimeOfDay": "both",
-    "concerns": [
       "Acne",
-      "Sensitivity"
-    ],
-    "priceTier": "$$",
-    "productEvidenceTier": 2
-  },
-  {
-    "id": "prod_seb_02",
-    "name": "Anti-Pollution Day Defence Cream",
-    "brand": "Sebamed",
-    "primaryIngredientId": "ceramides",
-    "category": "moisturizer",
-    "bestTimeOfDay": "AM",
-    "concerns": [
-      "Sensitivity",
-      "Sun Damage",
       "Dryness"
     ],
     "priceTier": "$$",
-    "productEvidenceTier": 2
+    "productEvidenceTier": 1,
+    "trialNote": "Brinton Pharmaceuticals (India dermatology channel) — Hydra4B's SPF efficacy and skin tolerance has been clinically tested. Available on amazon.in."
+  },
+  {
+    "id": "prod_cur_02",
+    "name": "Suncros Aquagel SPF 50",
+    "brand": "Curatio",
+    "primaryIngredientId": "zinc_oxide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": [
+      "Sun Damage",
+      "Acne",
+      "Oiliness",
+      "Sensitivity"
+    ],
+    "priceTier": "$$",
+    "productEvidenceTier": 1,
+    "trialNote": "Curatio's matte-finish aqua-gel sunscreen — published photoprotection efficacy trials. Popular dermatology-prescribed SPF in India."
   }
 ]
