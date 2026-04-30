@@ -185,6 +185,7 @@ app.use(require('./routes/favorites')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/routine')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/diary')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/userProducts')(verifyAuth, getSupabaseAdmin));
+app.use(require('./routes/productEvaluations')(verifyAuth, getSupabaseAdmin, getClient, getGroqClient));
 app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/photos')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getClient, upload, getGroqClient));

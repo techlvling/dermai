@@ -1677,6 +1677,120 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
+  // ── Add-by-link: paste URL+ingredients, AI evaluates, add to routine ──
+  // Hits POST /api/evaluate-product (server caches verdicts globally so
+  // repeat lookups don't burn AI tokens). On success renders a verdict
+  // panel with score + recommended slot + conflicts + an "Add to routine"
+  // button that POSTs to /api/user-products/from-evaluation.
+  window.evaluateAndAddProduct = async function (formEl) {
+    if (!window.Storage || !Storage.server) return;
+    const submitBtn = formEl.querySelector('#abl-submit');
+    const verdictEl = document.getElementById('abl-verdict');
+    if (!verdictEl) return;
+
+    const body = {
+      name: formEl.querySelector('[name=name]').value.trim(),
+      brand: formEl.querySelector('[name=brand]').value.trim() || null,
+      source_url: formEl.querySelector('[name=source_url]').value.trim() || null,
+      raw_ingredients_text: formEl.querySelector('[name=raw_ingredients_text]').value.trim(),
+    };
+    if (!body.name || !body.raw_ingredients_text) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Evaluating…';
+    verdictEl.classList.remove('hidden');
+    verdictEl.innerHTML = '<p class="abl-pending">⏳ Asking the AI to read the ingredient list and check the evidence…</p>';
+
+    let result;
+    try {
+      result = await Storage.server.post('/api/evaluate-product', body);
+    } catch (e) {
+      result = null;
+    }
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Evaluate with AI';
+
+    if (!result || !result.evaluation) {
+      verdictEl.innerHTML = '<p class="abl-error">Evaluation failed — try again in a moment.</p>';
+      return;
+    }
+
+    const ev = result.evaluation;
+    const v  = ev.verdict_json || {};
+    const cacheBadge = result.fromCache
+      ? '<span class="abl-cache-badge">⚡ FROM CACHE — no AI tokens burned</span>'
+      : '<span class="abl-cache-badge abl-cache-badge--fresh">✨ FRESH EVALUATION</span>';
+
+    const score = Number.isFinite(v.score) ? Math.max(1, Math.min(10, Math.round(v.score))) : 5;
+    const scoreColor = score >= 8 ? '#2a8a64' : score >= 5 ? '#9a5416' : 'var(--primary-700)';
+
+    const conflicts = Array.isArray(v.conflicts) && v.conflicts.length
+      ? `<div class="abl-conflicts"><strong>⚠ Conflicts:</strong> ${v.conflicts.join(', ')}</div>`
+      : '<div class="abl-no-conflicts">No conflicts flagged with common actives.</div>';
+
+    const slotPretty = ev.category && ev.best_time_of_day
+      ? `${ev.best_time_of_day} · ${ev.category}`
+      : 'unspecified';
+
+    const notes = Array.isArray(v.evidence_notes) && v.evidence_notes.length
+      ? `<ul class="abl-notes">${v.evidence_notes.slice(0, 4).map(n => `<li><strong>${n.ingredient}:</strong> ${n.note}</li>`).join('')}</ul>`
+      : '';
+
+    const ingredientChips = (ev.ingredients || []).map(id =>
+      `<span class="ing-chip">${id.replace(/_/g, ' ')}</span>`
+    ).join('');
+
+    const unmappedHint = (ev.unmapped_ingredients || []).length
+      ? `<p class="abl-unmapped">Unrecognized: ${ev.unmapped_ingredients.slice(0, 6).join(', ')}</p>`
+      : '';
+
+    verdictEl.innerHTML = `
+      <div class="abl-card">
+        ${cacheBadge}
+        <div class="abl-headline">
+          <div class="abl-score" style="color:${scoreColor}"><strong>${score}</strong><small>/10</small></div>
+          <div class="abl-summary">
+            <div class="abl-name">${ev.brand ? ev.brand + ' — ' : ''}${ev.name}</div>
+            <p class="abl-summary-text">${v.summary || 'AI provided no summary.'}</p>
+            <p class="abl-slot">Recommended slot: <strong>${slotPretty}</strong></p>
+          </div>
+        </div>
+        <div class="abl-section">
+          <span class="ing-prefix">MATCHED ACTIVES:</span> ${ingredientChips || '<em>none recognized</em>'}
+          ${unmappedHint}
+        </div>
+        ${conflicts}
+        ${notes}
+        <div class="abl-actions">
+          <button type="button" class="btn btn-primary" id="abl-add-btn">Add to my routine</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('abl-add-btn').addEventListener('click', async () => {
+      const addBtn = document.getElementById('abl-add-btn');
+      addBtn.disabled = true;
+      addBtn.textContent = 'Adding…';
+      const addResult = await Storage.server.post('/api/user-products/from-evaluation', {
+        evaluation_id: ev.id,
+        source_url: body.source_url,
+      });
+      if (addResult?.product) {
+        userProducts.unshift(addResult.product);
+        filterAndRenderProducts();
+        initChecklist();
+        applySlotChoicesToUI();
+        renderMyProductsList();
+        addBtn.textContent = 'Added ✓';
+        formEl.reset();
+        setTimeout(() => verdictEl.classList.add('hidden'), 2500);
+      } else {
+        addBtn.disabled = false;
+        addBtn.textContent = 'Try again';
+      }
+    });
+  };
+
   window.deleteUserProduct = async function(id) {
     if (!window.Storage || !Storage.server) return;
     try {

@@ -208,6 +208,35 @@
               <div id="photos-section" class="photos-section hidden" style="margin-top:3rem;"></div>
               <div id="diary-section" class="diary-section hidden" style="margin-top:3rem;"></div>
 
+              <section class="add-by-link-section" style="margin-top:3rem;">
+                <h3 class="my-products-title">Add a product by link</h3>
+                <p class="my-products-sub">Paste a shopping link, paste the ingredient list, and we'll evaluate it with AI — clinical evidence, conflicts, and which slot it fits.</p>
+                <form id="add-by-link-form" class="add-by-link-form" onsubmit="event.preventDefault(); window.evaluateAndAddProduct(this);">
+                  <div class="add-by-link-row">
+                    <label class="add-own-field" style="flex:2 1 280px;">
+                      <span>Product name</span>
+                      <input type="text" name="name" required maxlength="120" placeholder="e.g. Hydrating Cleanser" />
+                    </label>
+                    <label class="add-own-field" style="flex:1 1 160px;">
+                      <span>Brand (optional)</span>
+                      <input type="text" name="brand" maxlength="60" placeholder="e.g. CeraVe" />
+                    </label>
+                  </div>
+                  <label class="add-own-field">
+                    <span>Shopping link (optional)</span>
+                    <input type="url" name="source_url" maxlength="800" placeholder="https://www.amazon.in/..." />
+                  </label>
+                  <label class="add-own-field">
+                    <span>Ingredients — paste from the product page</span>
+                    <textarea name="raw_ingredients_text" required rows="3" maxlength="4000" placeholder="Niacinamide, Glycerin, Hyaluronic Acid, Ceramides, Water..."></textarea>
+                  </label>
+                  <div class="add-own-actions">
+                    <button type="submit" class="btn btn-primary" id="abl-submit">Evaluate with AI</button>
+                  </div>
+                </form>
+                <div id="abl-verdict" class="abl-verdict hidden"></div>
+              </section>
+
               <section class="my-products-section" style="margin-top:3rem;">
                 <h3 class="my-products-title">My products</h3>
                 <p class="my-products-sub">Products you own. Add them from the routine slots above to use your own picks instead of the catalog default.</p>

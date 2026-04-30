@@ -1418,6 +1418,144 @@
   justify-content: flex-end;
 }
 
+/* ── Add-by-link form + AI verdict panel (P4) ────────────────────── */
+.add-by-link-section {
+  padding: 1.5rem;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, rgba(0,0,0,0.06));
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-md);
+}
+.add-by-link-form {
+  display: grid;
+  gap: 0.875rem;
+  margin-top: 1rem;
+}
+.add-by-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+}
+.add-by-link-form textarea {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border, rgba(0,0,0,0.12));
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  background: #fff;
+  resize: vertical;
+}
+
+.abl-verdict { margin-top: 1.5rem; }
+.abl-verdict.hidden { display: none; }
+.abl-pending {
+  margin: 0;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--neutral-600);
+  background: rgba(0,0,0,0.025);
+  border-radius: var(--radius-md, 12px);
+}
+.abl-error {
+  margin: 0;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--primary-700);
+  background: rgba(245, 88, 142, 0.08);
+  border-radius: var(--radius-md, 12px);
+}
+.abl-card {
+  padding: 1.25rem;
+  background: rgba(0,0,0,0.02);
+  border-radius: var(--radius-md, 12px);
+  display: grid;
+  gap: 1rem;
+}
+.abl-cache-badge {
+  align-self: flex-start;
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(90, 216, 163, 0.15);
+  color: #2a8a64;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.abl-cache-badge--fresh {
+  background: rgba(245, 88, 142, 0.12);
+  color: var(--primary-700);
+}
+.abl-headline {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.abl-score {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.abl-score small {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--neutral-500);
+}
+.abl-summary { flex: 1; }
+.abl-name {
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin-bottom: 0.25rem;
+}
+.abl-summary-text {
+  margin: 0 0 0.5rem;
+  color: var(--neutral-700);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.abl-slot {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--neutral-600);
+}
+.abl-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.78rem;
+}
+.abl-conflicts {
+  padding: 0.625rem 0.875rem;
+  background: rgba(245, 88, 142, 0.08);
+  border-left: 3px solid var(--primary-500);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--primary-700);
+}
+.abl-no-conflicts {
+  font-size: 0.78rem;
+  color: var(--neutral-500);
+}
+.abl-notes {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.78rem;
+  color: var(--neutral-700);
+  display: grid;
+  gap: 0.3rem;
+}
+.abl-unmapped {
+  margin: 0.4rem 0 0;
+  font-size: 0.7rem;
+  color: var(--neutral-500);
+  font-style: italic;
+}
+.abl-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* ── My products management list ─────────────────────────────────── */
 .my-products-section {
   padding: 1.5rem;
