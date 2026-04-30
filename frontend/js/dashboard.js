@@ -21,6 +21,36 @@
   const signoutBtn = document.getElementById('dash-signout');
   if (signoutBtn) signoutBtn.addEventListener('click', () => window.Auth.signOut().then(() => { window.location.href = '/'; }));
 
+  // ── One-time Drive scope prompt at first dashboard visit ─────────
+  // Granting Drive scope at login (before scanning) means the scan flow
+  // doesn't have to redirect mid-upload (which would lose the in-memory
+  // photos). We only ask once: if the user clicks Allow OR Skip, the
+  // banner never reappears on dashboard. Scan-time fallback in upload.js
+  // covers anyone who skipped here.
+  if (typeof Drive !== 'undefined'
+      && !Drive.hasScope()
+      && localStorage.getItem('dermAI_drive_declined') !== 'true') {
+    const banner = document.createElement('div');
+    banner.className = 'drive-login-banner';
+    banner.style.cssText = 'position:sticky; top:0; z-index:50; padding:0.875rem 1.25rem; background:rgba(245,88,142,0.06); border-bottom:1px solid rgba(245,88,142,0.18); display:flex; align-items:center; gap:1rem; flex-wrap:wrap; font-size:0.875rem;';
+    banner.innerHTML = `
+      <span style="flex:1; min-width:200px;">
+        <strong>Back up scan photos to Google Drive?</strong>
+        Granting access now means future scans save automatically without an extra redirect.
+      </span>
+      <button class="btn btn-primary" id="drive-login-allow" style="padding:0.4rem 0.875rem; font-size:0.78rem;">Allow Drive access</button>
+      <button class="link-btn link-btn--muted" id="drive-login-skip">Not now</button>
+    `;
+    document.body.insertBefore(banner, document.body.firstChild);
+    document.getElementById('drive-login-allow').addEventListener('click', () => {
+      Drive.requestDriveScope(); // redirects to OAuth
+    });
+    document.getElementById('drive-login-skip').addEventListener('click', () => {
+      localStorage.setItem('dermAI_drive_declined', 'true');
+      banner.remove();
+    });
+  }
+
   // ── Section routing ──────────────────────────────────────────────
   const SECTIONS = ['overview', 'routine', 'history', 'ingredients', 'shopping', 'compare'];
   const mounted  = {};

@@ -70,6 +70,18 @@
   }
 
   async function uploadPhoto(file, filename, folderId) {
+    // Dedup: if a file with the same name already exists in this folder,
+    // return its metadata instead of uploading a duplicate. Re-scanning the
+    // same date used to create scan-${date}-${angle}.jpg duplicates because
+    // the filename embeds the date — same date+angle = same intended file.
+    const dedupQ = `name='${filename.replace(/'/g, "\\'")}' and '${folderId}' in parents and trashed=false`;
+    try {
+      const existing = await _apiFetch(
+        `${DRIVE_API}/files?q=${encodeURIComponent(dedupQ)}&fields=files(id,webViewLink,thumbnailLink)&pageSize=1`
+      );
+      if (existing?.files?.length) return existing.files[0];
+    } catch (_) { /* dedup is best-effort; fall through to upload on failure */ }
+
     const token = await _token();
     const meta  = { name: filename, parents: [folderId] };
     const form  = new FormData();

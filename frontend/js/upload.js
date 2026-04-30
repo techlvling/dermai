@@ -634,19 +634,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // user is logged in, also clear the stale localStorage cache if the POST
     // failed — otherwise the routine page would render a scan that doesn't
     // exist on the server (the source-of-truth bug fix in P1 depends on this).
-    let savedScanId = null;
-    Storage.isLoggedIn().then(loggedIn => {
+    // We expose a promise so the auto-Drive-backup code below can await the
+    // scan ID before patching image_urls into Postgres.
+    const savedScanIdPromise = Storage.isLoggedIn().then(loggedIn =>
       Storage.server.post('/api/scans', { result_json: data })
         .then(r => {
-          savedScanId = r?.scan?.id ?? null;
-          if (loggedIn && !r) {
-            localStorage.removeItem('dermAI_analysis');
-          }
+          if (loggedIn && !r) localStorage.removeItem('dermAI_analysis');
+          return r?.scan?.id ?? null;
         })
         .catch(() => {
           if (loggedIn) localStorage.removeItem('dermAI_analysis');
-        });
-    });
+          return null;
+        })
+    );
 
     renderHistory(history);
 
@@ -669,17 +669,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (typeof Drive === 'undefined') return;
 
-      // Drive backup toggle
+      // Auto Drive backup status pill (P2) — replaces the old opt-in toggle.
+      // If scope is already granted, kick off the backup automatically.
+      // If not, show an "Enable backup" affordance so the user can opt in
+      // without losing the in-memory photos to an OAuth redirect.
       const ANGLE_LABELS = ['front', 'left', 'right'];
       const driveSection = document.createElement('div');
       driveSection.className = 'drive-backup';
       driveSection.innerHTML = `
         <div class="drive-backup__row">
           <div>
-            <div class="drive-backup__label">BACK UP PHOTOS TO DRIVE</div>
-            <div class="drive-backup__hint">Save these 3 photos to your Google Drive</div>
+            <div class="drive-backup__label" id="drive-label">SAVING TO GOOGLE DRIVE…</div>
+            <div class="drive-backup__hint" id="drive-hint">Uploading your scan photos automatically</div>
           </div>
-          <button class="drive-toggle" id="drive-toggle" role="switch" aria-checked="false" aria-label="Back up photos to Drive"></button>
+          <span class="drive-backup__status" id="drive-status" aria-live="polite">⏳</span>
         </div>
         <div class="drive-backup__bar" id="drive-bar" style="display:none">
           <div class="drive-backup__fill" id="drive-fill"></div>
@@ -687,47 +690,35 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       resultsSection.appendChild(driveSection);
 
-      const toggle = document.getElementById('drive-toggle');
+      const label  = document.getElementById('drive-label');
+      const hint   = document.getElementById('drive-hint');
+      const status = document.getElementById('drive-status');
       const bar    = document.getElementById('drive-bar');
       const fill   = document.getElementById('drive-fill');
-      const label  = driveSection.querySelector('.drive-backup__label');
-      const hint   = driveSection.querySelector('.drive-backup__hint');
 
-      toggle.addEventListener('click', async () => {
-        if (toggle.classList.contains('uploading')) return;
-        if (toggle.getAttribute('aria-checked') === 'true') return;
-
-        if (!Drive.hasScope()) {
-          // Warn user they'll be redirected (photos in memory will be lost)
-          hint.textContent = 'Redirecting to Google for permission…';
-          await Drive.requestDriveScope();
-          return; // page redirects
-        }
-
-        toggle.classList.add('uploading');
-        toggle.setAttribute('aria-checked', 'true');
+      async function runDriveBackup() {
         bar.style.display = 'block';
-
+        status.textContent = '⏳';
         try {
-          const folderId   = await Drive.ensureScansFolder();
-          const filesToUp  = capturedFiles.filter(Boolean);
-          const urls       = [];
+          const folderId  = await Drive.ensureScansFolder();
+          const filesToUp = capturedFiles.filter(Boolean);
+          const urls      = [];
 
           for (let i = 0; i < filesToUp.length; i++) {
             const date     = new Date(data.savedAt).toISOString().slice(0, 10);
             const filename = `scan-${date}-${ANGLE_LABELS[i]}.jpg`;
             hint.textContent = `Uploading ${filesToUp.length} photos… (${i + 1}/${filesToUp.length})`;
-            fill.style.width = `${Math.round(((i) / filesToUp.length) * 100)}%`;
+            fill.style.width = `${Math.round((i / filesToUp.length) * 100)}%`;
             const result = await Drive.uploadPhoto(filesToUp[i], filename, folderId);
             urls.push(result.webViewLink);
           }
           fill.style.width = '100%';
 
-          // Update Postgres image_urls (non-fatal). savedScanId may be null if the
-          // /api/scans POST hasn't resolved yet — accepted race per spec (user must click
-          // fast before the POST returns, which is unlikely but silently skipped if so).
-          if (savedScanId) {
-            fetch(`/api/scans/${savedScanId}/images`, {
+          // Wait for the scan ID before patching image_urls. Promise was set
+          // up earlier so the POST /api/scans is already in-flight.
+          const scanId = await savedScanIdPromise;
+          if (scanId) {
+            fetch(`/api/scans/${scanId}/images`, {
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
@@ -737,23 +728,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }).catch(e => console.warn('[Drive] PATCH scans images failed:', e.message));
           }
 
-          // Trigger IndexedDB migration now that scope is active
           const user = await window.Auth.getUser();
           if (user) Drive.migrateFromIndexedDB(user.id).catch(() => {});
 
-          label.textContent = 'BACKED UP TO DRIVE ✓';
+          label.textContent  = 'SAVED TO GOOGLE DRIVE ✓';
+          status.textContent = '✓';
           const scanFolderId = localStorage.getItem('dermai-drive-folder-scans') || '';
-          hint.innerHTML = `${filesToUp.length} photos saved · <a href="https://drive.google.com/drive/folders/${encodeURIComponent(scanFolderId)}" target="_blank" rel="noopener">View in Drive →</a>`;
-          bar.style.display = 'none';
+          hint.innerHTML     = `${filesToUp.length} photos saved · <a href="https://drive.google.com/drive/folders/${encodeURIComponent(scanFolderId)}" target="_blank" rel="noopener">View in Drive →</a>`;
+          bar.style.display  = 'none';
         } catch (err) {
           console.error('[Drive] backup failed:', err.message);
-          label.textContent = 'BACK UP PHOTOS TO DRIVE';
-          hint.textContent  = err.message.includes('quota') ? 'Google Drive is full — manage your storage.' : 'Upload failed — try again';
-          toggle.classList.remove('uploading');
-          toggle.setAttribute('aria-checked', 'false');
-          bar.style.display = 'none';
+          label.textContent  = 'BACKUP FAILED';
+          status.textContent = '⚠';
+          hint.textContent   = err.message.includes('quota')
+            ? 'Google Drive is full — free up space and reload to retry.'
+            : 'Couldn\'t save to Drive — your scan is still in History.';
+          bar.style.display  = 'none';
         }
-      });
+      }
+
+      if (Drive.hasScope()) {
+        // Scope already granted — fire automatically.
+        runDriveBackup();
+      } else if (localStorage.getItem('dermAI_drive_declined') === 'true') {
+        // User said no earlier — don't nag. Show a quiet enable affordance.
+        label.textContent  = 'DRIVE BACKUP IS OFF';
+        status.textContent = '';
+        hint.innerHTML     = '<button id="drive-reenable" class="link-btn">Enable backup</button> to save scan photos to your Google Drive';
+        document.getElementById('drive-reenable').addEventListener('click', async () => {
+          localStorage.removeItem('dermAI_drive_declined');
+          hint.textContent = 'Redirecting to Google for permission…';
+          await Drive.requestDriveScope(); // page redirects; photos in memory are lost
+        });
+      } else {
+        // First-time user without scope — offer one inline grant button.
+        // Granting redirects to OAuth which loses the in-memory photos, so
+        // we don't auto-trigger; user opts in explicitly.
+        label.textContent  = 'BACK UP PHOTOS TO DRIVE';
+        status.textContent = '';
+        hint.innerHTML     = '<button id="drive-grant" class="link-btn">Allow Drive access</button> to auto-save every scan. <button id="drive-skip" class="link-btn link-btn--muted">Not now</button>';
+        document.getElementById('drive-grant').addEventListener('click', async () => {
+          hint.textContent = 'Redirecting to Google for permission…';
+          await Drive.requestDriveScope();
+        });
+        document.getElementById('drive-skip').addEventListener('click', () => {
+          localStorage.setItem('dermAI_drive_declined', 'true');
+          label.textContent  = 'DRIVE BACKUP IS OFF';
+          hint.innerHTML     = '<button id="drive-reenable2" class="link-btn">Enable backup</button> later from any scan';
+          document.getElementById('drive-reenable2').addEventListener('click', async () => {
+            localStorage.removeItem('dermAI_drive_declined');
+            hint.textContent = 'Redirecting to Google for permission…';
+            await Drive.requestDriveScope();
+          });
+        });
+      }
     });
   }
 });
