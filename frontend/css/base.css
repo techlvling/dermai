@@ -604,6 +604,99 @@ ul {
 .link-btn--muted { color: var(--neutral-500); font-weight: 400; }
 .link-btn:hover { color: var(--primary-700); }
 
+/* ── Connections section (dashboard) ─────────────────────────────────────── */
+.conn-list {
+  display: grid;
+  gap: 1rem;
+}
+.conn-card {
+  padding: 1.25rem;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, rgba(0,0,0,0.06));
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-md);
+}
+.conn-card--coming-soon { opacity: 0.6; }
+.conn-card__head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.conn-card__icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.03);
+  border-radius: 12px;
+}
+.conn-card__title { flex: 1; }
+.conn-card__title h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--neutral-900);
+}
+.conn-card__title p {
+  margin: 0;
+  font-size: 0.825rem;
+  color: var(--neutral-600);
+  line-height: 1.5;
+}
+.conn-coming-soon {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.05);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--neutral-600);
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.conn-card__status {
+  flex-shrink: 0;
+  align-self: center;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.conn-card__status--on {
+  background: rgba(90, 216, 163, 0.15);
+  color: #2a8a64;
+}
+.conn-card__status--off {
+  background: rgba(0,0,0,0.05);
+  color: var(--neutral-600);
+}
+.conn-card__actions {
+  margin-top: 1rem;
+}
+.conn-help {
+  margin: 0 0 0.875rem;
+  font-size: 0.78rem;
+  color: var(--neutral-600);
+}
+.conn-help code {
+  background: rgba(0,0,0,0.05);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+.conn-actions-row {
+  display: flex;
+  gap: 0.875rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 /* ── Daily progress photo card (home page) ───────────────────────────────── */
 .progress-card {
   border: 1px solid var(--border);

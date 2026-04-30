@@ -52,7 +52,7 @@
   }
 
   // ── Section routing ──────────────────────────────────────────────
-  const SECTIONS = ['overview', 'routine', 'history', 'ingredients', 'shopping', 'compare'];
+  const SECTIONS = ['overview', 'routine', 'history', 'ingredients', 'shopping', 'compare', 'connections'];
   const mounted  = {};
 
   function showSection(key) {
@@ -87,6 +87,63 @@
     if (key === 'compare' && !mounted.compare) {
       History.mountCompare();
       mounted.compare = true;
+    }
+    if (key === 'connections') {
+      // Always re-render — status can change between visits (after grant flow
+      // returns the user lands here with new scope; after Forget the flag flips).
+      renderConnections();
+    }
+  }
+
+  function renderConnections() {
+    const statusEl  = document.getElementById('conn-drive-status');
+    const actionsEl = document.getElementById('conn-drive-actions');
+    if (!statusEl || !actionsEl) return;
+    if (typeof Drive === 'undefined') {
+      statusEl.textContent = 'Unavailable';
+      statusEl.className   = 'conn-card__status conn-card__status--off';
+      actionsEl.innerHTML  = '<p class="conn-help">Drive integration is not loaded on this page. Refresh and try again.</p>';
+      return;
+    }
+    const granted  = Drive.hasScope();
+    const declined = localStorage.getItem('dermAI_drive_declined') === 'true';
+
+    if (granted) {
+      statusEl.textContent = 'Connected';
+      statusEl.className   = 'conn-card__status conn-card__status--on';
+      actionsEl.innerHTML = `
+        <p class="conn-help">Future scans will save to <code>DermAI Photos/Scans/</code> in your Drive.</p>
+        <div class="conn-actions-row">
+          <button type="button" class="btn btn-outline" id="conn-drive-forget">Forget this connection</button>
+          <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener" class="link-btn">Revoke at Google →</a>
+        </div>
+      `;
+      document.getElementById('conn-drive-forget').addEventListener('click', () => {
+        // Local-only forget. Tells user to revoke at Google for a clean cut.
+        localStorage.setItem('dermAI_drive_declined', 'true');
+        localStorage.removeItem('dermai-drive-scope');
+        localStorage.removeItem('dermai-drive-folder-root');
+        localStorage.removeItem('dermai-drive-folder-scans');
+        localStorage.removeItem('dermai-drive-folder-progress');
+        renderConnections();
+      });
+    } else {
+      statusEl.textContent = declined ? 'Declined' : 'Not connected';
+      statusEl.className   = 'conn-card__status conn-card__status--off';
+      actionsEl.innerHTML = `
+        <p class="conn-help">${declined
+          ? 'You skipped the Drive prompt earlier. Connect now to start auto-saving scan photos.'
+          : 'Connect your Google Drive so every scan is auto-saved to a private folder.'}</p>
+        <div class="conn-actions-row">
+          <button type="button" class="btn btn-primary" id="conn-drive-grant">Connect Google Drive</button>
+        </div>
+      `;
+      document.getElementById('conn-drive-grant').addEventListener('click', () => {
+        // Granting redirects to OAuth. Clear the declined flag so the post-
+        // return state reflects the user's intent.
+        localStorage.removeItem('dermAI_drive_declined');
+        Drive.requestDriveScope();
+      });
     }
   }
 

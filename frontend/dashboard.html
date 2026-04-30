@@ -57,6 +57,10 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           Compare
         </a>
+        <a data-section="connections">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Connections
+        </a>
 
         <a href="/analyze.html" style="margin-top:auto; background:rgba(245,88,142,0.08); color:var(--primary-600);">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -346,6 +350,49 @@
           </div>
           <button id="compare-run-btn" class="btn btn-primary" disabled>Compare →</button>
           <div id="compare-result-panel" class="hidden" style="margin-top:2rem;"></div>
+        </div>
+      </section>
+
+      <!-- CONNECTIONS ─────────────────────────────────────────────── -->
+      <section class="dash-section" data-section="connections">
+        <div class="history-header">
+          <h1>Connections</h1>
+          <p>Manage how DermAI talks to your other accounts.</p>
+        </div>
+
+        <div class="conn-list">
+          <div class="conn-card" id="conn-drive-card">
+            <div class="conn-card__head">
+              <div class="conn-card__icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+                  <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
+                  <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
+                  <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+                  <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+                  <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+                </svg>
+              </div>
+              <div class="conn-card__title">
+                <h3>Google Drive</h3>
+                <p>Auto-back up your scan photos to your own <code>DermAI Photos/Scans/</code> folder. We can only see files we created.</p>
+              </div>
+              <span class="conn-card__status" id="conn-drive-status">Checking…</span>
+            </div>
+            <div class="conn-card__actions" id="conn-drive-actions"></div>
+          </div>
+
+          <div class="conn-card conn-card--coming-soon">
+            <div class="conn-card__head">
+              <div class="conn-card__icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+              </div>
+              <div class="conn-card__title">
+                <h3>Apple Health <span class="conn-coming-soon">Coming soon</span></h3>
+                <p>Pull stress / sleep / hydration into your skin diary automatically.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
