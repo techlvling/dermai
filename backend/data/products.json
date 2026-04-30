@@ -377,12 +377,25 @@
     "primaryIngredientId": "tretinoin",
     "category": "treatment",
     "bestTimeOfDay": "PM",
-    "concerns": ["Hyperpigmentation", "Sun Damage"],
+    "concerns": [
+      "Hyperpigmentation",
+      "Sun Damage"
+    ],
     "priceTier": "$$",
     "productEvidenceTier": 1,
     "requiresPrescription": true,
     "trialNote": "Galderma's FDA-approved triple combination for moderate-to-severe melasma. Multiple peer-reviewed Phase III RCTs.",
-    "consultDermNote": "Prescription-only in India. Fluocinolone is a topical steroid — long-term use causes thinning. Standard protocol: 8–12 weeks then taper. Always pair with daily SPF. See a dermatologist before starting."
+    "consultDermNote": "Prescription-only in India. Fluocinolone is a topical steroid — long-term use causes thinning. Standard protocol: 8–12 weeks then taper. Always pair with daily SPF. See a dermatologist before starting.",
+    "productTrials": [
+      {
+        "title": "Efficacy and Safety of Generic Fluocinolone Acetonide, Hydroquinone, and Tretinoin Cream Compared With TRI-LUMA for the Treatment of Moderate-To-Severe Melasma in Chinese Patients: A Randomized, Single-Center, Placebo-Controlled Trial.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2025",
+        "pubmedId": "40296512",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/40296512/",
+        "authors": "Hu H, Zhou P, Yao H et al."
+      }
+    ]
   },
   {
     "id": "prod_rx_hydroquinone",
@@ -391,12 +404,41 @@
     "primaryIngredientId": "hydroquinone",
     "category": "treatment",
     "bestTimeOfDay": "PM",
-    "concerns": ["Hyperpigmentation", "Sun Damage"],
+    "concerns": [
+      "Hyperpigmentation",
+      "Sun Damage"
+    ],
     "priceTier": "$",
     "productEvidenceTier": 1,
     "requiresPrescription": true,
     "trialNote": "Hydroquinone 4% has been the gold-standard depigmenting agent for 30+ years with extensive RCT evidence for melasma and post-inflammatory hyperpigmentation.",
-    "consultDermNote": "Prescription-required in India. Pulse therapy (8–12 weeks then break) is standard to avoid ochronosis (paradoxical darkening). Don't combine with peroxides. See a dermatologist."
+    "consultDermNote": "Prescription-required in India. Pulse therapy (8–12 weeks then break) is standard to avoid ochronosis (paradoxical darkening). Don't combine with peroxides. See a dermatologist.",
+    "productTrials": [
+      {
+        "title": "Efficacy and safety of topical isobutylamido thiazolyl resorcinol (Thiamidol) vs. 4% hydroquinone cream for facial melasma: an evaluator-blinded, randomized controlled trial.",
+        "journal": "Journal of the European Academy of Dermatology and Venereology : JEADV",
+        "year": "2021",
+        "pubmedId": "33988887",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/33988887/",
+        "authors": "Lima PB, Dias JAF, Cassiano DP et al."
+      },
+      {
+        "title": "The effectiveness and safety of 3% tranexamic acid cream vs. 4% hydroquinone cream for mixed-type melasma in skin of color: a double-blind, split-face, randomized controlled trial.",
+        "journal": "Acta dermatovenerologica Alpina, Pannonica, et Adriatica",
+        "year": "2024",
+        "pubmedId": "38918942",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38918942/",
+        "authors": "Yasnova N, Sirait SP, Rahmayunita G"
+      },
+      {
+        "title": "Safety and efficacy of niosomal and conventional tranexamic acid/niacinamide vs. hydroquinone creams in melasma: A randomized, double-blind, case-controlled clinical trial.",
+        "journal": "Scientific reports",
+        "year": "2025",
+        "pubmedId": "41315336",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/41315336/",
+        "authors": "Ghasemiyeh P, Haghighi NF, Dastgheib L et al."
+      }
+    ]
   },
   {
     "id": "prod_rx_soolantra",
@@ -405,12 +447,40 @@
     "primaryIngredientId": "ivermectin",
     "category": "treatment",
     "bestTimeOfDay": "PM",
-    "concerns": ["Rosacea"],
+    "concerns": [
+      "Rosacea"
+    ],
     "priceTier": "$$",
     "productEvidenceTier": 1,
     "requiresPrescription": true,
     "trialNote": "Galderma's ivermectin 1% cream — multiple Phase III RCTs showed superior reduction of inflammatory lesions in papulopustular rosacea vs vehicle and metronidazole.",
-    "consultDermNote": "Prescription-only. Apply once daily PM for at least 12 weeks before judging response. Mild irritation common in the first 2 weeks. See a dermatologist."
+    "consultDermNote": "Prescription-only. Apply once daily PM for at least 12 weeks before judging response. Mild irritation common in the first 2 weeks. See a dermatologist.",
+    "productTrials": [
+      {
+        "title": "Pulsed dye laser alone versus its combination with topical ivermectin 1% in treatment of Rosacea: a randomized comparative study.",
+        "journal": "The Journal of dermatological treatment",
+        "year": "2022",
+        "pubmedId": "32141785",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/32141785/",
+        "authors": "Osman M, Shokeir HA, Hassan AM et al."
+      },
+      {
+        "title": "Evaluation of the efficacy of oral ivermectin in comparison with ivermectin-metronidazole combined therapy in the treatment of ocular and skin lesions of Demodex folliculorum.",
+        "journal": "International journal of infectious diseases : IJID : official publication of the International Society for Infectious Diseases",
+        "year": "2013",
+        "pubmedId": "23294870",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/23294870/",
+        "authors": "Salem DA, El-Shazly A, Nabih N et al."
+      },
+      {
+        "title": "Maintenance of remission following successful treatment of papulopustular rosacea with ivermectin 1% cream vs. metronidazole 0.75% cream: 36-week extension of the ATTRACT randomized study.",
+        "journal": "Journal of the European Academy of Dermatology and Venereology : JEADV",
+        "year": "2016",
+        "pubmedId": "26691278",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/26691278/",
+        "authors": "Taieb A, Khemis A, Ruzicka T et al."
+      }
+    ]
   },
   {
     "id": "prod_rx_aziderm20",
@@ -419,12 +489,42 @@
     "primaryIngredientId": "azelaic_acid",
     "category": "treatment",
     "bestTimeOfDay": "both",
-    "concerns": ["Rosacea", "Acne", "Hyperpigmentation"],
+    "concerns": [
+      "Rosacea",
+      "Acne",
+      "Hyperpigmentation"
+    ],
     "priceTier": "$",
     "productEvidenceTier": 1,
     "requiresPrescription": true,
     "trialNote": "Azelaic acid 20% is FDA-approved for mild-to-moderate rosacea and acne with decades of RCT evidence. Aziderm is the widely-prescribed Indian-marketed brand.",
-    "consultDermNote": "20% strength is prescription-only in India (10% OTC under same brand). Apply twice daily; mild tingling for the first 2 weeks is normal. Safe in pregnancy unlike retinoids. See a dermatologist."
+    "consultDermNote": "20% strength is prescription-only in India (10% OTC under same brand). Apply twice daily; mild tingling for the first 2 weeks is normal. Safe in pregnancy unlike retinoids. See a dermatologist.",
+    "productTrials": [
+      {
+        "title": "755-nm picosecond laser plus topical 20% azelaic acid compared to topical 20% azelaic acid alone for the treatment of melasma: a randomized, split-face and controlled trial.",
+        "journal": "Lasers in medical science",
+        "year": "2024",
+        "pubmedId": "38656631",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38656631/",
+        "authors": "Lai D, Cheng S, Zhou S et al."
+      },
+      {
+        "title": "Combination of azelaic acid 5% and erythromycin 2% in the treatment of acne vulgaris.",
+        "journal": "The Journal of dermatological treatment",
+        "year": "2010",
+        "pubmedId": "20394495",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/20394495/",
+        "authors": "Pazoki-Toroudi H, Nassiri-Kashani M, Tabatabaie H et al."
+      },
+      {
+        "title": "Real-World Efficacy of Azelaic Acid 15% Gel for the Reduction of Inflammatory Lesions of Rosacea.",
+        "journal": "Skin therapy letter",
+        "year": "2017",
+        "pubmedId": "29091380",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/29091380/",
+        "authors": "Wirth PJ, Henderson Berg MH, Sadick N"
+      }
+    ]
   },
   {
     "id": "prod_rx_tretinoin",
@@ -433,11 +533,42 @@
     "primaryIngredientId": "tretinoin",
     "category": "treatment",
     "bestTimeOfDay": "PM",
-    "concerns": ["Acne", "Fine Lines", "Texture", "Hyperpigmentation"],
+    "concerns": [
+      "Acne",
+      "Fine Lines",
+      "Texture",
+      "Hyperpigmentation"
+    ],
     "priceTier": "$",
     "productEvidenceTier": 1,
     "requiresPrescription": true,
     "trialNote": "Tretinoin 0.05% has 50+ years of clinical evidence as the most-studied topical retinoid for acne, photoaging, and pigmentation. Stronger than the OTC adapalene equivalent (Adaferin).",
-    "consultDermNote": "Prescription-required in India (also sold as A-Ret, Retino-A, Tretiva). Causes initial purging, dryness, photosensitivity. Always pair with daily SPF. Start 2x/week and ramp up. Pregnancy contraindicated — use Adaferin or azelaic acid instead. See a dermatologist."
+    "consultDermNote": "Prescription-required in India (also sold as A-Ret, Retino-A, Tretiva). Causes initial purging, dryness, photosensitivity. Always pair with daily SPF. Start 2x/week and ramp up. Pregnancy contraindicated — use Adaferin or azelaic acid instead. See a dermatologist.",
+    "productTrials": [
+      {
+        "title": "Vehicle Formulation Impacts Tolerability and Patient Preference: Comparison of Tretinoin Branded Lotion and Generic Cream.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2022",
+        "pubmedId": "35946981",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/35946981/",
+        "authors": "Draelos Z, Tanghetti E, Guenin E"
+      },
+      {
+        "title": "Tolerability and Efficacy of Clindamycin/Tretinoin versus Adapalene/Benzoyl Peroxide in the Treatment of Acne Vulgaris.",
+        "journal": "Journal of drugs in dermatology : JDD",
+        "year": "2021",
+        "pubmedId": "33683070",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/33683070/",
+        "authors": "Aschoff R, Möller S, Haase R et al."
+      },
+      {
+        "title": "Liposomal tretinoin for uncomplicated acne vulgaris.",
+        "journal": "The Clinical investigator",
+        "year": "1994",
+        "pubmedId": "7711421",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/7711421/",
+        "authors": "Schäfer-Korting M, Korting HC, Ponce-Pöschl E"
+      }
+    ]
   }
 ]

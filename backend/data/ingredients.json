@@ -380,7 +380,16 @@
     "name": "Copper Peptides",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
-    "keyStudies": []
+    "keyStudies": [
+      {
+        "title": "Anti-inflammatory effect of collagen tripeptide in atopic dermatitis.",
+        "journal": "Journal of dermatological science",
+        "year": "2017",
+        "pubmedId": "29017796",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/29017796/",
+        "authors": "Hakuta A, Yamaguchi Y, Okawa T et al."
+      }
+    ]
   },
   {
     "id": "panthenol",
@@ -458,7 +467,16 @@
     "name": "Snail Mucin",
     "evidenceTier": 3,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
-    "keyStudies": []
+    "keyStudies": [
+      {
+        "title": "Snail extract for skin: A review of uses, projections, and limitations.",
+        "journal": "Journal of cosmetic dermatology",
+        "year": "2024",
+        "pubmedId": "38429932",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/38429932/",
+        "authors": "Singh N, Brown AN, Gold MH"
+      }
+    ]
   },
   {
     "id": "egf",
@@ -637,6 +655,31 @@
     "name": "Ivermectin (topical)",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
-    "keyStudies": []
+    "keyStudies": [
+      {
+        "title": "Ivermectin--clinical trials and treatment schedules in onchocerciasis.",
+        "journal": "Acta Leidensia",
+        "year": "1990",
+        "pubmedId": "2198749",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/2198749/",
+        "authors": "Brown KR, Neu DC"
+      },
+      {
+        "title": "A randomized, single-ascending-dose, ivermectin-controlled, double-blind study of moxidectin in Onchocerca volvulus infection.",
+        "journal": "PLoS neglected tropical diseases",
+        "year": "2014",
+        "pubmedId": "24968000",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/24968000/",
+        "authors": "Awadzi K, Opoku NO, Attah SK et al."
+      },
+      {
+        "title": "Comparison of ivermectin and diethylcarbamazine in the treatment of onchocerciasis.",
+        "journal": "The New England journal of medicine",
+        "year": "1985",
+        "pubmedId": "3892293",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/3892293/",
+        "authors": "Greene BM, Taylor HR, Cupp EW et al."
+      }
+    ]
   }
 ]

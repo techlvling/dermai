@@ -45,6 +45,26 @@ function buildQuery(prod) {
   if (brand === 'PanOxyl' || /benzoyl peroxide/i.test(productName)) {
     return '"benzoyl peroxide"[Title] AND acne[Title/Abstract] AND (clinical trial[ptyp] OR randomized controlled trial[ptyp])';
   }
+  // Tri-Luma — Galderma's hydroquinone+tretinoin+fluocinolone triple combo
+  if (/tri-luma|triluma/i.test(productName)) {
+    return '("Tri-Luma"[Title/Abstract] OR ("hydroquinone"[Title/Abstract] AND "tretinoin"[Title/Abstract] AND "fluocinolone"[Title/Abstract])) AND (melasma[Title/Abstract] OR pigment*[Title/Abstract])';
+  }
+  // Eqinone — Galderma's hydroquinone 4% mono — search by molecule
+  if (prod.primaryIngredientId === 'hydroquinone' || /hydroquinone/i.test(productName)) {
+    return '"hydroquinone"[Title] AND (melasma[Title/Abstract] OR pigment*[Title/Abstract] OR hyperpigmentation[Title/Abstract]) AND (clinical trial[ptyp] OR randomized controlled trial[ptyp])';
+  }
+  // Soolantra — ivermectin 1% for rosacea
+  if (/soolantra|ivermectin/i.test(productName) || prod.primaryIngredientId === 'ivermectin') {
+    return '("Soolantra"[Title/Abstract] OR ("ivermectin"[Title/Abstract] AND rosacea[Title/Abstract])) AND (clinical trial[ptyp] OR randomized controlled trial[ptyp])';
+  }
+  // Aziderm 20% — azelaic acid for melasma/rosacea (Tier 1 strength)
+  if (/aziderm/i.test(productName)) {
+    return '("azelaic acid"[Title] AND (rosacea[Title/Abstract] OR melasma[Title/Abstract] OR "20%"[Title/Abstract])) AND (clinical trial[ptyp] OR randomized controlled trial[ptyp])';
+  }
+  // Tretiva / generic tretinoin (RX strength)
+  if (/tretiva|tretinoin/i.test(productName)) {
+    return '"tretinoin"[Title] AND (acne[Title/Abstract] OR melasma[Title/Abstract] OR aging[Title/Abstract] OR wrinkle*[Title/Abstract]) AND clinical trial[ptyp]';
+  }
 
   // SkinCeuticals C E Ferulic — Pinnell papers
   if (brand === 'SkinCeuticals' && /ferulic/i.test(productName)) {
