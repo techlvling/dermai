@@ -51,13 +51,13 @@
   },
   {
     "id": "prod_tret_01",
-    "name": "Differin Adapalene Gel 0.1%",
-    "brand": "Differin",
+    "name": "Adaferin Adapalene Gel 0.1%",
+    "brand": "Galderma",
     "primaryIngredientId": "tretinoin",
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Acne", "Fine Lines", "Texture"],
-    "priceTier": "$$"
+    "priceTier": "$"
   },
   {
     "id": "prod_bzp_01",
@@ -150,16 +150,6 @@
     "priceTier": "$$"
   },
   {
-    "id": "prod_koj_01",
-    "name": "Kojic Acid + Vitamin C Brightening Serum",
-    "brand": "Biopelle",
-    "primaryIngredientId": "kojic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "AM",
-    "concerns": ["Hyperpigmentation"],
-    "priceTier": "$$$"
-  },
-  {
     "id": "prod_pep_01",
     "name": "Buffet Multi-Technology Peptide Serum",
     "brand": "The Ordinary",
@@ -206,7 +196,7 @@
     "primaryIngredientId": "niacinamide",
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
-    "concerns": ["Acne", "Hyperpigmentation", "Pores", "Texture", "Dryness"],
+    "concerns": ["Acne", "Hyperpigmentation", "Pores", "Texture", "Dryness", "Rosacea"],
     "priceTier": "$$$"
   },
   {
@@ -218,16 +208,6 @@
     "bestTimeOfDay": "AM",
     "concerns": ["Dryness", "Sensitivity"],
     "priceTier": "$$"
-  },
-  {
-    "id": "prod_sun_03",
-    "name": "100% Mineral Sunscreen SPF 40",
-    "brand": "Supergoop!",
-    "primaryIngredientId": "zinc_oxide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": ["Sensitivity", "Acne", "Hyperpigmentation"],
-    "priceTier": "$$$"
   },
   {
     "id": "prod_cle_04",
@@ -290,26 +270,6 @@
     "priceTier": "$"
   },
   {
-    "id": "prod_bak_02",
-    "name": "Bakuchiol Retinol Alternative Serum",
-    "brand": "Herbivore",
-    "primaryIngredientId": "bakuchiol",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": ["Fine Lines", "Sensitivity"],
-    "priceTier": "$$$"
-  },
-  {
-    "id": "prod_cu_01",
-    "name": "Copper Amino Isolate Serum 1%",
-    "brand": "NIOD",
-    "primaryIngredientId": "copper_peptides",
-    "category": "treatment",
-    "bestTimeOfDay": "both",
-    "concerns": ["Fine Lines", "Texture"],
-    "priceTier": "$$$"
-  },
-  {
     "id": "prod_cica_01",
     "name": "Centella Blemish Cream",
     "brand": "COSRX",
@@ -350,16 +310,6 @@
     "priceTier": "$$"
   },
   {
-    "id": "prod_egf_01",
-    "name": "EGF Activating Serum",
-    "brand": "BIOEFFECT",
-    "primaryIngredientId": "egf",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": ["Fine Lines", "Texture"],
-    "priceTier": "$$$"
-  },
-  {
     "id": "prod_man_01",
     "name": "Mandelic Acid 10% Treatment",
     "brand": "The Inkey List",
@@ -368,16 +318,6 @@
     "bestTimeOfDay": "PM",
     "concerns": ["Texture", "Hyperpigmentation", "Acne"],
     "priceTier": "$"
-  },
-  {
-    "id": "prod_man_02",
-    "name": "Mandelic Pigmentation Corrector Night Serum",
-    "brand": "Allies of Skin",
-    "primaryIngredientId": "mandelic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": ["Hyperpigmentation", "Texture", "Sun Damage"],
-    "priceTier": "$$$"
   },
   {
     "id": "prod_pha_01",
@@ -390,16 +330,6 @@
     "priceTier": "$"
   },
   {
-    "id": "prod_txa_01",
-    "name": "Lytera 2.0 Pigment Correcting Serum",
-    "brand": "SkinMedica",
-    "primaryIngredientId": "tranexamic_acid",
-    "category": "treatment",
-    "bestTimeOfDay": "both",
-    "concerns": ["Hyperpigmentation", "Sun Damage"],
-    "priceTier": "$$$"
-  },
-  {
     "id": "prod_txa_02",
     "name": "Tranexamic Acid Overnight Treatment",
     "brand": "The Inkey List",
@@ -408,26 +338,6 @@
     "bestTimeOfDay": "PM",
     "concerns": ["Hyperpigmentation", "Sun Damage"],
     "priceTier": "$"
-  },
-  {
-    "id": "prod_sul_01",
-    "name": "Drying Lotion",
-    "brand": "Mario Badescu",
-    "primaryIngredientId": "sulfur",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": ["Acne"],
-    "priceTier": "$"
-  },
-  {
-    "id": "prod_sul_02",
-    "name": "Saturn Sulfur Acne Treatment Mask",
-    "brand": "Sunday Riley",
-    "primaryIngredientId": "sulfur",
-    "category": "treatment",
-    "bestTimeOfDay": "PM",
-    "concerns": ["Acne", "Pores", "Rosacea"],
-    "priceTier": "$$$"
   },
   {
     "id": "prod_moi_04",
@@ -490,16 +400,6 @@
     "priceTier": "$"
   },
   {
-    "id": "prod_moi_10",
-    "name": "Lala Retro Whipped Cream",
-    "brand": "Drunk Elephant",
-    "primaryIngredientId": "squalane",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": ["Dryness", "Fine Lines"],
-    "priceTier": "$$$"
-  },
-  {
     "id": "prod_moi_11",
     "name": "100% Plant-Derived Squalane",
     "brand": "The Ordinary",
@@ -520,16 +420,6 @@
     "priceTier": "$$"
   },
   {
-    "id": "prod_moi_13",
-    "name": "Barrier+ Triple Lipid-Peptide Cream",
-    "brand": "Skinfix",
-    "primaryIngredientId": "peptides",
-    "category": "moisturizer",
-    "bestTimeOfDay": "both",
-    "concerns": ["Eczema-prone", "Dryness", "Fine Lines"],
-    "priceTier": "$$$"
-  },
-  {
     "id": "prod_sun_04",
     "name": "Relief Sun Rice + Probiotics SPF 50",
     "brand": "Beauty of Joseon",
@@ -548,16 +438,6 @@
     "bestTimeOfDay": "AM",
     "concerns": ["Sun Damage", "Sensitivity"],
     "priceTier": "$$"
-  },
-  {
-    "id": "prod_sun_06",
-    "name": "UV Clear Broad-Spectrum SPF 46",
-    "brand": "EltaMD",
-    "primaryIngredientId": "niacinamide",
-    "category": "sunscreen",
-    "bestTimeOfDay": "AM",
-    "concerns": ["Acne", "Rosacea", "Sensitivity"],
-    "priceTier": "$$$"
   },
   {
     "id": "prod_sun_07",
@@ -610,23 +490,183 @@
     "priceTier": "$$"
   },
   {
-    "id": "prod_sun_12",
-    "name": "Essential-C Day Moisture SPF 30",
-    "brand": "Murad",
-    "primaryIngredientId": "vitamin_c",
-    "category": "sunscreen",
+    "id": "prod_min_01",
+    "name": "Niacinamide 10% Face Serum",
+    "brand": "Minimalist",
+    "primaryIngredientId": "niacinamide",
+    "category": "treatment",
     "bestTimeOfDay": "AM",
-    "concerns": ["Sun Damage", "Hyperpigmentation"],
-    "priceTier": "$$$"
+    "concerns": ["Acne", "Pores", "Oiliness", "Hyperpigmentation"],
+    "priceTier": "$"
   },
   {
-    "id": "prod_sun_13",
-    "name": "Umbra Sheer Physical Daily Defense SPF 30",
-    "brand": "Drunk Elephant",
+    "id": "prod_min_02",
+    "name": "Salicylic Acid 02% Face Serum",
+    "brand": "Minimalist",
+    "primaryIngredientId": "salicylic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Acne", "Pores", "Texture"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_min_03",
+    "name": "Vitamin C 10% Face Serum",
+    "brand": "Minimalist",
+    "primaryIngredientId": "vitamin_c",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation", "Sun Damage", "Fine Lines"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_min_04",
+    "name": "Hyaluronic Acid 02% + B5 Face Serum",
+    "brand": "Minimalist",
+    "primaryIngredientId": "hyaluronic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "both",
+    "concerns": ["Dryness", "Sensitivity", "Fine Lines"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_min_05",
+    "name": "Marine Hyaluronic Sunscreen SPF 50 PA++++",
+    "brand": "Minimalist",
+    "primaryIngredientId": "hyaluronic_acid",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Dryness", "Sun Damage", "Acne"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_dco_01",
+    "name": "2% Kojic Acid Face Serum",
+    "brand": "The Derma Co",
+    "primaryIngredientId": "kojic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Hyperpigmentation", "Sun Damage"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_dco_02",
+    "name": "1% Hyaluronic Sunscreen Aqua Gel SPF 50",
+    "brand": "The Derma Co",
+    "primaryIngredientId": "hyaluronic_acid",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Dryness", "Sun Damage", "Sensitivity"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_dco_03",
+    "name": "1% Retinol + Ceramide Anti-Aging Night Cream",
+    "brand": "The Derma Co",
+    "primaryIngredientId": "retinol",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Fine Lines", "Texture"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_plum_01",
+    "name": "1% Retinol + 1% Vitamin E + Hyaluronic Acid Serum",
+    "brand": "Plum",
+    "primaryIngredientId": "retinol",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Fine Lines", "Texture", "Hyperpigmentation"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_plum_02",
+    "name": "2% Salicylic Acid + Mandelic Acid Face Serum",
+    "brand": "Plum",
+    "primaryIngredientId": "mandelic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Acne", "Texture", "Pores"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_re_01",
+    "name": "Pigmentation Reduction Cream",
+    "brand": "Re'equil",
+    "primaryIngredientId": "tranexamic_acid",
+    "category": "treatment",
+    "bestTimeOfDay": "PM",
+    "concerns": ["Hyperpigmentation", "Sun Damage"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_re_02",
+    "name": "Oil Free Sunscreen SPF 50 PA+++",
+    "brand": "Re'equil",
     "primaryIngredientId": "zinc_oxide",
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
-    "concerns": ["Sensitivity", "Sun Damage"],
-    "priceTier": "$$$"
+    "concerns": ["Acne", "Sun Damage", "Oiliness"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_dnk_01",
+    "name": "Cica Calming Skin Hydrator",
+    "brand": "Dot & Key",
+    "primaryIngredientId": "centella_asiatica",
+    "category": "moisturizer",
+    "bestTimeOfDay": "both",
+    "concerns": ["Sensitivity", "Rosacea", "Acne"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_dnk_02",
+    "name": "Vitamin C + E Sorbet Sunscreen SPF 50 PA++++",
+    "brand": "Dot & Key",
+    "primaryIngredientId": "vitamin_c",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation", "Sun Damage", "Fine Lines"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_pil_01",
+    "name": "Korean Beauty Vitamin C Face Serum",
+    "brand": "Pilgrim",
+    "primaryIngredientId": "vitamin_c",
+    "category": "treatment",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Hyperpigmentation", "Fine Lines"],
+    "priceTier": "$"
+  },
+  {
+    "id": "prod_fox_01",
+    "name": "Mineral Matte Sunscreen SPF 70",
+    "brand": "Foxtale",
+    "primaryIngredientId": "zinc_oxide",
+    "category": "sunscreen",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Sensitivity", "Sun Damage", "Oiliness"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_seb_01",
+    "name": "Clear Face Cleansing Foam",
+    "brand": "Sebamed",
+    "primaryIngredientId": "panthenol",
+    "category": "cleanser",
+    "bestTimeOfDay": "both",
+    "concerns": ["Acne", "Sensitivity"],
+    "priceTier": "$$"
+  },
+  {
+    "id": "prod_seb_02",
+    "name": "Anti-Pollution Day Defence Cream",
+    "brand": "Sebamed",
+    "primaryIngredientId": "ceramides",
+    "category": "moisturizer",
+    "bestTimeOfDay": "AM",
+    "concerns": ["Sensitivity", "Sun Damage", "Dryness"],
+    "priceTier": "$$"
   }
 ]
