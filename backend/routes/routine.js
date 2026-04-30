@@ -23,7 +23,7 @@ function createRoutineRouter(verifyAuth, getSupabaseAdmin) {
 
     const { data, error } = await supabase
       .from('routine_logs')
-      .select('log_date, steps_done')
+      .select('log_date, steps_done, slot_choices')
       .eq('user_id', req.user.id)
       .gte('log_date', fromDate)
       .lte('log_date', toDate)
@@ -42,7 +42,7 @@ function createRoutineRouter(verifyAuth, getSupabaseAdmin) {
     const supabase = getSupabaseAdmin();
     if (!supabase) return res.status(503).json({ error: 'Database not configured' });
 
-    const { log_date, steps_done, am_done, pm_done } = req.body || {};
+    const { log_date, steps_done, am_done, pm_done, slot_choices } = req.body || {};
 
     if (!log_date || !/^\d{4}-\d{2}-\d{2}$/.test(log_date)) {
       return res.status(400).json({ error: 'log_date is required (YYYY-MM-DD)' });
@@ -61,13 +61,36 @@ function createRoutineRouter(verifyAuth, getSupabaseAdmin) {
       return res.status(400).json({ error: 'steps_done must be an object' });
     }
 
+    const row = { user_id: req.user.id, log_date, steps_done: payload };
+
+    // slot_choices is optional. Shape: { am:{step:{source,id}}, pm:{...} }
+    if (slot_choices !== undefined) {
+      if (typeof slot_choices !== 'object' || slot_choices === null || Array.isArray(slot_choices)) {
+        return res.status(400).json({ error: 'slot_choices must be an object' });
+      }
+      for (const slot of ['am', 'pm']) {
+        if (slot_choices[slot] == null) continue;
+        if (typeof slot_choices[slot] !== 'object' || Array.isArray(slot_choices[slot])) {
+          return res.status(400).json({ error: `slot_choices.${slot} must be an object` });
+        }
+        for (const [step, choice] of Object.entries(slot_choices[slot])) {
+          if (choice == null) continue;
+          if (typeof choice !== 'object' || Array.isArray(choice)
+              || (choice.source !== 'catalog' && choice.source !== 'user')
+              || typeof choice.id !== 'string' || !choice.id) {
+            return res.status(400).json({
+              error: `slot_choices.${slot}.${step} must be { source: 'catalog'|'user', id: string }`
+            });
+          }
+        }
+      }
+      row.slot_choices = slot_choices;
+    }
+
     const { data, error } = await supabase
       .from('routine_logs')
-      .upsert(
-        { user_id: req.user.id, log_date, steps_done: payload },
-        { onConflict: 'user_id,log_date' }
-      )
-      .select('log_date, steps_done')
+      .upsert(row, { onConflict: 'user_id,log_date' })
+      .select('log_date, steps_done, slot_choices')
       .single();
 
     if (error) return res.status(500).json({ error: error.message });

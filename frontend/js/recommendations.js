@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let allIngredients = [];
   let allConcerns = {};
   let allConflicts = [];
+  let userProducts = [];   // BYO products owned by the user (from /api/user-products)
+  let slotChoices = {};    // today's per-slot product choice: {am:{key:{source,id}}, pm:{...}}
   let userAnalysis = null;
   let userLocation = null; // shared between region detection + weather widget
   let currentRegionCode = 'US';
@@ -52,6 +54,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function sSet(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
   function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+  // Fetch the user's own product catalog. Silent on auth/network failure —
+  // anonymous users simply don't see "Yours" entries in routine slots.
+  async function loadUserProducts() {
+    if (!window.Storage || !Storage.server) return;
+    if (!(await Storage.isLoggedIn())) return;
+    try {
+      const body = await Storage.server.get('/api/user-products');
+      if (body && Array.isArray(body.products)) userProducts = body.products;
+    } catch (_) { /* silent */ }
+  }
+
+  // Project a user_products row into the catalog's product shape so it can
+  // flow through the same renderStep / buildProductCardHTML pipeline.
+  function projectUserProduct(p) {
+    return {
+      id: p.id,
+      brand: p.brand || 'My product',
+      name: p.name,
+      category: p.category,
+      bestTimeOfDay: p.best_time_of_day,
+      primaryIngredientId: (p.ingredients && p.ingredients[0]) || null,
+      concerns: [],
+      _source: 'user',
+    };
+  }
+
+  // Filter user products that fit a given slot (e.g. AM cleanser, PM treatment).
+  function userProductsFor(category, time) {
+    return userProducts
+      .filter(p => p.category === category && (p.best_time_of_day === time || p.best_time_of_day === 'both'))
+      .map(projectUserProduct);
+  }
 
   const ROUTINE_SLOTS = [
     { id: 'am-cleanser',    slot: 'am', key: 'cleanser'    },
@@ -139,9 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
         detectedRegionEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Showing products on amazon.${region.tld} (${region.name}).`;
       }
 
+      await loadUserProducts();
       filterAndRenderProducts();
       initChecklist();
-      renderHeatmap();
+      initRangeToggle(); // also calls renderStats + renderHeatmap with current range
       renderBadges();
       detectAndRenderConflicts();
       initPatchTest();
@@ -210,14 +246,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const amMoisturizers = moisturizers.filter(p => p.bestTimeOfDay === 'AM' || p.bestTimeOfDay === 'both');
     const pmMoisturizers = moisturizers.filter(p => p.bestTimeOfDay === 'PM' || p.bestTimeOfDay === 'both');
 
-    renderStep('am-cleanser', 'Step 1: Cleanser', cleansers, selectedRegionData);
-    renderStep('am-treatment', 'Step 2: Treatment', amTreatments, selectedRegionData);
-    renderStep('am-moisturizer', 'Step 3: Moisturizer', amMoisturizers.length ? amMoisturizers : moisturizers, selectedRegionData);
-    renderStep('am-sunscreen', 'Step 4: Sunscreen', sunscreens, selectedRegionData);
+    // Merge user products into each slot pool — user picks show first so the
+    // tube they own is the visible default, catalog ranking still applies below.
+    const merge = (catalog, category, time) => [...userProductsFor(category, time), ...catalog];
 
-    renderStep('pm-cleanser', 'Step 1: Cleanser', cleansers, selectedRegionData);
-    renderStep('pm-treatment', 'Step 2: Treatment', pmTreatments, selectedRegionData);
-    renderStep('pm-moisturizer', 'Step 3: Moisturizer', pmMoisturizers.length ? pmMoisturizers : moisturizers, selectedRegionData);
+    renderStep('am-cleanser',    'Step 1: Cleanser',    merge(cleansers,                                              'cleanser',    'AM'), selectedRegionData);
+    renderStep('am-treatment',   'Step 2: Treatment',   merge(amTreatments,                                           'treatment',   'AM'), selectedRegionData);
+    renderStep('am-moisturizer', 'Step 3: Moisturizer', merge(amMoisturizers.length ? amMoisturizers : moisturizers, 'moisturizer', 'AM'), selectedRegionData);
+    renderStep('am-sunscreen',   'Step 4: Sunscreen',   merge(sunscreens,                                             'sunscreen',   'AM'), selectedRegionData);
+
+    renderStep('pm-cleanser',    'Step 1: Cleanser',    merge(cleansers,                                              'cleanser',    'PM'), selectedRegionData);
+    renderStep('pm-treatment',   'Step 2: Treatment',   merge(pmTreatments,                                           'treatment',   'PM'), selectedRegionData);
+    renderStep('pm-moisturizer', 'Step 3: Moisturizer', merge(pmMoisturizers.length ? pmMoisturizers : moisturizers, 'moisturizer', 'PM'), selectedRegionData);
 
     // Capture the default-selected product per slot for conflict detection
     window._dermActiveStack = [
@@ -300,8 +340,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderStep(containerId, label, products, regionData) {
     const container = document.getElementById(containerId);
+    const m = containerId.match(/^(am|pm)-(\w+)$/);
+    const slot = m ? m[1] : 'am';
+    const key  = m ? m[2] : containerId;
+
+    const addOwnButton = `
+      <details class="add-own-product">
+        <summary class="add-own-toggle">+ Add my own product</summary>
+        <form class="add-own-form" onsubmit="event.preventDefault(); window.addUserProduct('${slot}', '${key}', this);">
+          <label class="add-own-field">
+            <span>Name</span>
+            <input type="text" name="name" required maxlength="100" placeholder="e.g. Foaming Cleanser" />
+          </label>
+          <label class="add-own-field">
+            <span>Brand (optional)</span>
+            <input type="text" name="brand" maxlength="60" placeholder="e.g. CeraVe" />
+          </label>
+          <fieldset class="add-own-ingredients">
+            <legend>Active ingredients (pick what's in your product)</legend>
+            <div class="add-own-ing-grid"></div>
+          </fieldset>
+          <div class="add-own-actions">
+            <button type="submit" class="btn btn-primary">Save product</button>
+          </div>
+        </form>
+      </details>`;
+
     if (!products || products.length === 0) {
-      container.innerHTML = `<div class="step-label">${label}</div><p style="color:var(--neutral-400); margin-top:1.5rem; padding-left:0.5rem;">No matching products found.</p>`;
+      container.innerHTML = `
+        <div class="step-label">${label}</div>
+        <p style="color:var(--neutral-400); margin-top:1.5rem; padding-left:0.5rem;">No matching products found.</p>
+        ${addOwnButton}`;
+      hydrateAddOwnIngredients(container);
       return;
     }
 
@@ -310,7 +380,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (products.length > 1) {
       selectHTML = `<select class="product-picker" onchange="window.updateStep('${containerId}', this.value, '${regionData.tld}')">`;
       products.forEach(p => {
-        selectHTML += `<option value="${p.id}">${p.brand} — ${p.name}</option>`;
+        const prefix = p._source === 'user' ? '[Yours] ' : '';
+        selectHTML += `<option value="${p.id}">${prefix}${p.brand} — ${p.name}</option>`;
       });
       selectHTML += `</select>`;
     }
@@ -322,7 +393,21 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="step-content glass-panel" id="${containerId}-content">
           ${buildProductCardHTML(prod, regionData)}
         </div>
+        ${addOwnButton}
       </div>`;
+    hydrateAddOwnIngredients(container);
+  }
+
+  // Populate the add-own-product form's ingredient checkboxes from ingredients.json
+  function hydrateAddOwnIngredients(container) {
+    const grid = container.querySelector('.add-own-ing-grid');
+    if (!grid || !allIngredients.length) return;
+    grid.innerHTML = allIngredients.map(ing =>
+      `<label class="add-own-ing-chip">
+         <input type="checkbox" name="ingredients" value="${ing.id}" />
+         <span>${ing.name}</span>
+       </label>`
+    ).join('');
   }
 
   // ── Checklist ────────────────────────────────────────────────────────
@@ -364,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> DONE'
       : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg> MARK DONE';
     renderStreak();
+    renderStats(getRange());
     renderHeatmap();
     renderBadges();
 
@@ -391,9 +477,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (changed) {
       sSet('dermAI_routineLog', local);
       renderStreak();
+      renderStats(getRange());
       renderHeatmap();
       if (typeof renderBadges === 'function') renderBadges();
     }
+
+    // Pull today's slot_choices and reflect them in the routine UI.
+    const today = todayKey();
+    const todayRow = body.logs.find(r => r.log_date === today);
+    if (todayRow && todayRow.slot_choices && typeof todayRow.slot_choices === 'object') {
+      slotChoices = todayRow.slot_choices;
+      applySlotChoicesToUI();
+    }
+    renderMyProductsList();
   }
 
   function computeStreak() {
@@ -426,14 +522,134 @@ document.addEventListener('DOMContentLoaded', () => {
     el.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>&nbsp;<strong>${streak}</strong>&nbsp;day streak`;
   }
 
-  function renderHeatmap() {
+  // ── Routine stats — pure computation kept in sync with backend/lib/routineStats.js ──
+  const STATS_ROUTINE_STEPS = {
+    am: ['cleanser', 'treatment', 'moisturizer', 'sunscreen'],
+    pm: ['cleanser', 'treatment', 'moisturizer'],
+  };
+  const STATS_PER_DAY = STATS_ROUTINE_STEPS.am.length + STATS_ROUTINE_STEPS.pm.length; // 7
+  const STEP_LABEL = { cleanser: 'Cleanser', treatment: 'Treatment', moisturizer: 'Moisturizer', sunscreen: 'Sunscreen' };
+
+  function computeStats(logs, rangeDays, today) {
+    if (!logs || typeof logs !== 'object') logs = {};
+    if (!Number.isInteger(rangeDays) || rangeDays < 1) rangeDays = 30;
+    if (!(today instanceof Date)) today = new Date();
+
+    const perStep = { am: {}, pm: {} };
+    for (const slot of ['am', 'pm']) for (const k of STATS_ROUTINE_STEPS[slot]) perStep[slot][k] = 0;
+
+    let totalCompleted = 0;
+    const totalPossible = rangeDays * STATS_PER_DAY;
+    const dailyPct = [];
+
+    for (let i = rangeDays - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const k = d.toISOString().slice(0, 10);
+      const day = logs[k] || {};
+      let dayCompleted = 0;
+      for (const slot of ['am', 'pm']) {
+        const sl = day[slot] || {};
+        for (const key of STATS_ROUTINE_STEPS[slot]) {
+          if (sl[key] === true) { perStep[slot][key]++; dayCompleted++; }
+        }
+      }
+      totalCompleted += dayCompleted;
+      dailyPct.push((dayCompleted / STATS_PER_DAY) * 100);
+    }
+
+    for (const slot of ['am', 'pm']) {
+      for (const key of STATS_ROUTINE_STEPS[slot]) {
+        perStep[slot][key] = Math.round((perStep[slot][key] / rangeDays) * 100);
+      }
+    }
+    const overall_pct = totalPossible ? Math.round((totalCompleted / totalPossible) * 100) : 0;
+
+    let trend = 'flat';
+    const half = Math.floor(rangeDays / 2);
+    if (half >= 1 && rangeDays >= 2) {
+      const olderHalf = dailyPct.slice(0, half);
+      const newerHalf = dailyPct.slice(rangeDays - half);
+      const avg = a => a.reduce((s, v) => s + v, 0) / a.length;
+      const diff = avg(newerHalf) - avg(olderHalf);
+      if (diff > 5) trend = 'up'; else if (diff < -5) trend = 'down';
+    }
+    return { overall_pct, per_step: perStep, total_steps_completed: totalCompleted, total_steps_possible: totalPossible, trend };
+  }
+
+  function trendArrow(t) {
+    if (t === 'up')   return '<span class="trend-arrow up" title="Improving">↑</span>';
+    if (t === 'down') return '<span class="trend-arrow down" title="Declining">↓</span>';
+    return '<span class="trend-arrow flat" title="Steady">→</span>';
+  }
+
+  function renderStats(rangeDays) {
+    const el = document.getElementById('routine-stats');
+    if (!el) return;
+    const log = sGet('dermAI_routineLog') || {};
+    const s = computeStats(log, rangeDays);
+    const stepRows = ['am', 'pm'].flatMap(slot =>
+      STATS_ROUTINE_STEPS[slot].map(k => `
+        <div class="stats-step">
+          <span class="stats-step-label">${slot.toUpperCase()} ${STEP_LABEL[k] || k}</span>
+          <div class="stats-step-bar"><div class="stats-step-fill" style="width:${s.per_step[slot][k]}%"></div></div>
+          <span class="stats-step-pct">${s.per_step[slot][k]}%</span>
+        </div>`)
+    ).join('');
+
+    el.innerHTML = `
+      <div class="stats-headline">
+        <div class="stats-overall">
+          <span class="stats-overall-pct">${s.overall_pct}%</span>
+          ${trendArrow(s.trend)}
+        </div>
+        <div class="stats-meta">
+          <span class="stats-meta-label">OVERALL ADHERENCE · LAST ${rangeDays} DAYS</span>
+          <span class="stats-meta-sub">${s.total_steps_completed} of ${s.total_steps_possible} steps complete</span>
+        </div>
+      </div>
+      <div class="stats-grid">${stepRows}</div>`;
+    el.classList.remove('hidden');
+  }
+
+  function getRange() {
+    const stored = parseInt(localStorage.getItem('dermAI_statsRange') || '30', 10);
+    return [30, 90, 365].includes(stored) ? stored : 30;
+  }
+
+  function setRange(days) {
+    if (![30, 90, 365].includes(days)) days = 30;
+    localStorage.setItem('dermAI_statsRange', String(days));
+    document.querySelectorAll('#range-toggle button').forEach(btn => {
+      const sel = parseInt(btn.dataset.range, 10) === days;
+      btn.setAttribute('aria-selected', String(sel));
+      btn.classList.toggle('active', sel);
+    });
+    renderStats(days);
+    renderHeatmap(days);
+  }
+
+  function initRangeToggle() {
+    const toggle = document.getElementById('range-toggle');
+    if (!toggle) return;
+    toggle.classList.remove('hidden');
+    toggle.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-range]');
+      if (!btn) return;
+      setRange(parseInt(btn.dataset.range, 10));
+    });
+    setRange(getRange());
+  }
+
+  function renderHeatmap(rangeDaysOverride) {
     const container = document.getElementById('adherence-heatmap');
     if (!container) return;
     const log = sGet('dermAI_routineLog') || {};
-    const TOTAL = 7;
+    const rangeDays = Number.isInteger(rangeDaysOverride) ? rangeDaysOverride : getRange();
+    const TOTAL = STATS_PER_DAY;
     const now = new Date();
     let cells = '';
-    for (let i = 29; i >= 0; i--) {
+    for (let i = rangeDays - 1; i >= 0; i--) {
       const d = new Date(now);
       d.setDate(d.getDate() - i);
       const k = d.toISOString().slice(0, 10);
@@ -445,9 +661,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const label = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
       cells += `<div class="heatmap-cell level-${lvl}" title="${label}: ${done}/${TOTAL} steps"></div>`;
     }
+    const sizeClass = rangeDays === 30 ? 'range-30' : rangeDays === 90 ? 'range-90' : 'range-365';
     container.innerHTML = `
-      <span class="section-eyebrow">30-DAY ADHERENCE</span>
-      <div class="heatmap-grid">${cells}</div>
+      <span class="section-eyebrow">${rangeDays}-DAY ADHERENCE</span>
+      <div class="heatmap-grid ${sizeClass}">${cells}</div>
       <div class="heatmap-legend">
         <span>Less</span>
         <div class="heatmap-cell level-0"></div>
@@ -1147,10 +1364,130 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.updateStep = function(containerId, prodId, tld) {
-    const prod = allProducts.find(p => p.id === prodId);
+    let source = 'catalog';
+    let prod = allProducts.find(p => p.id === prodId);
+    if (!prod) {
+      const own = userProducts.find(p => p.id === prodId);
+      if (own) { prod = projectUserProduct(own); source = 'user'; }
+    }
     if (!prod) return;
     const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || { tld };
     document.getElementById(`${containerId}-content`).innerHTML = buildProductCardHTML(prod, regionData);
+
+    // Record today's product choice for this slot and sync to the server.
+    const m = containerId.match(/^(am|pm)-(\w+)$/);
+    if (m) {
+      const [, slot, key] = m;
+      if (!slotChoices[slot]) slotChoices[slot] = {};
+      slotChoices[slot][key] = { source, id: prodId };
+      syncSlotChoices();
+    }
+  };
+
+  // Send today's slot_choices alongside the current local steps_done so we
+  // never clobber the day's checklist progress.
+  function syncSlotChoices() {
+    if (!window.Storage || !Storage.server) return;
+    const log = sGet('dermAI_routineLog') || {};
+    const today = todayKey();
+    Storage.server.post('/api/routine', {
+      log_date: today,
+      steps_done: log[today] || {},
+      slot_choices: slotChoices,
+    }).catch(() => {});
+  }
+
+  // Submit handler for the inline "+ Add my own product" form.
+  window.addUserProduct = async function(slot, key, formEl) {
+    const name = formEl.querySelector('[name=name]').value.trim();
+    const brand = formEl.querySelector('[name=brand]').value.trim();
+    const ingredients = Array.from(formEl.querySelectorAll('input[name=ingredients]:checked')).map(c => c.value);
+    if (!name) return;
+    if (!window.Storage || !Storage.server) return;
+
+    const submitBtn = formEl.querySelector('button[type=submit]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      const body = await Storage.server.post('/api/user-products', {
+        name,
+        brand: brand || null,
+        category: key,
+        best_time_of_day: slot.toUpperCase(),
+        ingredients,
+      });
+      if (body && body.product) {
+        userProducts.unshift(body.product);
+        // Re-render the routine so the new product shows in this and any
+        // matching slot. Re-hydrate today's slot choice and the checklist.
+        filterAndRenderProducts();
+        initChecklist();
+        applySlotChoicesToUI();
+        renderMyProductsList();
+      }
+    } catch (e) {
+      console.warn('Failed to add product', e);
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  };
+
+  // After (re-)render, reflect today's slot_choices in the dropdowns.
+  function applySlotChoicesToUI() {
+    for (const slot of ['am', 'pm']) {
+      if (!slotChoices[slot]) continue;
+      for (const key of Object.keys(slotChoices[slot])) {
+        const choice = slotChoices[slot][key];
+        if (!choice || !choice.id) continue;
+        const containerId = `${slot}-${key}`;
+        const select = document.querySelector(`#${containerId} select.product-picker`);
+        if (select && [...select.options].some(o => o.value === choice.id)) {
+          select.value = choice.id;
+          // Trigger an update so the card content matches the picked product.
+          const tld = (amazonRegions[currentRegionCode] || {}).tld || 'com';
+          window.updateStep(containerId, choice.id, tld);
+        }
+      }
+    }
+  }
+
+  // Render the "My products" management list — populated when section exists.
+  function renderMyProductsList() {
+    const el = document.getElementById('my-products-list');
+    if (!el) return;
+    if (!userProducts.length) {
+      el.innerHTML = '<p class="my-products-empty">No custom products yet. Add one from any routine slot above.</p>';
+      return;
+    }
+    el.innerHTML = userProducts.map(p => `
+      <li class="my-product-row">
+        <div class="my-product-meta">
+          <span class="my-product-name">${p.brand ? `${p.brand} — ` : ''}${p.name}</span>
+          <span class="my-product-tag">${p.category} · ${p.best_time_of_day}</span>
+        </div>
+        <button class="my-product-delete" onclick="window.deleteUserProduct('${p.id}')" aria-label="Delete this product">Delete</button>
+      </li>
+    `).join('');
+  }
+
+  window.deleteUserProduct = async function(id) {
+    if (!window.Storage || !Storage.server) return;
+    try {
+      await Storage.server.delete('/api/user-products/' + encodeURIComponent(id));
+      userProducts = userProducts.filter(p => p.id !== id);
+      // Drop any slot_choice that referenced the deleted product
+      for (const slot of ['am', 'pm']) {
+        if (!slotChoices[slot]) continue;
+        for (const key of Object.keys(slotChoices[slot])) {
+          if (slotChoices[slot][key]?.id === id) delete slotChoices[slot][key];
+        }
+      }
+      filterAndRenderProducts();
+      initChecklist();
+      applySlotChoicesToUI();
+      renderMyProductsList();
+    } catch (e) {
+      console.warn('Failed to delete product', e);
+    }
   };
 
   async function renderWeatherFromLocation() {

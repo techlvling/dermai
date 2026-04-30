@@ -197,10 +197,22 @@
                 <p id="notif-hint" class="notif-hint"></p>
               </div>
 
+              <div id="routine-stats" class="routine-stats hidden"></div>
+              <div class="range-toggle hidden" id="range-toggle" role="tablist" aria-label="Adherence range">
+                <button type="button" data-range="30"  role="tab" aria-selected="true">30 DAYS</button>
+                <button type="button" data-range="90"  role="tab" aria-selected="false">90 DAYS</button>
+                <button type="button" data-range="365" role="tab" aria-selected="false">YEAR</button>
+              </div>
               <div id="adherence-heatmap" class="adherence-heatmap hidden"></div>
               <div id="weather-widget" class="hidden" style="margin-top:2rem;"></div>
               <div id="photos-section" class="photos-section hidden" style="margin-top:3rem;"></div>
               <div id="diary-section" class="diary-section hidden" style="margin-top:3rem;"></div>
+
+              <section class="my-products-section" style="margin-top:3rem;">
+                <h3 class="my-products-title">My products</h3>
+                <p class="my-products-sub">Products you own. Add them from the routine slots above to use your own picks instead of the catalog default.</p>
+                <ul id="my-products-list" class="my-products-list"></ul>
+              </section>
             </div>
           </div>
         </div>

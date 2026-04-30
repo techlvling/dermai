@@ -354,10 +354,119 @@
   box-shadow: 2px 2px 0 var(--neutral-900);
 }
 
-/* ── 30-day adherence heatmap ─────────────────────────────────────── */
+/* ── Routine stats panel ─────────────────────────────────────────── */
+.routine-stats {
+  max-width: 800px;
+  margin: 2rem auto 0.5rem;
+  padding: 1.5rem;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, rgba(0,0,0,0.06));
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-soft);
+}
+.stats-headline {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border, rgba(0,0,0,0.06));
+}
+.stats-overall { display: flex; align-items: baseline; gap: 0.4rem; }
+.stats-overall-pct {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--neutral-900);
+  letter-spacing: -0.02em;
+}
+.trend-arrow {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.trend-arrow.up   { color: #2a8a64; }
+.trend-arrow.down { color: var(--primary-700); }
+.trend-arrow.flat { color: var(--neutral-400); }
+
+.stats-meta { display: grid; gap: 0.15rem; }
+.stats-meta-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--neutral-600);
+}
+.stats-meta-sub {
+  font-size: 0.78rem;
+  color: var(--neutral-500);
+}
+
+.stats-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+.stats-step {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr 3rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+}
+.stats-step-label {
+  font-weight: 600;
+  color: var(--neutral-700);
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+.stats-step-bar {
+  height: 8px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.stats-step-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-300, #f5588e), var(--primary-500, #f5588e));
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+.stats-step-pct {
+  text-align: right;
+  font-weight: 700;
+  color: var(--neutral-800);
+}
+
+/* ── Range toggle ───────────────────────────────────────────────── */
+.range-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  max-width: 800px;
+  margin: 0 auto 0.75rem;
+}
+.range-toggle button {
+  background: transparent;
+  border: 1px solid var(--border, rgba(0,0,0,0.12));
+  color: var(--neutral-600);
+  padding: 0.4rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.range-toggle button:hover { background: rgba(0,0,0,0.03); }
+.range-toggle button.active,
+.range-toggle button[aria-selected="true"] {
+  background: var(--primary-500, #f5588e);
+  border-color: var(--primary-500, #f5588e);
+  color: #fff;
+}
+
+/* ── Adherence heatmap (multi-range) ──────────────────────────────── */
 .adherence-heatmap {
   max-width: 800px;
-  margin: 2rem auto 0;
+  margin: 0.5rem auto 0;
   padding: 1.5rem;
   border: 2px solid var(--neutral-900);
   background: var(--bg-card);
@@ -369,6 +478,10 @@
   gap: 4px;
   margin: 0.75rem 0;
 }
+.heatmap-grid.range-90 .heatmap-cell  { width: 13px; height: 13px; }
+.heatmap-grid.range-365 .heatmap-cell { width: 8px;  height: 8px; }
+.heatmap-grid.range-365 { gap: 2px; }
+.heatmap-grid.range-90  { gap: 3px; }
 .heatmap-cell {
   width: 20px;
   height: 20px;
@@ -472,6 +585,11 @@
   .shopping-item-actions { width: 100%; }
   .heatmap-cell { width: 16px; height: 16px; }
   .heatmap-grid { gap: 3px; }
+  .heatmap-grid.range-90 .heatmap-cell  { width: 10px; height: 10px; }
+  .heatmap-grid.range-365 .heatmap-cell { width: 6px;  height: 6px; }
+  .stats-step { grid-template-columns: 5.5rem 1fr 2.5rem; gap: 0.5rem; }
+  .stats-overall-pct { font-size: 2rem; }
+  .routine-stats { padding: 1rem; }
 }
 
 /* ── Ingredient conflict cards ────────────────────────────────────── */
@@ -1178,4 +1296,176 @@
   .diary-field { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
   .diary-field-label { min-width: auto; }
   .diary-col { min-width: 38px; }
+}
+
+/* ── Add-my-own-product inline form (per routine slot) ───────────── */
+.add-own-product {
+  margin-top: 1rem;
+  border-top: 1px dashed var(--border, rgba(0,0,0,0.1));
+  padding-top: 0.75rem;
+}
+
+.add-own-toggle {
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--primary-700);
+  padding: 0.45rem 0.875rem;
+  border-radius: 999px;
+  background: rgba(245, 88, 142, 0.06);
+  display: inline-block;
+  user-select: none;
+  list-style: none;
+}
+.add-own-toggle::-webkit-details-marker { display: none; }
+.add-own-toggle:hover { background: rgba(245, 88, 142, 0.12); }
+
+.add-own-form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.875rem;
+  padding: 1rem;
+  background: rgba(0,0,0,0.025);
+  border-radius: var(--radius-md, 12px);
+}
+
+.add-own-field {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+}
+.add-own-field span {
+  font-weight: 600;
+  color: var(--neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+}
+.add-own-field input {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border, rgba(0,0,0,0.12));
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: #fff;
+}
+
+.add-own-ingredients {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.add-own-ingredients legend {
+  font-weight: 600;
+  color: var(--neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+  margin-bottom: 0.4rem;
+}
+
+.add-own-ing-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  background: #fff;
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+  border-radius: 8px;
+}
+
+.add-own-ing-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border, rgba(0,0,0,0.12));
+  border-radius: 999px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  background: #fafafa;
+  transition: background 0.15s;
+}
+.add-own-ing-chip input { margin: 0; }
+.add-own-ing-chip:has(input:checked) {
+  background: rgba(245, 88, 142, 0.12);
+  border-color: rgba(245, 88, 142, 0.4);
+  color: var(--primary-700);
+  font-weight: 600;
+}
+
+.add-own-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── My products management list ─────────────────────────────────── */
+.my-products-section {
+  padding: 1.5rem;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, rgba(0,0,0,0.06));
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-md);
+}
+.my-products-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--neutral-900);
+}
+.my-products-sub {
+  margin: 0 0 1rem;
+  font-size: 0.78rem;
+  color: var(--neutral-500);
+}
+.my-products-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--neutral-500);
+  font-style: italic;
+}
+.my-products-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.my-product-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.625rem 0.875rem;
+  background: rgba(0,0,0,0.025);
+  border-radius: var(--radius-md, 12px);
+}
+.my-product-meta { display: grid; gap: 0.15rem; }
+.my-product-name {
+  font-weight: 600;
+  color: var(--neutral-900);
+  font-size: 0.875rem;
+}
+.my-product-tag {
+  font-size: 0.7rem;
+  color: var(--neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.my-product-delete {
+  background: transparent;
+  border: 1px solid var(--border, rgba(0,0,0,0.12));
+  color: var(--primary-700);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+.my-product-delete:hover {
+  background: rgba(245, 88, 142, 0.06);
+  border-color: rgba(245, 88, 142, 0.3);
 }
