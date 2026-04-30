@@ -4,21 +4,59 @@ window.History = (function () {
   let _mounted     = false;
   let _compareMounted = false;
 
-  async function _init() {
-    historyData = (Storage.get('dermAI_history') || []).slice();
+  // Drive webViewLink → file ID. Examples:
+  //   https://drive.google.com/file/d/1AbCdEfGh/view?usp=drivesdk
+  //   https://drive.google.com/uc?id=1AbCdEfGh
+  function driveFileIdFromUrl(url) {
+    if (typeof url !== 'string') return null;
+    const m1 = url.match(/\/file\/d\/([^\/?]+)/);
+    if (m1) return m1[1];
+    const m2 = url.match(/[?&]id=([^&]+)/);
+    if (m2) return m2[1];
+    return null;
+  }
 
-    const body = await Storage.server.get('/api/scans');
+  // Per-fileId memo so we only fetch each Drive image once per session.
+  const _driveBlobUrls = new Map();
+  async function driveBlobUrl(fileId) {
+    if (!fileId) return null;
+    if (_driveBlobUrls.has(fileId)) return _driveBlobUrls.get(fileId);
+    if (typeof Drive === 'undefined' || !Drive.hasScope()) return null;
+    try {
+      const token = await window.Auth.getProviderToken();
+      if (!token) return null;
+      const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      _driveBlobUrls.set(fileId, url);
+      return url;
+    } catch (_) { return null; }
+  }
+
+  async function _init() {
+    // Server-first when logged in. Otherwise the same scan would show up
+    // twice (local entry has id=Date.now(); server entry has id=bigint;
+    // dedup-by-id never matches and both get rendered).
+    const loggedIn = await Storage.isLoggedIn();
+    const body = loggedIn ? await Storage.server.get('/api/scans') : null;
     const serverScans = body?.scans;
-    if (serverScans && Array.isArray(serverScans)) {
-      const localIds = new Set(historyData.map(e => String(e.id || e.date)));
-      for (const scan of serverScans) {
-        const id = scan.id || new Date(scan.created_at).getTime();
-        if (!localIds.has(String(id))) {
-          historyData.push({ id, date: scan.created_at, analysis: scan.result_json, image_urls: scan.image_urls || null });
-        }
-      }
-      historyData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (Array.isArray(serverScans)) {
+      // Server is authoritative. Map each server row to the render shape.
+      historyData = serverScans.map(scan => ({
+        id: scan.id,
+        date: scan.created_at,
+        analysis: scan.result_json,
+        image_urls: scan.image_urls || null,
+      }));
+    } else {
+      // Anonymous OR server unreachable — fall back to local cache.
+      historyData = (Storage.get('dermAI_history') || []).slice();
     }
+    historyData.sort((a, b) => new Date(b.date || b.id) - new Date(a.date || a.id));
 
     try {
       const photos = await PhotoDB.getAll();
@@ -100,6 +138,13 @@ window.History = (function () {
         )[0];
         thumbSrc = URL.createObjectURL(closest.blob);
       }
+      // Cross-device: when IndexedDB doesn't have the photo (because this
+      // scan happened on another device), fetch the first Drive webViewLink
+      // via authenticated XHR and display as a blob URL. drive.file scope
+      // means an anonymous <img> tag would 404, so we have to authenticate.
+      const driveFileId = !thumbSrc && Array.isArray(entry.image_urls) && entry.image_urls.length
+        ? driveFileIdFromUrl(entry.image_urls[0])
+        : null;
 
       const dateLabel = dateObj.toLocaleDateString(undefined, {
         weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
@@ -130,11 +175,14 @@ window.History = (function () {
 
       const card = document.createElement('div');
       card.className = 'history-card';
+      const thumbId = `hc-thumb-img-${entryId}`;
       card.innerHTML = `
-        <div class="hc-thumb${thumbSrc ? '' : ' hc-thumb--empty'}">
+        <div class="hc-thumb${thumbSrc || driveFileId ? '' : ' hc-thumb--empty'}">
           ${thumbSrc
             ? `<img src="${thumbSrc}" alt="Scan photo from ${dateLabel}" />`
-            : '<span>NO<br>PHOTO</span>'}
+            : driveFileId
+              ? `<img id="${thumbId}" alt="Scan photo from ${dateLabel}" style="opacity:0.4;" />`
+              : '<span>NO<br>PHOTO</span>'}
         </div>
         <div class="hc-body">
           <div class="hc-meta">
@@ -164,6 +212,15 @@ window.History = (function () {
         </div>`;
 
       listEl.appendChild(card);
+
+      // Drive thumbnail fetch (post-append so the <img> exists in DOM).
+      if (driveFileId) {
+        driveBlobUrl(driveFileId).then(url => {
+          if (!url) return;
+          const img = document.getElementById(thumbId);
+          if (img) { img.src = url; img.style.opacity = '1'; }
+        });
+      }
     });
   }
 
