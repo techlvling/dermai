@@ -1298,6 +1298,23 @@
   .diary-col { min-width: 38px; }
 }
 
+/* ── Multi-treatment stack (P3) ──────────────────────────────────── */
+.treatment-stack {
+  display: grid;
+  gap: 1rem;
+}
+.treatment-instance {
+  position: relative;
+}
+.treatment-stack-actions {
+  margin-top: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+.treatment-remove-btn {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+}
+
 /* ── Add-my-own-product inline form (per routine slot) ───────────── */
 .add-own-product {
   margin-top: 1rem;

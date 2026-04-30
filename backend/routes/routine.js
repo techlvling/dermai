@@ -63,28 +63,40 @@ function createRoutineRouter(verifyAuth, getSupabaseAdmin) {
 
     const row = { user_id: req.user.id, log_date, steps_done: payload };
 
-    // slot_choices is optional. Shape: { am:{step:{source,id}}, pm:{...} }
+    // slot_choices is optional. New shape: { am:{step:[{source,id},...]}, pm:{...} }
+    // Legacy shape: { am:{step:{source,id}}, pm:{...} } — accepted on write and
+    // normalized to a 1-element array so the on-disk JSON is consistent.
     if (slot_choices !== undefined) {
       if (typeof slot_choices !== 'object' || slot_choices === null || Array.isArray(slot_choices)) {
         return res.status(400).json({ error: 'slot_choices must be an object' });
       }
+      const normalized = {};
+      const isValidChoice = (c) =>
+        c && typeof c === 'object' && !Array.isArray(c)
+        && (c.source === 'catalog' || c.source === 'user')
+        && typeof c.id === 'string' && c.id.length > 0;
+
       for (const slot of ['am', 'pm']) {
         if (slot_choices[slot] == null) continue;
         if (typeof slot_choices[slot] !== 'object' || Array.isArray(slot_choices[slot])) {
           return res.status(400).json({ error: `slot_choices.${slot} must be an object` });
         }
-        for (const [step, choice] of Object.entries(slot_choices[slot])) {
-          if (choice == null) continue;
-          if (typeof choice !== 'object' || Array.isArray(choice)
-              || (choice.source !== 'catalog' && choice.source !== 'user')
-              || typeof choice.id !== 'string' || !choice.id) {
-            return res.status(400).json({
-              error: `slot_choices.${slot}.${step} must be { source: 'catalog'|'user', id: string }`
-            });
+        normalized[slot] = {};
+        for (const [step, value] of Object.entries(slot_choices[slot])) {
+          if (value == null) continue;
+          // Accept either a single choice object (legacy) or an array of them.
+          const choices = Array.isArray(value) ? value : [value];
+          for (const c of choices) {
+            if (!isValidChoice(c)) {
+              return res.status(400).json({
+                error: `slot_choices.${slot}.${step} entries must be { source: 'catalog'|'user', id: string }`
+              });
+            }
           }
+          normalized[slot][step] = choices;
         }
       }
-      row.slot_choices = slot_choices;
+      row.slot_choices = normalized;
     }
 
     const { data, error } = await supabase

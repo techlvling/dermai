@@ -270,13 +270,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // tube they own is the visible default, catalog ranking still applies below.
     const merge = (catalog, category, time) => [...userProductsFor(category, time), ...catalog];
 
+    // Cache the merged treatment pools so add/remove handlers can re-render
+    // the stack without re-running the rank/filter pipeline.
+    amTreatmentsCache = merge(amTreatments, 'treatment', 'AM');
+    pmTreatmentsCache = merge(pmTreatments, 'treatment', 'PM');
+
     renderStep('am-cleanser',    'Step 1: Cleanser',    merge(cleansers,                                              'cleanser',    'AM'), selectedRegionData);
-    renderStep('am-treatment',   'Step 2: Treatment',   merge(amTreatments,                                           'treatment',   'AM'), selectedRegionData);
+    renderTreatmentStack('am-treatment', 'Step 2: Treatment',   amTreatmentsCache, selectedRegionData);
     renderStep('am-moisturizer', 'Step 3: Moisturizer', merge(amMoisturizers.length ? amMoisturizers : moisturizers, 'moisturizer', 'AM'), selectedRegionData);
     renderStep('am-sunscreen',   'Step 4: Sunscreen',   merge(sunscreens,                                             'sunscreen',   'AM'), selectedRegionData);
 
     renderStep('pm-cleanser',    'Step 1: Cleanser',    merge(cleansers,                                              'cleanser',    'PM'), selectedRegionData);
-    renderStep('pm-treatment',   'Step 2: Treatment',   merge(pmTreatments,                                           'treatment',   'PM'), selectedRegionData);
+    renderTreatmentStack('pm-treatment', 'Step 2: Treatment',   pmTreatmentsCache, selectedRegionData);
     renderStep('pm-moisturizer', 'Step 3: Moisturizer', merge(pmMoisturizers.length ? pmMoisturizers : moisturizers, 'moisturizer', 'PM'), selectedRegionData);
 
     // Capture the default-selected product per slot for conflict detection
@@ -416,6 +421,167 @@ document.addEventListener('DOMContentLoaded', () => {
         ${addOwnButton}
       </div>`;
     hydrateAddOwnIngredients(container);
+  }
+
+  // ── Treatment slot stack (multi-treatment support, P3) ────────────────
+  // Treatment slots can hold multiple layered products. Other slots stay
+  // single-card. Cards are rendered inside the same `<div id="${slot}-treatment">`
+  // container and given synthetic indices so updates can target each one.
+  // Rendering preserves the existing dropdown / step-content / favorite / log-
+  // reaction surface from buildProductCardHTML for each instance.
+  //
+  // slotChoices[slot].treatment is an array of {source, id}. If empty, the
+  // stack defaults to a single instance with the top-ranked product (matches
+  // the previous one-card behavior so existing users see no change until they
+  // add a second treatment).
+  function renderTreatmentStack(containerId, label, products, regionData) {
+    const container = document.getElementById(containerId);
+    const m = containerId.match(/^(am|pm)-(\w+)$/);
+    const slot = m ? m[1] : 'am';
+    const key  = 'treatment';
+
+    const addOwnButton = `
+      <details class="add-own-product">
+        <summary class="add-own-toggle">+ Add my own product</summary>
+        <form class="add-own-form" onsubmit="event.preventDefault(); window.addUserProduct('${slot}', '${key}', this);">
+          <label class="add-own-field"><span>Name</span><input type="text" name="name" required maxlength="100" placeholder="e.g. Niacinamide 10%" /></label>
+          <label class="add-own-field"><span>Brand (optional)</span><input type="text" name="brand" maxlength="60" placeholder="e.g. The Ordinary" /></label>
+          <fieldset class="add-own-ingredients"><legend>Active ingredients</legend><div class="add-own-ing-grid"></div></fieldset>
+          <div class="add-own-actions"><button type="submit" class="btn btn-primary">Save product</button></div>
+        </form>
+      </details>`;
+
+    if (!products || products.length === 0) {
+      container.innerHTML = `
+        <div class="step-label">${label}</div>
+        <p style="color:var(--neutral-400); margin-top:1.5rem; padding-left:0.5rem;">No matching treatments found.</p>
+        ${addOwnButton}`;
+      hydrateAddOwnIngredients(container);
+      return;
+    }
+
+    // Resolve which instances to render. If slotChoices already has entries,
+    // honor them; otherwise default to a single instance with the top product.
+    const existingChoices = (slotChoices[slot] && Array.isArray(slotChoices[slot][key]))
+      ? slotChoices[slot][key].slice()
+      : [];
+    const instances = existingChoices.length
+      ? existingChoices.map(c => products.find(p => p.id === c.id) || products[0])
+      : [products[0]];
+
+    container.innerHTML = `
+      <div class="step-label">${label}</div>
+      <div class="treatment-stack" id="${containerId}-stack" style="margin-top: 1.5rem;">
+        ${instances.map((prod, idx) => renderTreatmentInstance(slot, idx, prod, products, regionData)).join('')}
+      </div>
+      <div class="treatment-stack-actions">
+        <button type="button" class="link-btn" onclick="window.addTreatment('${slot}', '${regionData.tld}')">+ Add another treatment</button>
+      </div>
+      ${addOwnButton}`;
+    hydrateAddOwnIngredients(container);
+  }
+
+  function renderTreatmentInstance(slot, idx, prod, products, regionData) {
+    const cardId = `${slot}-treatment-tx-${idx}`;
+    let selectHTML = '';
+    if (products.length > 1) {
+      selectHTML = `<select class="product-picker" onchange="window.updateTreatment('${slot}', ${idx}, this.value, '${regionData.tld}')">`;
+      products.forEach(p => {
+        const prefix = p._source === 'user' ? '[Yours] ' : '';
+        const sel = p.id === prod.id ? ' selected' : '';
+        selectHTML += `<option value="${p.id}"${sel}>${prefix}${p.brand} — ${p.name}</option>`;
+      });
+      selectHTML += `</select>`;
+    }
+    const removeBtn = idx > 0
+      ? `<button type="button" class="treatment-remove-btn link-btn link-btn--muted" onclick="window.removeTreatment('${slot}', ${idx}, '${regionData.tld}')" aria-label="Remove this treatment">Remove</button>`
+      : '';
+    return `
+      <div class="treatment-instance" data-tx-idx="${idx}">
+        ${selectHTML}
+        <div class="step-content glass-panel" id="${cardId}-content">
+          ${buildProductCardHTML(prod, regionData)}
+        </div>
+        ${removeBtn}
+      </div>`;
+  }
+
+  // Click handlers wired from inline onclick — write to slotChoices, sync, redraw.
+  window.updateTreatment = function (slot, idx, prodId, tld) {
+    let source = 'catalog';
+    let prod = allProducts.find(p => p.id === prodId);
+    if (!prod) {
+      const own = userProducts.find(p => p.id === prodId);
+      if (own) { prod = projectUserProduct(own); source = 'user'; }
+    }
+    if (!prod) return;
+    const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || { tld };
+    const cardEl = document.getElementById(`${slot}-treatment-tx-${idx}-content`);
+    if (cardEl) cardEl.innerHTML = buildProductCardHTML(prod, regionData);
+    if (!slotChoices[slot]) slotChoices[slot] = {};
+    if (!Array.isArray(slotChoices[slot].treatment)) slotChoices[slot].treatment = [];
+    slotChoices[slot].treatment[idx] = { source, id: prodId };
+    rebuildActiveStack();
+    syncSlotChoices();
+  };
+
+  window.addTreatment = function (slot, tld) {
+    if (!slotChoices[slot]) slotChoices[slot] = {};
+    if (!Array.isArray(slotChoices[slot].treatment)) slotChoices[slot].treatment = [];
+    // Pick a different product than what's already in the stack if possible.
+    const treatments = (slot === 'am' ? amTreatmentsCache : pmTreatmentsCache) || [];
+    const usedIds = new Set(slotChoices[slot].treatment.map(c => c.id));
+    const next = treatments.find(p => !usedIds.has(p.id)) || treatments[0];
+    if (!next) return;
+    slotChoices[slot].treatment.push({ source: next._source === 'user' ? 'user' : 'catalog', id: next.id });
+    syncSlotChoices();
+    // Re-render the stack — easier than splicing DOM.
+    const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || amazonRegions[currentRegionCode] || { tld };
+    renderTreatmentStack(`${slot}-treatment`, 'Step 2: Treatment', treatments, regionData);
+    applySlotChoicesToUI();
+    rebuildActiveStack();
+  };
+
+  window.removeTreatment = function (slot, idx, tld) {
+    if (!slotChoices[slot] || !Array.isArray(slotChoices[slot].treatment)) return;
+    if (slotChoices[slot].treatment.length <= 1) return; // keep at least one
+    slotChoices[slot].treatment.splice(idx, 1);
+    syncSlotChoices();
+    const treatments = (slot === 'am' ? amTreatmentsCache : pmTreatmentsCache) || [];
+    const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || amazonRegions[currentRegionCode] || { tld };
+    renderTreatmentStack(`${slot}-treatment`, 'Step 2: Treatment', treatments, regionData);
+    applySlotChoicesToUI();
+    rebuildActiveStack();
+  };
+
+  // Caches so add/remove can re-render without re-running rankProducts.
+  let amTreatmentsCache = null;
+  let pmTreatmentsCache = null;
+
+  function rebuildActiveStack() {
+    // Build _dermActiveStack from ALL chosen products in ALL slots so the
+    // conflict detector sees layered combinations. Falls back to top-ranked
+    // when no choice is recorded for a slot.
+    const stack = [];
+    for (const slot of ['am', 'pm']) {
+      for (const key of ['cleanser', 'treatment', 'moisturizer', 'sunscreen']) {
+        if (slot === 'pm' && key === 'sunscreen') continue;
+        const choices = slotChoices[slot]?.[key];
+        if (Array.isArray(choices)) {
+          choices.forEach(c => {
+            const p = allProducts.find(pp => pp.id === c.id)
+              || (userProducts.find(up => up.id === c.id) && projectUserProduct(userProducts.find(up => up.id === c.id)));
+            if (p) stack.push(p);
+          });
+        } else if (choices && choices.id) {
+          const p = allProducts.find(pp => pp.id === choices.id)
+            || (userProducts.find(up => up.id === choices.id) && projectUserProduct(userProducts.find(up => up.id === choices.id)));
+          if (p) stack.push(p);
+        }
+      }
+    }
+    if (stack.length) window._dermActiveStack = stack;
+    if (typeof detectAndRenderConflicts === 'function') detectAndRenderConflicts();
   }
 
   // Populate the add-own-product form's ingredient checkboxes from ingredients.json
@@ -1392,14 +1558,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!prod) return;
     const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || { tld };
-    document.getElementById(`${containerId}-content`).innerHTML = buildProductCardHTML(prod, regionData);
+    const cardEl = document.getElementById(`${containerId}-content`);
+    if (cardEl) cardEl.innerHTML = buildProductCardHTML(prod, regionData);
 
     // Record today's product choice for this slot and sync to the server.
+    // Treatment slots use updateTreatment(); this path handles single-card
+    // slots (cleanser, moisturizer, sunscreen).
     const m = containerId.match(/^(am|pm)-(\w+)$/);
     if (m) {
       const [, slot, key] = m;
+      if (key === 'treatment') return; // routed through updateTreatment
       if (!slotChoices[slot]) slotChoices[slot] = {};
       slotChoices[slot][key] = { source, id: prodId };
+      rebuildActiveStack();
       syncSlotChoices();
     }
   };
@@ -1452,22 +1623,39 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // After (re-)render, reflect today's slot_choices in the dropdowns.
+  // Treatment slots are array-shaped (multi-treatment); other slots are
+  // single-object. Both shapes from the server are handled here.
   function applySlotChoicesToUI() {
+    const tld = (amazonRegions[currentRegionCode] || {}).tld || 'com';
     for (const slot of ['am', 'pm']) {
       if (!slotChoices[slot]) continue;
       for (const key of Object.keys(slotChoices[slot])) {
-        const choice = slotChoices[slot][key];
-        if (!choice || !choice.id) continue;
-        const containerId = `${slot}-${key}`;
-        const select = document.querySelector(`#${containerId} select.product-picker`);
-        if (select && [...select.options].some(o => o.value === choice.id)) {
-          select.value = choice.id;
-          // Trigger an update so the card content matches the picked product.
-          const tld = (amazonRegions[currentRegionCode] || {}).tld || 'com';
-          window.updateStep(containerId, choice.id, tld);
+        const value = slotChoices[slot][key];
+        if (key === 'treatment') {
+          // Treatment is always array-shaped post-P3.
+          const choices = Array.isArray(value) ? value : (value ? [value] : []);
+          choices.forEach((choice, idx) => {
+            if (!choice || !choice.id) return;
+            const select = document.querySelector(`#${slot}-treatment .treatment-instance[data-tx-idx="${idx}"] select.product-picker`);
+            if (select && [...select.options].some(o => o.value === choice.id)) {
+              select.value = choice.id;
+              window.updateTreatment(slot, idx, choice.id, tld);
+            }
+          });
+        } else {
+          // Single-object slots.
+          const choice = Array.isArray(value) ? value[0] : value;
+          if (!choice || !choice.id) continue;
+          const containerId = `${slot}-${key}`;
+          const select = document.querySelector(`#${containerId} select.product-picker`);
+          if (select && [...select.options].some(o => o.value === choice.id)) {
+            select.value = choice.id;
+            window.updateStep(containerId, choice.id, tld);
+          }
         }
       }
     }
+    rebuildActiveStack();
   }
 
   // Render the "My products" management list — populated when section exists.

@@ -39,7 +39,8 @@ describe('routine routes', () => {
     expect(res.body.error).toMatch(/log_date/);
   });
 
-  it('POST /api/routine — accepts valid slot_choices and round-trips them', async () => {
+  it('POST /api/routine — accepts legacy single-object slot_choices and round-trips', async () => {
+    // Legacy (pre-multi-treatment) clients still write {source,id} per step.
     const slot_choices = {
       am: { cleanser: { source: 'catalog', id: 'prod_cle_01' }, treatment: { source: 'user', id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' } },
       pm: { moisturizer: { source: 'catalog', id: 'prod_moi_03' } },
@@ -52,6 +53,38 @@ describe('routine routes', () => {
       .send({ log_date: '2026-04-30', steps_done: { am: { cleanser: true } }, slot_choices });
     expect(res.status).toBe(200);
     expect(res.body.log.slot_choices).toEqual(slot_choices);
+  });
+
+  it('POST /api/routine — accepts new array slot_choices (multi-treatment)', async () => {
+    const slot_choices = {
+      am: {
+        cleanser: [{ source: 'catalog', id: 'prod_cle_01' }],
+        treatment: [
+          { source: 'catalog', id: 'prod_tre_03' },
+          { source: 'user', id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' },
+        ],
+      },
+      pm: { moisturizer: [{ source: 'catalog', id: 'prod_moi_03' }] },
+    };
+    const saved = { id: '4', user_id: 'user-123', log_date: '2026-04-30', steps_done: {}, slot_choices };
+    mockGetSupabaseAdmin.mockReturnValue({ from: () => makeChain({ data: saved, error: null }) });
+
+    const res = await request(app)
+      .post('/api/routine')
+      .send({ log_date: '2026-04-30', slot_choices });
+    expect(res.status).toBe(200);
+    expect(res.body.log.slot_choices.am.treatment).toHaveLength(2);
+  });
+
+  it('POST /api/routine — 400 when an array entry has bad source', async () => {
+    const res = await request(app)
+      .post('/api/routine')
+      .send({
+        log_date: '2026-04-30',
+        slot_choices: { am: { treatment: [{ source: 'random', id: 'x' }] } },
+      });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/source/);
   });
 
   it('POST /api/routine — 400 when slot_choices is not an object', async () => {
