@@ -13,8 +13,8 @@ window.Nav = {
     const links = [
       { key: 'home',      href: '/',                     label: 'Home' },
       { key: 'analyze',   href: '/analyze.html',         label: 'Analyze' },
-      isAuthed ? { key: 'dashboard', href: '/dashboard.html', label: 'Dashboard' } : null,
-      { key: 'routine',   href: '/recommendations.html', label: 'Routine' },
+      isAuthed ? { key: 'dashboard', href: '/dashboard.html',         label: 'Dashboard' } : null,
+      isAuthed ? { key: 'routine',   href: '/dashboard.html#routine', label: 'Routine' }   : null,
     ].filter(Boolean);
 
     function linkHTML(l, isDrawer) {

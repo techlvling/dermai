@@ -28,9 +28,10 @@ app.use(express.json());
 
 // Legacy page redirects (must come before express.static so they win when files are gone)
 const LEGACY_REDIRECTS = {
-  '/history.html':     '/dashboard.html#history',
-  '/ingredients.html': '/dashboard.html#ingredients',
-  '/shopping.html':    '/dashboard.html#shopping',
+  '/history.html':         '/dashboard.html#history',
+  '/ingredients.html':     '/dashboard.html#ingredients',
+  '/shopping.html':        '/dashboard.html#shopping',
+  '/recommendations.html': '/dashboard.html#routine',
 };
 app.get(Object.keys(LEGACY_REDIRECTS), (req, res) => {
   res.redirect(302, LEGACY_REDIRECTS[req.path]);

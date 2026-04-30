@@ -343,7 +343,7 @@
             <ul>
               <li><a href="/analyze.html">Analyze Skin</a></li>
               <li><a href="/dashboard.html#ingredients">Ingredients</a></li>
-              <li><a href="/recommendations.html">Routine Builder</a></li>
+              <li><a href="/dashboard.html#routine">Routine Builder</a></li>
               <li><a href="/privacy.html">Privacy</a></li>
             </ul>
           </div>
@@ -392,7 +392,7 @@
         if (streak > 0) {
           const el = document.getElementById('hero-streak');
           if (el) {
-            el.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>&nbsp;<strong>${streak}</strong>&nbsp;day routine streak &mdash; <a href="/recommendations.html" style="color:var(--primary-400); text-decoration:underline;">keep it up</a>`;
+            el.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>&nbsp;<strong>${streak}</strong>&nbsp;day routine streak &mdash; <a href="/dashboard.html#routine" style="color:var(--primary-400); text-decoration:underline;">keep it up</a>`;
             el.style.display = 'inline-flex';
             el.classList.remove('hidden');
           }

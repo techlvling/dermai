@@ -261,13 +261,13 @@
         <div id="shopping-empty" class="hidden text-center glass-panel" style="padding:3rem; border-radius:var(--radius-lg);">
           <h2>Nothing saved yet</h2>
           <p style="margin-top:0.75rem; color:var(--neutral-500);">Go to your routine and tap <strong>Save</strong> on any product.</p>
-          <a href="/recommendations.html" class="btn btn-primary" style="margin-top:1.5rem;">View Your Routine</a>
+          <a href="#routine" onclick="showSection('routine'); return false;" class="btn btn-primary" style="margin-top:1.5rem;">View Your Routine</a>
         </div>
 
         <div id="shopping-list" class="hidden">
           <div style="display:flex; gap:0.75rem; margin-bottom:2rem; flex-wrap:wrap;">
             <button id="copy-list-btn" class="btn btn-outline" onclick="Shopping.copyList()">Copy as Text</button>
-            <a href="/recommendations.html" class="btn btn-outline">Back to Routine</a>
+            <a href="#routine" onclick="showSection('routine'); return false;" class="btn btn-outline">Back to Routine</a>
           </div>
           <div id="shopping-items"></div>
           <p style="font-size:0.7rem; color:var(--neutral-400); margin-top:1.5rem; text-align:center;">

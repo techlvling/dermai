@@ -164,7 +164,11 @@ window.History = (function () {
     const entry = historyData.find(e => String(e.id || e.date) === id);
     if (!entry || !entry.analysis) return;
     localStorage.setItem('dermAI_analysis', JSON.stringify({ ...entry.analysis, savedAt: Date.now() }));
-    window.location.href = '/recommendations.html';
+    if (typeof window.showSection === 'function') {
+      window.showSection('routine');
+    } else {
+      window.location.href = '/dashboard.html#routine';
+    }
   }
 
   function _deleteEntry(id) {
