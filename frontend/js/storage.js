@@ -18,6 +18,26 @@ const Storage = (() => {
   }
 
   // ── Server API helpers ────────────────────────────────────────────
+  // History: these used to swallow ALL non-2xx responses by returning null.
+  // That hid a month-long Vercel env-var misconfiguration that 500'd every
+  // authenticated request. Now we capture the status + body and stash the
+  // last failure on Storage.lastServerError so callers can surface a banner.
+  // Public API (`return null on failure`) is preserved for back-compat.
+
+  let _lastServerError = null;
+
+  function recordError(method, endpoint, status, bodyText) {
+    _lastServerError = {
+      method, endpoint, status,
+      body: (bodyText || '').slice(0, 300),
+      at: Date.now(),
+    };
+    console.warn(`[storage] ${method} ${endpoint} -> ${status}`, bodyText?.slice(0, 200));
+    // Fire a custom event so any page can react to recurring failures.
+    try { window.dispatchEvent(new CustomEvent('dermai:server-error', { detail: _lastServerError })); }
+    catch (_) { /* SSR safety */ }
+  }
+
   async function serverGet(endpoint) {
     const token = await getToken();
     if (!token) return null;
@@ -25,8 +45,14 @@ const Storage = (() => {
       const res = await fetch(endpoint, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return res.ok ? res.json() : null;
-    } catch { return null; }
+      if (res.ok) return res.json();
+      const txt = await res.text().catch(() => '');
+      recordError('GET', endpoint, res.status, txt);
+      return null;
+    } catch (e) {
+      recordError('GET', endpoint, 0, e?.message || 'network');
+      return null;
+    }
   }
 
   async function serverPost(endpoint, body) {
@@ -38,8 +64,14 @@ const Storage = (() => {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(body)
       });
-      return res.ok ? res.json() : null;
-    } catch { return null; }
+      if (res.ok) return res.json();
+      const txt = await res.text().catch(() => '');
+      recordError('POST', endpoint, res.status, txt);
+      return null;
+    } catch (e) {
+      recordError('POST', endpoint, 0, e?.message || 'network');
+      return null;
+    }
   }
 
   // Fetch the most-recent scan from the server. Returns null when:
@@ -72,8 +104,14 @@ const Storage = (() => {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      return res.ok;
-    } catch { return false; }
+      if (res.ok) return true;
+      const txt = await res.text().catch(() => '');
+      recordError('DELETE', endpoint, res.status, txt);
+      return false;
+    } catch (e) {
+      recordError('DELETE', endpoint, 0, e?.message || 'network');
+      return false;
+    }
   }
 
   return {
@@ -94,5 +132,10 @@ const Storage = (() => {
 
     // High-level: server-first scan fetch with auth + empty handling
     fetchLatestScan,
+
+    // Diagnostic: the most recent failed server response (status + body).
+    // Pages can read this after a `return null` from server.* to render a
+    // user-facing banner with what actually went wrong.
+    get lastServerError() { return _lastServerError; },
   };
 })();
