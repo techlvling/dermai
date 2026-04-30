@@ -40,6 +40,91 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentStep    = 0;
   let activeSlotIdx  = null; // which slot slot-file-input is targeting
 
+  // ── Pre-scan Drive readiness gate (B1) ────────────────────────────
+  // Per user instruction: "always store the photo to gdrive ... prep gdrive
+  // before". For logged-in users, ensure Drive scope is granted AND the
+  // scans folder is accessible BEFORE we let them scan, so post-scan backup
+  // never fails mid-upload (which loses the in-memory photos to OAuth
+  // redirects). Anonymous users scan with localStorage only.
+  async function ensureDriveReady() {
+    if (typeof Storage === 'undefined' || typeof Drive === 'undefined') return;
+    const loggedIn = await Storage.isLoggedIn();
+    if (!loggedIn) return; // anon users skip the gate
+
+    if (localStorage.getItem('dermAI_drive_declined') === 'true') {
+      // User opted out earlier. Allow scan but surface a soft warning so
+      // they remember backup is off and can re-enable from Connections.
+      showDriveOptOutNotice();
+      return;
+    }
+
+    if (!Drive.hasScope()) {
+      blockScanForDriveGrant('Connect Google Drive so we can save your scan photos.');
+      return;
+    }
+
+    // Scope is set per localStorage flag — but the provider_token may have
+    // expired (~1h). Probe with ensureScansFolder; if it 401s, force a
+    // reconnect before allowing the scan.
+    try {
+      await Drive.ensureScansFolder();
+    } catch (err) {
+      const msg = String(err?.message || '');
+      if (msg.includes('401') || msg.includes('provider_token')) {
+        blockScanForDriveGrant('Drive permission expired. Reconnect to keep auto-saving your scans.');
+      }
+      // Other errors (network, quota): let the scan proceed; backup will
+      // surface the error after upload succeeds.
+    }
+  }
+
+  function blockScanForDriveGrant(message) {
+    // Disable the analyze button + camera + all slot interactions, swap in
+    // a single Connect-Drive panel above the upload box.
+    const btn = document.getElementById('analyze-btn');
+    if (btn) btn.disabled = true;
+    if (cameraBtn) cameraBtn.disabled = true;
+    document.querySelectorAll('.upload-slot').forEach(s => s.style.pointerEvents = 'none');
+
+    if (document.getElementById('drive-gate')) return; // don't double-render
+    const gate = document.createElement('div');
+    gate.id = 'drive-gate';
+    gate.className = 'glass-panel';
+    gate.style.cssText = 'margin-bottom:1.25rem; padding:1.5rem; background:rgba(245,88,142,0.06); border:1px solid rgba(245,88,142,0.25); display:flex; gap:1rem; align-items:center; flex-wrap:wrap;';
+    gate.innerHTML = `
+      <div style="flex:1; min-width:240px;">
+        <div style="font-weight:700; color:var(--neutral-900); margin-bottom:0.25rem;">${message}</div>
+        <div style="font-size:0.78rem; color:var(--neutral-600);">Your scan photos will save to <code>DermAI Photos/Scans/</code> in your own Drive. We can only see files we created — never your other files.</div>
+      </div>
+      <button class="btn btn-primary" id="drive-gate-connect">Connect Drive</button>
+      <button class="link-btn link-btn--muted" id="drive-gate-skip">Skip — local only</button>
+    `;
+    if (dropZone && dropZone.parentNode) dropZone.parentNode.insertBefore(gate, dropZone);
+    document.getElementById('drive-gate-connect').addEventListener('click', () => {
+      Drive.requestDriveScope(); // redirects to OAuth
+    });
+    document.getElementById('drive-gate-skip').addEventListener('click', () => {
+      localStorage.setItem('dermAI_drive_declined', 'true');
+      gate.remove();
+      if (btn) btn.disabled = false;
+      if (cameraBtn) cameraBtn.disabled = false;
+      document.querySelectorAll('.upload-slot').forEach(s => s.style.pointerEvents = '');
+      showDriveOptOutNotice();
+    });
+  }
+
+  function showDriveOptOutNotice() {
+    if (document.getElementById('drive-optout-notice')) return;
+    const notice = document.createElement('div');
+    notice.id = 'drive-optout-notice';
+    notice.style.cssText = 'margin-bottom:1rem; padding:0.75rem 1rem; background:rgba(0,0,0,0.04); border-radius:var(--radius-md,12px); font-size:0.78rem; color:var(--neutral-600);';
+    notice.innerHTML = 'Drive backup is off. Scan photos will only live on this device. <a href="/dashboard.html#connections" class="link-btn">Re-enable in Connections</a>';
+    if (dropZone && dropZone.parentNode) dropZone.parentNode.insertBefore(notice, dropZone);
+  }
+
+  // Fire the gate check on load. Don't await — let the page render first.
+  ensureDriveReady();
+
   // ── Inline error for upload/camera failures ───────────────────────────────
   function showUploadError(msg) {
     const existing = document.getElementById('upload-error');
