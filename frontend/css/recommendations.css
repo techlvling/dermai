@@ -220,6 +220,26 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   font-weight: 600;
 }
+/* Rx badge — amber/orange so it visually contrasts the green RCT badge.
+   Sits next to the trial badge when both apply (Tier 1 + prescription). */
+.trial-badge--rx {
+  background: linear-gradient(135deg, rgba(255, 170, 122, 0.25), rgba(230, 130, 60, 0.18));
+  color: #8a4810;
+  border: 1px solid rgba(230, 130, 60, 0.45);
+}
+/* Consult-derm callout — louder than the trial-note green box because the
+   safety warning matters more than the evidence brag. */
+.evidence-rx-note {
+  margin: 0.5rem 0 0;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 170, 122, 0.14);
+  border-left: 3px solid #e08a3e;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: #6b3608;
+  line-height: 1.55;
+}
+.evidence-rx-note strong { color: #5b2c00; }
 .evidence-trial-note {
   margin: 0.5rem 0 0;
   padding: 0.5rem 0.625rem;

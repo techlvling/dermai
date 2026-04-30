@@ -422,6 +422,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return ''; // tier 3 = no badge (the silent middle)
   }
 
+  // Rx badge — shown alongside the trial badge when a product requires a
+  // prescription in India. Tells users they need to see a dermatologist
+  // before using, which is non-negotiable for hydroquinone, tretinoin,
+  // ivermectin, fluocinolone, etc.
+  function rxBadgeHTML(prod) {
+    if (!prod.requiresPrescription) return '';
+    return '<span class="trial-badge trial-badge--rx" title="Prescription required in India — consult a dermatologist before use">⚕ Rx</span>';
+  }
+
   function buildEvidenceHTML(prod, ingredient) {
     const userConcernNames = userAnalysis.concerns.map(c => c.name);
     const matchedConcerns = prod.concerns.filter(pc => userConcernNames.includes(pc));
@@ -455,9 +464,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const rationaleText = rationales[0] || `${ingredient.name} is clinically studied for ${matchedConcerns.join(', ')}.`;
     const freshPillHTML = freshnessPillHTML(ingredient.last_refreshed);
     const badgeHTML = trialBadgeHTML(prod);
+    const rxBadge   = rxBadgeHTML(prod);
     // If the product itself has a curated trial note (Tier 1 RCT-backed), show it after the rationale
     const trialNoteHTML = prod.trialNote
       ? `<p class="evidence-trial-note">📋 ${prod.trialNote}</p>`
+      : '';
+    // Rx callout — amber warning box with the prescribing context, only
+    // shown for products that require a doctor's involvement.
+    const consultDermHTML = prod.consultDermNote
+      ? `<p class="evidence-rx-note">⚕ <strong>Prescription required.</strong> ${prod.consultDermNote}</p>`
       : '';
 
     const extraTrialsHTML = extraTrialLinks
@@ -470,11 +485,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="evidence-rationale-head-left">
             <p class="evidence-rationale-label">WHY THIS?</p>
             ${badgeHTML}
+            ${rxBadge}
           </div>
           ${freshPillHTML}
         </div>
         <p class="evidence-rationale-body">${rationaleText} ${studyLink}</p>
         ${trialNoteHTML}
+        ${consultDermHTML}
         ${extraTrialsHTML}
       </div>`;
   }

@@ -624,5 +624,19 @@
     "evidenceTier": 3,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
     "keyStudies": []
+  },
+  {
+    "id": "hydroquinone",
+    "name": "Hydroquinone",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": []
+  },
+  {
+    "id": "ivermectin",
+    "name": "Ivermectin (topical)",
+    "evidenceTier": 1,
+    "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "keyStudies": []
   }
 ]

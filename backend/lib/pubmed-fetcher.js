@@ -43,6 +43,8 @@ const INGREDIENTS_META = [
   { id: 'sulfur',             name: 'Sulfur',             aliases: ['sulfur', 'sulphur'],                           evidenceTier: 2, query: '(sulfur[Title/Abstract] OR sulphur[Title/Abstract]) AND (acne[Title/Abstract] OR rosacea[Title/Abstract]) AND clinical trial[ptyp]' },
   { id: 'beta_glucan',        name: 'Beta-Glucan',        aliases: ['beta-glucan', 'beta glucan'],                  evidenceTier: 2, query: '"beta-glucan"[Title/Abstract] AND skin[Title/Abstract] AND clinical trial[ptyp]' },
   { id: 'adenosine',          name: 'Adenosine',          aliases: ['adenosine'],                                   evidenceTier: 3, query: 'adenosine[Title/Abstract] AND skin[Title/Abstract] AND (aging[Title/Abstract] OR wrinkle*[Title/Abstract] OR cosmetic[Title/Abstract]) AND clinical trial[ptyp]' },
+  { id: 'hydroquinone',       name: 'Hydroquinone',       aliases: ['hydroquinone', 'HQ'],                          evidenceTier: 1, query: 'hydroquinone[Title/Abstract] AND (melasma[Title/Abstract] OR pigment*[Title/Abstract] OR hyperpigmentation[Title/Abstract]) AND clinical trial[ptyp]' },
+  { id: 'ivermectin',         name: 'Ivermectin (topical)', aliases: ['ivermectin', 'soolantra'],                   evidenceTier: 1, query: '("ivermectin"[Title/Abstract] OR "Soolantra"[Title/Abstract]) AND (rosacea[Title/Abstract] OR skin[Title/Abstract]) AND (clinical trial[ptyp] OR randomized controlled trial[ptyp])' },
 ];
 
 async function fetchJson(url) {
