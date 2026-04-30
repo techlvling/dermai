@@ -195,14 +195,34 @@
       statusEl.textContent = 'Connected';
       statusEl.className   = 'conn-card__status conn-card__status--on';
       actionsEl.innerHTML = `
-        <p class="conn-help">Future scans will save to <code>DermAI Photos/Scans/</code> in your Drive.</p>
+        <p class="conn-help">Scans save to <code>DermAI Photos/Scans/Day N - DATE/</code> in your Drive, organized by days since your first scan.</p>
         <div class="conn-actions-row">
-          <button type="button" class="btn btn-primary" id="conn-drive-test">Test Drive connection</button>
-          <button type="button" class="btn btn-outline" id="conn-drive-forget">Forget this connection</button>
+          <button type="button" class="btn btn-primary" id="conn-drive-open">Open my Drive folder</button>
+          <button type="button" class="btn btn-outline" id="conn-drive-test">Test Drive connection</button>
+          <button type="button" class="btn btn-outline" id="conn-drive-forget">Forget</button>
           <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener" class="link-btn">Revoke at Google →</a>
         </div>
         <pre id="conn-drive-test-output" style="display:none; margin-top:1rem; padding:0.875rem; background:#0f172a; color:#e2e8f0; border-radius:8px; font-family:ui-monospace, monospace; font-size:0.72rem; line-height:1.45; white-space:pre-wrap; max-height:280px; overflow:auto;"></pre>
       `;
+      document.getElementById('conn-drive-open').addEventListener('click', async () => {
+        const btn = document.getElementById('conn-drive-open');
+        btn.disabled = true;
+        btn.textContent = 'Looking up folder…';
+        try {
+          // Resolve fresh — don't trust localStorage cache that may have
+          // been cleared since last sign-in.
+          const folderId = await Drive.ensureScansFolder();
+          if (folderId) {
+            window.open(`https://drive.google.com/drive/folders/${encodeURIComponent(folderId)}`, '_blank', 'noopener');
+            btn.textContent = 'Open my Drive folder';
+            btn.disabled = false;
+          } else {
+            btn.textContent = 'Folder not found — try Test Drive';
+          }
+        } catch (e) {
+          btn.textContent = `Couldn't open: ${(e?.message || 'error').slice(0, 60)}`;
+        }
+      });
       document.getElementById('conn-drive-test').addEventListener('click', () => testDriveConnection());
       document.getElementById('conn-drive-forget').addEventListener('click', () => {
         // Local-only forget. Tells user to revoke at Google for a clean cut.
