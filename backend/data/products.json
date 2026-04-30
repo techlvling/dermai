@@ -7,7 +7,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": ["Acne", "Pores", "Oiliness"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_cle_02",
@@ -17,7 +18,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": ["Dryness", "Sensitivity"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_cle_03",
@@ -27,7 +29,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation", "Dryness", "Fine Lines"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_sal_01",
@@ -37,7 +40,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Acne", "Pores", "Texture"],
-    "priceTier": "$$$"
+    "priceTier": "$$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_nia_01",
@@ -47,7 +51,8 @@
     "category": "treatment",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation", "Pores", "Oiliness"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_tret_01",
@@ -57,7 +62,9 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Acne", "Fine Lines", "Texture"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 1,
+    "trialNote": "Adapalene 0.1% is an FDA-approved finished pharmaceutical with 100+ peer-reviewed RCTs."
   },
   {
     "id": "prod_bzp_01",
@@ -67,7 +74,9 @@
     "category": "treatment",
     "bestTimeOfDay": "AM",
     "concerns": ["Acne"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 1,
+    "trialNote": "Benzoyl peroxide 4% has been an active comparator in dozens of acne RCTs."
   },
   {
     "id": "prod_vitc_01",
@@ -77,7 +86,9 @@
     "category": "treatment",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation", "Fine Lines", "Dryness"],
-    "priceTier": "$$$"
+    "priceTier": "$$$",
+    "productEvidenceTier": 1,
+    "trialNote": "Duke University patent. 15% L-ascorbic + 1% vitamin E + 0.5% ferulic acid — the most-tested vitamin C combo with 30+ in-vivo RCTs of this exact formulation."
   },
   {
     "id": "prod_vitc_02",
@@ -87,7 +98,8 @@
     "category": "treatment",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation", "Fine Lines"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_aze_01",
@@ -97,7 +109,8 @@
     "category": "treatment",
     "bestTimeOfDay": "both",
     "concerns": ["Acne", "Hyperpigmentation", "Sensitivity"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_arb_01",
@@ -107,7 +120,8 @@
     "category": "treatment",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_lac_01",
@@ -117,7 +131,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Texture", "Dryness", "Fine Lines", "Hyperpigmentation"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_gly_01",
@@ -127,7 +142,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Texture", "Acne", "Fine Lines", "Hyperpigmentation"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_ret_01",
@@ -137,7 +153,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Fine Lines", "Texture", "Acne"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_ret_02",
@@ -147,7 +164,9 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Fine Lines", "Texture"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 1,
+    "trialNote": "RoC's stabilised retinol formulation has published anti-aging RCTs going back to the 1990s."
   },
   {
     "id": "prod_pep_01",
@@ -157,7 +176,8 @@
     "category": "treatment",
     "bestTimeOfDay": "both",
     "concerns": ["Fine Lines", "Texture", "Dryness"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_moi_01",
@@ -167,7 +187,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "AM",
     "concerns": ["Dryness", "Oiliness", "Acne", "Pores", "Texture", "Hyperpigmentation"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_moi_02",
@@ -177,7 +198,9 @@
     "category": "moisturizer",
     "bestTimeOfDay": "PM",
     "concerns": ["Dryness", "Sensitivity", "Fine Lines"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 1,
+    "trialNote": "MVE delivery technology + ceramide 1/3/6-II ratio has published trials for atopic dermatitis and xerosis."
   },
   {
     "id": "prod_moi_03",
@@ -187,7 +210,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Dryness", "Sensitivity", "Fine Lines"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_sun_01",
@@ -197,7 +221,9 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Acne", "Hyperpigmentation", "Pores", "Texture", "Dryness", "Rosacea"],
-    "priceTier": "$$$"
+    "priceTier": "$$$",
+    "productEvidenceTier": 1,
+    "trialNote": "Niacinamide 5% + zinc oxide 9% + transparent zinc, dermatology-office channel since 2007. Multiple SPF efficacy and acne-tolerance studies."
   },
   {
     "id": "prod_sun_02",
@@ -207,7 +233,9 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Dryness", "Sensitivity"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 1,
+    "trialNote": "Mexoryl XL filter system, one of the most-tested sunscreen platforms globally."
   },
   {
     "id": "prod_cle_04",
@@ -217,7 +245,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": ["Sensitivity", "Dryness", "Eczema-prone"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_cle_05",
@@ -227,7 +256,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": ["Sensitivity", "Acne", "Rosacea"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_cle_06",
@@ -237,7 +267,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": ["Oiliness", "Texture"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_cle_07",
@@ -247,7 +278,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": ["Acne", "Oiliness"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_cle_08",
@@ -257,7 +289,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": ["Sensitivity", "Dryness", "Rosacea"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_bak_01",
@@ -267,7 +300,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Fine Lines", "Sensitivity"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_cica_01",
@@ -277,7 +311,8 @@
     "category": "treatment",
     "bestTimeOfDay": "both",
     "concerns": ["Acne", "Sensitivity", "Rosacea"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_cica_02",
@@ -287,7 +322,8 @@
     "category": "treatment",
     "bestTimeOfDay": "both",
     "concerns": ["Sensitivity", "Rosacea", "Eczema-prone"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_snail_01",
@@ -297,7 +333,8 @@
     "category": "treatment",
     "bestTimeOfDay": "both",
     "concerns": ["Texture", "Dryness", "Sensitivity"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_snail_02",
@@ -307,7 +344,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Fine Lines", "Texture"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_man_01",
@@ -317,7 +355,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Texture", "Hyperpigmentation", "Acne"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_pha_01",
@@ -327,7 +366,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Texture", "Sensitivity", "Pores"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_txa_02",
@@ -337,7 +377,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Hyperpigmentation", "Sun Damage"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_moi_04",
@@ -347,7 +388,9 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Dryness", "Eczema-prone", "Sensitivity"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 1,
+    "trialNote": "MVE delivery technology + ceramide 1/3/6-II ratio has published trials for atopic dermatitis and xerosis."
   },
   {
     "id": "prod_moi_05",
@@ -357,7 +400,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Sensitivity", "Dryness", "Rosacea"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_moi_06",
@@ -367,7 +411,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Eczema-prone", "Sensitivity", "Dryness"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_moi_07",
@@ -377,7 +422,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Sensitivity", "Eczema-prone", "Rosacea"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_moi_08",
@@ -387,7 +433,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Sensitivity", "Eczema-prone"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_moi_09",
@@ -397,7 +444,9 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Dryness", "Texture"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 1,
+    "trialNote": "Eucerin 5-10% urea formulations have published RCTs for keratosis pilaris and severe xerosis."
   },
   {
     "id": "prod_moi_11",
@@ -407,7 +456,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Dryness", "Sensitivity"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_moi_12",
@@ -417,7 +467,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Dryness", "Oiliness"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_sun_04",
@@ -427,7 +478,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Sensitivity", "Sun Damage", "Rosacea"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_sun_05",
@@ -437,7 +489,9 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Sun Damage", "Sensitivity"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 1,
+    "trialNote": "Mexoryl XL filter system, one of the most-tested sunscreen platforms globally."
   },
   {
     "id": "prod_sun_07",
@@ -447,7 +501,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Dryness", "Sensitivity"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_sun_08",
@@ -457,7 +512,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Dryness", "Sensitivity", "Acne"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_sun_09",
@@ -467,7 +523,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Sensitivity", "Sun Damage"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_sun_10",
@@ -477,7 +534,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation", "Sun Damage"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_sun_11",
@@ -487,7 +545,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Rosacea", "Sensitivity", "Sun Damage"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_min_01",
@@ -497,7 +556,8 @@
     "category": "treatment",
     "bestTimeOfDay": "AM",
     "concerns": ["Acne", "Pores", "Oiliness", "Hyperpigmentation"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_min_02",
@@ -507,7 +567,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Acne", "Pores", "Texture"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_min_03",
@@ -517,7 +578,8 @@
     "category": "treatment",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation", "Sun Damage", "Fine Lines"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_min_04",
@@ -527,7 +589,8 @@
     "category": "treatment",
     "bestTimeOfDay": "both",
     "concerns": ["Dryness", "Sensitivity", "Fine Lines"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_min_05",
@@ -537,7 +600,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Dryness", "Sun Damage", "Acne"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_dco_01",
@@ -547,7 +611,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Hyperpigmentation", "Sun Damage"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_dco_02",
@@ -557,7 +622,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Dryness", "Sun Damage", "Sensitivity"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_dco_03",
@@ -567,7 +633,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Fine Lines", "Texture"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_plum_01",
@@ -577,7 +644,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Fine Lines", "Texture", "Hyperpigmentation"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_plum_02",
@@ -587,7 +655,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Acne", "Texture", "Pores"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_re_01",
@@ -597,7 +666,8 @@
     "category": "treatment",
     "bestTimeOfDay": "PM",
     "concerns": ["Hyperpigmentation", "Sun Damage"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_re_02",
@@ -607,7 +677,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Acne", "Sun Damage", "Oiliness"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 3
   },
   {
     "id": "prod_dnk_01",
@@ -617,7 +688,8 @@
     "category": "moisturizer",
     "bestTimeOfDay": "both",
     "concerns": ["Sensitivity", "Rosacea", "Acne"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_dnk_02",
@@ -627,7 +699,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation", "Sun Damage", "Fine Lines"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_pil_01",
@@ -637,7 +710,8 @@
     "category": "treatment",
     "bestTimeOfDay": "AM",
     "concerns": ["Hyperpigmentation", "Fine Lines"],
-    "priceTier": "$"
+    "priceTier": "$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_fox_01",
@@ -647,7 +721,8 @@
     "category": "sunscreen",
     "bestTimeOfDay": "AM",
     "concerns": ["Sensitivity", "Sun Damage", "Oiliness"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 4
   },
   {
     "id": "prod_seb_01",
@@ -657,7 +732,8 @@
     "category": "cleanser",
     "bestTimeOfDay": "both",
     "concerns": ["Acne", "Sensitivity"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   },
   {
     "id": "prod_seb_02",
@@ -667,6 +743,7 @@
     "category": "moisturizer",
     "bestTimeOfDay": "AM",
     "concerns": ["Sensitivity", "Sun Damage", "Dryness"],
-    "priceTier": "$$"
+    "priceTier": "$$",
+    "productEvidenceTier": 2
   }
 ]

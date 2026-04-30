@@ -186,6 +186,51 @@
 }
 .freshness-pill.fresh-stale::before { background: var(--primary-500); }
 
+/* Product-level evidence badge (RCT-tested / Claims-studied / Ingredient-only).
+   Honest signal that lets users distinguish a brand with finished-product
+   clinical trials from a brand that just bottles the molecule. */
+.evidence-rationale-head-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.trial-badge {
+  display: inline-block;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.trial-badge--top {
+  background: linear-gradient(135deg, rgba(90, 216, 163, 0.22), rgba(60, 180, 130, 0.18));
+  color: #1f6c4a;
+  border: 1px solid rgba(90, 216, 163, 0.45);
+}
+.trial-badge--mid {
+  background: rgba(160, 124, 255, 0.14);
+  color: #5d3eb1;
+  border: 1px solid rgba(160, 124, 255, 0.3);
+}
+.trial-badge--low {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--neutral-500);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+.evidence-trial-note {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.625rem;
+  background: rgba(90, 216, 163, 0.08);
+  border-left: 2px solid #5ad8a3;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: var(--neutral-700);
+  line-height: 1.5;
+}
+
 .evidence-rationale-body {
   font-size: 0.8rem;
   color: var(--neutral-600);

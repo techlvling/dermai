@@ -296,16 +296,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Rank products: highest (max concern severity × ingredient evidenceTier) first
+  // Product-level evidence weight. Multiplies the ingredient × severity score
+  // so RCT-tested finished formulations rank above brands that just bottle
+  // the molecule. Tier definitions live in products.json:
+  //   1 = published in-vivo RCTs of this exact formulation
+  //   2 = manufacturer claim studies / dermatology-channel pipeline
+  //   3 = well-formulated by reputation, no specific finished-product trials
+  //   4 = ingredient evidence only — no finished-product testing
+  const PRODUCT_TIER_WEIGHT = { 1: 1.6, 2: 1.25, 3: 1.0, 4: 0.8 };
+
+  // Brand-reputation tiebreaker for products tied within the same tier. Most
+  // brands stay at the 1.0 baseline; this only nudges the very-established
+  // research brands above ingredient-only newcomers when scores otherwise tie.
+  const BRAND_WEIGHT = {
+    'SkinCeuticals': 1.10, 'La Roche-Posay': 1.08, 'Avene': 1.07,
+    'CeraVe': 1.06, 'Eucerin': 1.06, 'EltaMD': 1.07, 'Galderma': 1.10,
+    'PanOxyl': 1.08, 'Bioderma': 1.05, 'Cetaphil': 1.05,
+    'Aveeno': 1.04, 'Neutrogena': 1.03, "Paula's Choice": 1.04,
+    'RoC': 1.06, 'Sebamed': 1.04,
+  };
+
+  // Rank products by:
+  //   max(severity) × ingredient.evidenceTier × productEvidenceTier weight × brand weight
   function rankProducts(products) {
     return [...products].sort((a, b) => {
       const scoreFor = (prod) => {
         const ing = allIngredients.find(i => i.id === prod.primaryIngredientId);
-        const tier = ing ? ing.evidenceTier : 1;
+        const ingTier = ing ? ing.evidenceTier : 1;
         const maxSeverity = userAnalysis.concerns
           .filter(c => prod.concerns.includes(c.name))
           .reduce((max, c) => Math.max(max, c.severity || 0), 0);
-        return maxSeverity * tier;
+        const productWeight = PRODUCT_TIER_WEIGHT[prod.productEvidenceTier] || 1.0;
+        const brandWeight   = BRAND_WEIGHT[prod.brand] || 1.0;
+        return maxSeverity * ingTier * productWeight * brandWeight;
       };
       return scoreFor(b) - scoreFor(a);
     });
@@ -387,6 +410,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return `<span class="freshness-pill ${cls}" title="When PubMed was last queried for this ingredient">${text}</span>`;
   }
 
+  // Product-level evidence badge — surfaces "this exact bottle has clinical
+  // trials" vs "this brand has a publishing history" vs "ingredient evidence
+  // only". Honest signal that lets users distinguish SkinCeuticals C E
+  // Ferulic from a generic vitamin C serum.
+  function trialBadgeHTML(prod) {
+    const tier = prod.productEvidenceTier || 3;
+    if (tier === 1) return '<span class="trial-badge trial-badge--top" title="Published in-vivo RCTs of this exact formulation">RCT-tested</span>';
+    if (tier === 2) return '<span class="trial-badge trial-badge--mid" title="Manufacturer-published claim studies">Claims-studied</span>';
+    if (tier === 4) return '<span class="trial-badge trial-badge--low" title="Ingredient-level evidence only — no finished-product trials published">Ingredient-only</span>';
+    return ''; // tier 3 = no badge (the silent middle)
+  }
+
   function buildEvidenceHTML(prod, ingredient) {
     const userConcernNames = userAnalysis.concerns.map(c => c.name);
     const matchedConcerns = prod.concerns.filter(pc => userConcernNames.includes(pc));
@@ -403,18 +438,27 @@ document.addEventListener('DOMContentLoaded', () => {
       .map(cn => allConcerns[cn] && allConcerns[cn].targetIngredients.includes(prod.primaryIngredientId) ? allConcerns[cn].rationale : null)
       .filter(Boolean);
 
-    if (!rationales.length && !studyLink) return '';
+    if (!rationales.length && !studyLink && !prod.trialNote) return '';
 
     const rationaleText = rationales[0] || `${ingredient.name} is clinically studied for ${matchedConcerns.join(', ')}.`;
-    const pillHTML = freshnessPillHTML(ingredient.last_refreshed);
+    const freshPillHTML = freshnessPillHTML(ingredient.last_refreshed);
+    const badgeHTML = trialBadgeHTML(prod);
+    // If the product itself has a curated trial note (Tier 1 RCT-backed), show it after the rationale
+    const trialNoteHTML = prod.trialNote
+      ? `<p class="evidence-trial-note">📋 ${prod.trialNote}</p>`
+      : '';
 
     return `
       <div class="evidence-rationale">
         <div class="evidence-rationale-head">
-          <p class="evidence-rationale-label">WHY THIS?</p>
-          ${pillHTML}
+          <div class="evidence-rationale-head-left">
+            <p class="evidence-rationale-label">WHY THIS?</p>
+            ${badgeHTML}
+          </div>
+          ${freshPillHTML}
         </div>
         <p class="evidence-rationale-body">${rationaleText} ${studyLink}</p>
+        ${trialNoteHTML}
       </div>`;
   }
 
