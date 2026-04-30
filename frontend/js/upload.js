@@ -492,6 +492,99 @@ document.addEventListener('DOMContentLoaded', () => {
     resultsSection.appendChild(section);
   }
 
+  // ── Ingredient lookup data — fetched once, cached for the page ────────────
+  let _concernsMap = null;     // { "Acne": { targetIngredients:[…], rationale:"…" }, … }
+  let _ingredientsList = null; // [{ id, name, evidenceTier, … }, …]
+
+  async function loadIngredientData() {
+    if (_concernsMap && _ingredientsList) return;
+    try {
+      const [c, i] = await Promise.all([
+        fetch('/api/concerns').then(r => r.ok ? r.json() : null),
+        fetch('/api/ingredients').then(r => r.ok ? r.json() : null),
+      ]);
+      if (c) _concernsMap = c;
+      if (i) _ingredientsList = i;
+    } catch (_) { /* offline / first-render best-effort; chips just won't show */ }
+  }
+
+  function prettyIngredient(id) {
+    // First try the canonical name from ingredients.json
+    const found = _ingredientsList?.find(x => x.id === id);
+    if (found?.name) return found.name;
+    // Fallback: salicylic_acid → salicylic acid
+    return String(id).replace(/_/g, ' ');
+  }
+
+  function tierLabel(tier) {
+    if (tier === 1) return 'Tier 1 (RCT)';
+    if (tier === 2) return 'Tier 2';
+    if (tier === 3) return 'Tier 3';
+    return tier ? `Tier ${tier}` : '';
+  }
+
+  // Render chips on each concern card + the deduped shortlist below.
+  // Called after concern cards are in the DOM and ingredient JSON is loaded.
+  function renderIngredientLayer(concerns) {
+    if (!_concernsMap) return; // fetch failed; degrade silently
+
+    // Per-concern chips
+    document.querySelectorAll('.concern-card').forEach(card => {
+      const name = card.dataset.concernName;
+      const slot = card.querySelector('[data-ingredients-slot]');
+      if (!slot) return;
+      const ids = _concernsMap[name]?.targetIngredients || [];
+      if (!ids.length) { slot.remove(); return; }
+      const chips = ids.map(id => `<span class="ing-chip">${prettyIngredient(id)}</span>`).join('');
+      slot.innerHTML = `<span class="ing-prefix">USE:</span> ${chips}`;
+    });
+
+    // Deduped shortlist: ingredient → concerns it addresses, weighted by concern severity
+    const tally = new Map(); // id → { weight, concerns:Set }
+    concerns.forEach(c => {
+      const ids = _concernsMap[c.name]?.targetIngredients || [];
+      ids.forEach(id => {
+        const entry = tally.get(id) || { weight: 0, concerns: new Set() };
+        entry.weight += (c.severity || 0);
+        entry.concerns.add(c.name);
+        tally.set(id, entry);
+      });
+    });
+
+    const shortlistEl = document.getElementById('ingredient-shortlist');
+    if (!shortlistEl) return;
+    if (!tally.size) {
+      shortlistEl.classList.add('hidden');
+      return;
+    }
+
+    const ranked = [...tally.entries()]
+      .sort((a, b) => b[1].weight - a[1].weight);
+
+    const rows = ranked.map(([id, info]) => {
+      const ing = _ingredientsList?.find(x => x.id === id);
+      const tier = tierLabel(ing?.evidenceTier);
+      const targets = [...info.concerns].join(' · ');
+      return `
+        <li class="shortlist-row">
+          <span class="shortlist-name">${prettyIngredient(id)}</span>
+          ${tier ? `<span class="shortlist-tier">${tier}</span>` : ''}
+          <span class="shortlist-targets">${targets}</span>
+        </li>
+      `;
+    }).join('');
+
+    shortlistEl.innerHTML = `
+      <div class="shortlist-header">
+        <h3 class="shortlist-title">Your ingredient shortlist</h3>
+        <p class="shortlist-sub">${ranked.length} ingredients ranked by impact across your concerns</p>
+      </div>
+      <ul class="shortlist-list">${rows}</ul>
+      <a href="/dashboard.html#routine" class="btn btn-outline shortlist-cta">View routine using these →</a>
+    `;
+    shortlistEl.classList.remove('hidden');
+  }
+
   // ── Render Results ────────────────────────────────────────────────────────
   function renderResults(data) {
     loadingSection.classList.add('hidden');
@@ -503,6 +596,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const concernsList = document.getElementById('concerns-list');
     concernsList.innerHTML = '';
+
+    // Kick off ingredient data load early; chips + shortlist render once it resolves
+    const ingredientsReady = loadIngredientData();
 
     data.concerns.forEach(concern => {
       let severityClass = 'severity-low';
@@ -517,15 +613,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const card = document.createElement('div');
       card.className = 'concern-card glass-panel';
+      card.dataset.concernName = concern.name;
       card.innerHTML = `
         <div class="concern-header">
           <span class="concern-name">${concern.name}</span>
           <span class="severity-badge ${severityClass}">${severityText} (${concern.severity}/100)</span>
         </div>
         <p class="concern-description">${concern.description}</p>
+        <div class="concern-ingredients" data-ingredients-slot></div>
       `;
       concernsList.appendChild(card);
     });
+
+    ingredientsReady.then(() => renderIngredientLayer(data.concerns));
 
     localStorage.setItem('dermAI_analysis', JSON.stringify(data));
     const history = saveToHistory(data);

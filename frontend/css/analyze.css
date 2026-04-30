@@ -354,6 +354,123 @@
   line-height: 1.6;
 }
 
+/* Ingredient chips on each concern card */
+.concern-ingredients {
+  margin-top: 0.875rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--border, rgba(0,0,0,0.06));
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.ing-prefix {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--neutral-500);
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+
+.ing-chip {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(245, 88, 142, 0.08);
+  color: var(--primary-700);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  border: 1px solid rgba(245, 88, 142, 0.18);
+  white-space: nowrap;
+}
+
+/* Deduped shortlist below concerns grid */
+.ingredient-shortlist {
+  margin: 0 0 2.5rem;
+  padding: 1.75rem 1.75rem 1.5rem;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, rgba(0,0,0,0.06));
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-md);
+}
+
+.ingredient-shortlist.hidden { display: none; }
+
+.shortlist-header {
+  margin-bottom: 1.25rem;
+}
+
+.shortlist-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--neutral-900);
+  letter-spacing: -0.01em;
+}
+
+.shortlist-sub {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--neutral-500);
+}
+
+.shortlist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.shortlist-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem;
+  background: rgba(0,0,0,0.025);
+  border-radius: var(--radius-md, 12px);
+  font-size: 0.875rem;
+}
+
+.shortlist-name {
+  font-weight: 600;
+  color: var(--neutral-900);
+  text-transform: lowercase;
+}
+
+.shortlist-tier {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--mint-500, #2a8a64);
+  background: rgba(90, 216, 163, 0.12);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  justify-self: end;
+}
+
+.shortlist-targets {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  color: var(--neutral-500);
+  text-transform: capitalize;
+}
+
+.shortlist-cta {
+  width: 100%;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .ingredient-shortlist { padding: 1.25rem; }
+}
+
 .results-actions {
   display: flex;
   gap: 1rem;
