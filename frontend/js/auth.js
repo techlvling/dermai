@@ -15,9 +15,19 @@ if (!window.supabase) {
 
   window.Auth = {
     async signInWithGoogle() {
+      // Bundle Drive scope into the initial sign-in so the user only sees
+      // one OAuth consent screen and the resulting session always has a
+      // provider_token with drive.file. Without this, users who signed in
+      // before the Drive feature shipped never get a Drive-scoped token,
+      // and post-scan backups fail with "insufficient authentication
+      // scopes" — same with users who skipped the post-login Drive prompt.
       const { error } = await _client.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/login-callback.html` }
+        options: {
+          redirectTo: `${window.location.origin}/login-callback.html`,
+          scopes: 'https://www.googleapis.com/auth/drive.file',
+          queryParams: { access_type: 'offline' },
+        }
       });
       if (error) console.error('[Auth] signInWithGoogle error:', error.message);
     },

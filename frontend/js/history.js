@@ -81,9 +81,16 @@ window.History = (function () {
       const skinType = isLegacy ? entry.skinType         : entry.analysis.skinType;
       const concerns = isLegacy ? (entry.concerns || []) : (entry.analysis.concerns || []);
       const entryId  = String(entry.id || entry.date);
-      const dateObj  = new Date(entry.id || entry.date);
+      // Prefer entry.date for date display. Server scans have small bigint ids
+      // (1, 2, 3...) — passing those into new Date() returns 1970-01-01.
+      // Local entries from saveToHistory keep id = data.savedAt (a real ms
+      // timestamp), so falling back to id is still correct for local-only
+      // entries that lack a date field.
+      const dateObj  = new Date(entry.date || entry.id);
       const dayKey   = dateObj.toDateString();
-      const entryMs  = entry.id || dateObj.getTime();
+      // entryMs is used to find the closest progress photo. Use the date,
+      // not the bigint id, for the same reason.
+      const entryMs  = entry.date ? dateObj.getTime() : (entry.id || dateObj.getTime());
 
       let thumbSrc = null;
       const dayPhotos = photosByDay[dayKey] || [];
@@ -176,7 +183,17 @@ window.History = (function () {
     if (idx === -1) return;
     const entry = historyData.splice(idx, 1)[0];
     Storage.set('dermAI_history', historyData);
-    const entryMs = entry.id || new Date(entry.date).getTime();
+
+    // Server-backed entries: also DELETE on the server, otherwise the next
+    // _init re-merges them from /api/scans and the row "respawns".
+    // Server scans have small bigint IDs (<= 1e12); local entries use
+    // Date.now() (>= 1.7e12). Use that to tell them apart.
+    const looksLikeServerId = typeof entry.id === 'number' && entry.id < 1e12;
+    if (looksLikeServerId && Storage?.server?.delete) {
+      Storage.server.delete('/api/scans/' + entry.id).catch(() => {});
+    }
+
+    const entryMs = entry.date ? new Date(entry.date).getTime() : (entry.id || 0);
     PhotoDB.getAll()
       .then(photos => {
         const match = photos.find(p => p.scanAt === entryMs);
