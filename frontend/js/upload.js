@@ -723,9 +723,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // copy so the user's just-finished scan still works on the routine page,
     // and routine.init() will trust fresh-stamp local data when the server
     // returns nothing.
-    const savedScanIdPromise = Storage.server.post('/api/scans', { result_json: data })
-      .then(r => r?.scan?.id ?? null)
-      .catch(() => null);
+    const savedScanInfoPromise = Storage.server.post('/api/scans', { result_json: data })
+      .then(r => ({
+        id: r?.scan?.id ?? null,
+        created_at: r?.scan?.created_at ?? null,
+        day_index: typeof r?.day_index === 'number' ? r.day_index : 0,
+      }))
+      .catch(() => ({ id: null, created_at: null, day_index: 0 }));
 
     renderHistory(history);
 
@@ -779,25 +783,35 @@ document.addEventListener('DOMContentLoaded', () => {
         bar.style.display = 'block';
         status.textContent = '⏳';
         try {
-          const folderId  = await Drive.ensureScansFolder();
-          const filesToUp = capturedFiles.filter(Boolean);
-          const urls      = [];
+          // Wait for the scan POST so we know which day this is (day_index
+          // computed server-side from the user's earliest scan). We need the
+          // day folder name BEFORE uploading photos so they land in the right
+          // place — slight extra latency but it's the right sequencing.
+          const scanInfo = await savedScanInfoPromise;
+          const dayIndex = scanInfo?.day_index ?? 0;
+          const dateYYYYMMDD = (scanInfo?.created_at
+            ? new Date(scanInfo.created_at)
+            : new Date(data.savedAt || Date.now())
+          ).toISOString().slice(0, 10);
+
+          const dayFolderId = await Drive.ensureDayFolder(dayIndex, dateYYYYMMDD);
+          const filesToUp   = capturedFiles.filter(Boolean);
+          const urls        = [];
 
           for (let i = 0; i < filesToUp.length; i++) {
-            const date     = new Date(data.savedAt).toISOString().slice(0, 10);
-            const filename = `scan-${date}-${ANGLE_LABELS[i]}.jpg`;
-            hint.textContent = `Uploading ${filesToUp.length} photos… (${i + 1}/${filesToUp.length})`;
+            // Inside the day folder we can use simple short filenames —
+            // the parent folder already encodes the date + day.
+            const filename = `${ANGLE_LABELS[i]}.jpg`;
+            hint.textContent = `Uploading ${filesToUp.length} photos to Day ${dayIndex} folder… (${i + 1}/${filesToUp.length})`;
             fill.style.width = `${Math.round((i / filesToUp.length) * 100)}%`;
-            const result = await Drive.uploadPhoto(filesToUp[i], filename, folderId);
+            const result = await Drive.uploadPhoto(filesToUp[i], filename, dayFolderId);
             urls.push(result.webViewLink);
           }
           fill.style.width = '100%';
 
-          // Wait for the scan ID before patching image_urls. Promise was set
-          // up earlier so the POST /api/scans is already in-flight.
-          const scanId = await savedScanIdPromise;
-          if (scanId) {
-            fetch(`/api/scans/${scanId}/images`, {
+          // PATCH image_urls on the saved scan row.
+          if (scanInfo?.id) {
+            fetch(`/api/scans/${scanInfo.id}/images`, {
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
@@ -812,8 +826,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
           label.textContent  = 'SAVED TO GOOGLE DRIVE ✓';
           status.textContent = '✓';
-          const scanFolderId = localStorage.getItem('dermai-drive-folder-scans') || '';
-          hint.innerHTML     = `${filesToUp.length} photos saved · <a href="https://drive.google.com/drive/folders/${encodeURIComponent(scanFolderId)}" target="_blank" rel="noopener">View in Drive →</a>`;
+          const folderLink   = `https://drive.google.com/drive/folders/${encodeURIComponent(dayFolderId)}`;
+          const dayName      = dayIndex === 0 ? 'Day 0 (Initial)' : `Day ${dayIndex}`;
+          hint.innerHTML     = `${filesToUp.length} photos saved to <strong>${dayName}</strong> · <a href="${folderLink}" target="_blank" rel="noopener">View in Drive →</a>`;
           bar.style.display  = 'none';
         } catch (err) {
           console.error('[Drive] backup failed:', err);

@@ -21,6 +21,11 @@ function createScansRouter(verifyAuth, getSupabaseAdmin) {
   });
 
   // POST /api/scans — save a scan result
+  // Returns the inserted row plus a day_index = days since the user's
+  // EARLIEST scan (so day_index is 0 for the very first scan, increments
+  // by elapsed days for subsequent scans regardless of how many were taken
+  // in between). Frontend uses this to build the "Day N - YYYY-MM-DD"
+  // Drive folder for cross-scan progress comparison.
   router.post('/api/scans', async (req, res) => {
     const supabase = getSupabaseAdmin();
     if (!supabase) return res.status(503).json({ error: 'Database not configured' });
@@ -40,7 +45,26 @@ function createScansRouter(verifyAuth, getSupabaseAdmin) {
       .single();
 
     if (error) return res.status(500).json({ error: error.message });
-    res.json({ scan: data });
+
+    // Compute day_index by comparing the new scan's created_at to the
+    // user's earliest scan. The earliest is the new one itself when this
+    // is the first scan ever — that case produces day_index = 0.
+    let day_index = 0;
+    try {
+      const { data: minRow } = await supabase
+        .from('scans')
+        .select('created_at')
+        .eq('user_id', req.user.id)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (minRow?.created_at) {
+        const ms = new Date(data.created_at).getTime() - new Date(minRow.created_at).getTime();
+        day_index = Math.max(0, Math.floor(ms / 86400000));
+      }
+    } catch (_) { /* best-effort; default to 0 */ }
+
+    res.json({ scan: data, day_index });
   });
 
   // DELETE /api/scans/:id — delete a scan by id

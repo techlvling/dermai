@@ -64,6 +64,19 @@
     return _ensureFolder('Scans', root, FOLDER_SCANS_KEY);
   }
 
+  // Per-day subfolder under DermAI Photos/Scans/. Names look like
+  //   Day 0 - 2026-05-01 (Initial)
+  //   Day 5 - 2026-05-06
+  // Cached per (day_index + date) in localStorage so repeat photo uploads
+  // for the same scan don't query Drive twice.
+  async function ensureDayFolder(dayIndex, dateYYYYMMDD) {
+    const scansFolder = await ensureScansFolder();
+    const suffix = dayIndex === 0 ? ' (Initial)' : '';
+    const name = `Day ${dayIndex} - ${dateYYYYMMDD}${suffix}`;
+    const cacheKey = `dermai-drive-folder-day-${dayIndex}-${dateYYYYMMDD}`;
+    return _ensureFolder(name, scansFolder, cacheKey);
+  }
+
   async function ensureProgressFolder() {
     const root = await _ensureFolder('DermAI Photos', null, FOLDER_ROOT_KEY);
     return _ensureFolder('Progress', root, FOLDER_PROG_KEY);
@@ -126,5 +139,5 @@
     }
   }
 
-  window.Drive = { hasScope, requestDriveScope, ensureScansFolder, ensureProgressFolder, uploadPhoto, deletePhoto, migrateFromIndexedDB };
+  window.Drive = { hasScope, requestDriveScope, ensureScansFolder, ensureDayFolder, ensureProgressFolder, uploadPhoto, deletePhoto, migrateFromIndexedDB };
 })();
