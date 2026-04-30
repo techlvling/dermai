@@ -32,12 +32,24 @@
       if (productId) await post('/api/favorites', { product_id: String(productId) });
     }
 
-    // 3. Routine logs — convert nested format to { log_date, am_done, pm_done }
+    // 3. Routine logs — send the full per-step shape directly (matches
+    //    the backend's steps_done jsonb column added in migration 0004).
     const routineLog = Storage.get('dermAI_routineLog') || {};
     for (const [date, dayLog] of Object.entries(routineLog)) {
-      const am_done = dayLog.am ? Object.values(dayLog.am).some(Boolean) : false;
-      const pm_done = dayLog.pm ? Object.values(dayLog.pm).some(Boolean) : false;
-      await post('/api/routine', { log_date: date, am_done, pm_done });
+      if (!dayLog || typeof dayLog !== 'object') continue;
+      await post('/api/routine', { log_date: date, steps_done: dayLog });
+    }
+
+    // 3b. Diary entries — backfill water/stress/sleep from local cache so a
+    //     user's history follows them after sign-in.
+    const diary = Storage.get('dermAI_diary') || {};
+    for (const [date, entry] of Object.entries(diary)) {
+      if (!entry || typeof entry !== 'object') continue;
+      const body = { log_date: date };
+      if (typeof entry.water  === 'number') body.water_liters = entry.water;
+      if (typeof entry.stress === 'number') body.stress_1_5   = entry.stress;
+      if (typeof entry.sleep  === 'number') body.sleep_hours  = entry.sleep;
+      if (Object.keys(body).length > 1) await post('/api/diary', body);
     }
 
     // 4. Reactions

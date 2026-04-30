@@ -150,6 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
       initPhotoTimeline();
       initDiary();
       initNotifications();
+      hydrateRoutineFromServer();
+      hydrateDiaryFromServer();
     } catch (err) {
       console.error('Failed to load DB', err);
       document.querySelector('.routine-timeline').innerHTML = '<p class="error" style="text-align: center;">Failed to connect to database. Ensure backend is running.</p>';
@@ -364,6 +366,34 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStreak();
     renderHeatmap();
     renderBadges();
+
+    // Sync the day's full per-step state to Supabase. Fail-silent — local
+    // is the immediate source of truth; the next click will re-sync if this
+    // request was offline/dropped.
+    if (window.Storage && Storage.server) {
+      Storage.server.post('/api/routine', { log_date: today, steps_done: log[today] }).catch(() => {});
+    }
+  }
+
+  async function hydrateRoutineFromServer() {
+    if (!window.Storage || !Storage.server) return;
+    if (!(await Storage.isLoggedIn())) return;
+    const body = await Storage.server.get('/api/routine');
+    if (!body || !Array.isArray(body.logs)) return;
+    const local = sGet('dermAI_routineLog') || {};
+    let changed = false;
+    for (const row of body.logs) {
+      if (!local[row.log_date] && row.steps_done) {
+        local[row.log_date] = row.steps_done;
+        changed = true;
+      }
+    }
+    if (changed) {
+      sSet('dermAI_routineLog', local);
+      renderStreak();
+      renderHeatmap();
+      if (typeof renderBadges === 'function') renderBadges();
+    }
   }
 
   function computeStreak() {
@@ -800,6 +830,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── F14 — Skin diary ──────────────────────────────────────────────
+  // One-shot local migration: water values > 5 are legacy "glasses"
+  // logged before Phase 1 switched the unit to liters. Convert them
+  // (~250ml/glass) so they don't propagate to the server as 8 LITERS.
+  // Idempotent: new water input is clamped to 0-5L, so values > 5
+  // can only ever be legacy data.
+  (function migrateLegacyWaterToLiters() {
+    const diary = sGet('dermAI_diary');
+    if (!diary) return;
+    let touched = false;
+    for (const date in diary) {
+      const e = diary[date];
+      if (e && typeof e.water === 'number' && e.water > 5) {
+        e.water = +(e.water * 0.25).toFixed(2);
+        touched = true;
+      }
+    }
+    if (touched) sSet('dermAI_diary', diary);
+  })();
+
   function initDiary() {
     const section = document.getElementById('diary-section');
     if (!section) return;
@@ -867,6 +916,9 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
   }
 
+  // Map local diary field names to Supabase column names.
+  const DIARY_COLUMN = { water: 'water_liters', stress: 'stress_1_5', sleep: 'sleep_hours' };
+
   window.saveDiaryField = function (field, value) {
     const today = todayKey();
     const diary  = sGet('dermAI_diary') || {};
@@ -875,7 +927,37 @@ document.addEventListener('DOMContentLoaded', () => {
     sSet('dermAI_diary', diary);
     renderDiaryToday();
     renderDiaryChart();
+
+    // Sync just the changed field upstream — partial upsert keeps other
+    // fields the user touched today untouched server-side. Fail-silent.
+    if (window.Storage && Storage.server && DIARY_COLUMN[field]) {
+      Storage.server.post('/api/diary', {
+        log_date: today,
+        [DIARY_COLUMN[field]]: value,
+      }).catch(() => {});
+    }
   };
+
+  async function hydrateDiaryFromServer() {
+    if (!window.Storage || !Storage.server) return;
+    if (!(await Storage.isLoggedIn())) return;
+    const body = await Storage.server.get('/api/diary');
+    if (!body || !Array.isArray(body.entries)) return;
+    const local = sGet('dermAI_diary') || {};
+    let changed = false;
+    for (const row of body.entries) {
+      const slot = local[row.log_date] || {};
+      if (row.water_liters != null && slot.water  === undefined) { slot.water  = Number(row.water_liters);  changed = true; }
+      if (row.stress_1_5   != null && slot.stress === undefined) { slot.stress = Number(row.stress_1_5);    changed = true; }
+      if (row.sleep_hours  != null && slot.sleep  === undefined) { slot.sleep  = Number(row.sleep_hours);   changed = true; }
+      local[row.log_date] = slot;
+    }
+    if (changed) {
+      sSet('dermAI_diary', local);
+      renderDiaryToday();
+      renderDiaryChart();
+    }
+  }
 
   window.saveDiaryWaterLiters = function (val) {
     const v = parseFloat(val);
