@@ -37,9 +37,17 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Overview
         </a>
+        <a data-section="treatment">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 11h-7V4a2 2 0 0 0-4 0v7H1"/><path d="M5 11h14v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9z"/></svg>
+          Treatment
+        </a>
         <a data-section="routine">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           Routine
+        </a>
+        <a data-section="diary">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+          Diary
         </a>
         <a data-section="history">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -48,14 +56,6 @@
         <a data-section="ingredients">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           Ingredients
-        </a>
-        <a data-section="shopping">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          Shopping
-        </a>
-        <a data-section="compare">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          Compare
         </a>
         <a data-section="connections">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
@@ -111,6 +111,28 @@
         </div>
         <div class="dash-recent-grid" id="dash-recent-grid">
           <!-- Populated by dashboard.js -->
+        </div>
+      </section>
+
+      <!-- TREATMENT ────────────────────────────────────────────────── -->
+      <!-- Catalog browser with WHY THIS panels and "I have this" toggle.
+           treatment.js owns the rendering — this is just the mount point. -->
+      <section class="dash-section" data-section="treatment">
+        <div class="rec-container">
+          <div id="treatment-root"></div>
+        </div>
+      </section>
+
+      <!-- DIARY ────────────────────────────────────────────────────── -->
+      <!-- Water / sleep / stress log + 14-day chart. diary.js mounts into
+           the inner #diary-section element on first visit. -->
+      <section class="dash-section" data-section="diary">
+        <div class="rec-container">
+          <div class="rec-header">
+            <h1>Skin <span class="gradient-text">Diary</span></h1>
+            <p>Track water, sleep, and stress alongside your scans.</p>
+          </div>
+          <div id="diary-section" class="diary-section"></div>
         </div>
       </section>
 
@@ -206,42 +228,6 @@
               <div id="adherence-heatmap" class="adherence-heatmap hidden"></div>
               <div id="weather-widget" class="hidden" style="margin-top:2rem;"></div>
               <div id="photos-section" class="photos-section hidden" style="margin-top:3rem;"></div>
-              <div id="diary-section" class="diary-section hidden" style="margin-top:3rem;"></div>
-
-              <section class="add-by-link-section" style="margin-top:3rem;">
-                <h3 class="my-products-title">Add a product by link</h3>
-                <p class="my-products-sub">Paste a shopping link, paste the ingredient list, and we'll evaluate it with AI — clinical evidence, conflicts, and which slot it fits.</p>
-                <form id="add-by-link-form" class="add-by-link-form" onsubmit="event.preventDefault(); window.evaluateAndAddProduct(this);">
-                  <div class="add-by-link-row">
-                    <label class="add-own-field" style="flex:2 1 280px;">
-                      <span>Product name</span>
-                      <input type="text" name="name" required maxlength="120" placeholder="e.g. Hydrating Cleanser" />
-                    </label>
-                    <label class="add-own-field" style="flex:1 1 160px;">
-                      <span>Brand (optional)</span>
-                      <input type="text" name="brand" maxlength="60" placeholder="e.g. CeraVe" />
-                    </label>
-                  </div>
-                  <label class="add-own-field">
-                    <span>Shopping link (optional)</span>
-                    <input type="url" name="source_url" maxlength="800" placeholder="https://www.amazon.in/..." />
-                  </label>
-                  <label class="add-own-field">
-                    <span>Ingredients — paste from the product page</span>
-                    <textarea name="raw_ingredients_text" required rows="3" maxlength="4000" placeholder="Niacinamide, Glycerin, Hyaluronic Acid, Ceramides, Water..."></textarea>
-                  </label>
-                  <div class="add-own-actions">
-                    <button type="submit" class="btn btn-primary" id="abl-submit">Evaluate with AI</button>
-                  </div>
-                </form>
-                <div id="abl-verdict" class="abl-verdict hidden"></div>
-              </section>
-
-              <section class="my-products-section" style="margin-top:3rem;">
-                <h3 class="my-products-title">My products</h3>
-                <p class="my-products-sub">Products you own. Add them from the routine slots above to use your own picks instead of the catalog default.</p>
-                <ul id="my-products-list" class="my-products-list"></ul>
-              </section>
             </div>
           </div>
         </div>
@@ -252,6 +238,9 @@
         <div class="history-header">
           <h1>Scan History</h1>
           <p id="history-count"></p>
+          <p style="margin-top:0.5rem;">
+            <a href="#compare" onclick="showSection('compare'); return false;" style="color:var(--primary-500); font-weight:600;">Compare two scans →</a>
+          </p>
         </div>
 
         <div id="history-empty" class="hidden history-empty-state">
@@ -284,33 +273,6 @@
         </div>
 
         <div id="ingredients-grid" class="ingredients-grid" role="list" aria-label="Clinical ingredients">
-        </div>
-      </section>
-
-      <!-- SHOPPING ─────────────────────────────────────────────────── -->
-      <section class="dash-section" data-section="shopping">
-        <div class="rec-header">
-          <h1>Your <span style="color:var(--primary-500)">Shopping List</span></h1>
-          <p>Products saved from your routine. Go to your routine and tap <strong>Save</strong> to add products here.</p>
-        </div>
-
-        <div id="shopping-loading" class="text-center">
-          <div class="spinner"></div>
-          <p>Loading saved products...</p>
-        </div>
-
-        <div id="shopping-empty" class="hidden text-center glass-panel" style="padding:3rem; border-radius:var(--radius-lg);">
-          <h2>Nothing saved yet</h2>
-          <p style="margin-top:0.75rem; color:var(--neutral-500);">Go to your routine and tap <strong>Save</strong> on any product.</p>
-          <a href="#routine" onclick="showSection('routine'); return false;" class="btn btn-primary" style="margin-top:1.5rem;">View Your Routine</a>
-        </div>
-
-        <div id="shopping-list" class="hidden">
-          <div style="display:flex; gap:0.75rem; margin-bottom:2rem; flex-wrap:wrap;">
-            <button id="copy-list-btn" class="btn btn-outline" onclick="Shopping.copyList()">Copy as Text</button>
-            <a href="#routine" onclick="showSection('routine'); return false;" class="btn btn-outline">Back to Routine</a>
-          </div>
-          <div id="shopping-items"></div>
         </div>
       </section>
 
@@ -475,7 +437,8 @@
     <script src="./js/notifications.js"></script>
     <script src="./js/history.js"></script>
     <script src="./js/ingredients.js"></script>
-    <script src="./js/shopping.js"></script>
+    <script src="./js/treatment.js"></script>
+    <script src="./js/diary.js"></script>
     <script src="./js/recommendations.js"></script>
     <script src="./js/dashboard.js"></script>
     <script defer src="/_vercel/insights/script.js"></script>

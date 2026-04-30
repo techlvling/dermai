@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let allIngredients = [];
   let allConcerns = {};
   let allConflicts = [];
-  let userProducts = [];   // BYO products owned by the user (from /api/user-products)
+  let routineItems = [];   // {id, product_id, slot, time_of_day, ...} from /api/routine-items
   let slotChoices = {};    // today's per-slot product choice: {am:{key:{source,id}}, pm:{...}}
   let userAnalysis = null;
   let userLocation = null; // shared between region detection + weather widget
@@ -55,37 +55,24 @@ document.addEventListener('DOMContentLoaded', () => {
   function sSet(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
   function todayKey() { return new Date().toISOString().slice(0, 10); }
 
-  // Fetch the user's own product catalog. Silent on auth/network failure —
-  // anonymous users simply don't see "Yours" entries in routine slots.
-  async function loadUserProducts() {
+  // Fetch the user's owned routine items. Silent on auth/network failure —
+  // anonymous users simply see empty-slot CTAs pointing at Treatment.
+  async function loadRoutineItems() {
+    routineItems = [];
     if (!window.Storage || !Storage.server) return;
     if (!(await Storage.isLoggedIn())) return;
     try {
-      const body = await Storage.server.get('/api/user-products');
-      if (body && Array.isArray(body.products)) userProducts = body.products;
+      const body = await Storage.server.get('/api/routine-items');
+      if (body && Array.isArray(body.items)) routineItems = body.items;
     } catch (_) { /* silent */ }
   }
 
-  // Project a user_products row into the catalog's product shape so it can
-  // flow through the same renderStep / buildProductCardHTML pipeline.
-  function projectUserProduct(p) {
-    return {
-      id: p.id,
-      brand: p.brand || 'My product',
-      name: p.name,
-      category: p.category,
-      bestTimeOfDay: p.best_time_of_day,
-      primaryIngredientId: (p.ingredients && p.ingredients[0]) || null,
-      concerns: [],
-      _source: 'user',
-    };
-  }
-
-  // Filter user products that fit a given slot (e.g. AM cleanser, PM treatment).
-  function userProductsFor(category, time) {
-    return userProducts
-      .filter(p => p.category === category && (p.best_time_of_day === time || p.best_time_of_day === 'both'))
-      .map(projectUserProduct);
+  // Resolve owned items for a (slot, time) pair to full catalog products.
+  function ownedProductsFor(slotKey, time) {
+    return routineItems
+      .filter(it => it.slot === slotKey && (it.time_of_day === time || it.time_of_day === 'both'))
+      .map(it => allProducts.find(p => p.id === it.product_id))
+      .filter(Boolean);
   }
 
   const ROUTINE_SLOTS = [
@@ -260,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         detectedRegionEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Showing products on amazon.${region.tld} (${region.name}).${evidenceLine}`;
       }
 
-      await loadUserProducts();
+      await loadRoutineItems();
       filterAndRenderProducts();
       initChecklist();
       initRangeToggle(); // also calls renderStats + renderHeatmap with current range
@@ -270,10 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
       checkReorderReminders();
       renderWeatherFromLocation();
       initPhotoTimeline();
-      initDiary();
       initNotifications();
       hydrateRoutineFromServer();
-      hydrateDiaryFromServer();
     } catch (err) {
       console.error('Failed to load DB', err);
       document.querySelector('.routine-timeline').innerHTML = '<p class="error" style="text-align: center;">Failed to connect to database. Ensure backend is running.</p>';
@@ -334,54 +319,60 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Render the routine slots from the user's owned products only. Each slot
+  // is filled from /api/routine-items; empty slots show a CTA that links to
+  // the Treatment page where the user can add catalog products.
   function filterAndRenderProducts() {
     const selectedRegionData = amazonRegions[currentRegionCode];
-    const userConcernNames = userAnalysis.concerns.map(c => c.name);
 
-    // Filter treatments to only those matching user concerns
-    const matchedTreatments = rankProducts(
-      allProducts.filter(p => p.category === 'treatment' && p.concerns.some(pc => userConcernNames.includes(pc)))
-    );
+    const SLOT_DEFS = [
+      { id: 'am-cleanser',    label: 'Step 1: Cleanser',    slotKey: 'cleanser',    time: 'AM' },
+      { id: 'am-treatment',   label: 'Step 2: Treatment',   slotKey: 'treatment',   time: 'AM' },
+      { id: 'am-moisturizer', label: 'Step 3: Moisturizer', slotKey: 'moisturizer', time: 'AM' },
+      { id: 'am-sunscreen',   label: 'Step 4: Sunscreen',   slotKey: 'sunscreen',   time: 'AM' },
+      { id: 'pm-cleanser',    label: 'Step 1: Cleanser',    slotKey: 'cleanser',    time: 'PM' },
+      { id: 'pm-treatment',   label: 'Step 2: Treatment',   slotKey: 'treatment',   time: 'PM' },
+      { id: 'pm-moisturizer', label: 'Step 3: Moisturizer', slotKey: 'moisturizer', time: 'PM' },
+    ];
 
-    const cleansers = rankProducts(allProducts.filter(p => p.category === 'cleanser'));
-    const moisturizers = rankProducts(allProducts.filter(p => p.category === 'moisturizer'));
-    const sunscreens = rankProducts(allProducts.filter(p => p.category === 'sunscreen'));
+    // Cache the owned treatment pools so add/remove handlers can re-render
+    // the stack without re-running the lookup pipeline.
+    amTreatmentsCache = ownedProductsFor('treatment', 'AM');
+    pmTreatmentsCache = ownedProductsFor('treatment', 'PM');
 
-    // Split treatments by time of day
-    const amTreatments = matchedTreatments.filter(p => p.bestTimeOfDay === 'AM' || p.bestTimeOfDay === 'both');
-    const pmTreatments = matchedTreatments.filter(p => p.bestTimeOfDay === 'PM' || p.bestTimeOfDay === 'both');
+    for (const def of SLOT_DEFS) {
+      const owned = ownedProductsFor(def.slotKey, def.time);
+      if (owned.length === 0) {
+        renderEmptySlot(def.id, def.label, def.slotKey);
+        continue;
+      }
+      if (def.slotKey === 'treatment') {
+        renderTreatmentStack(def.id, def.label, owned, selectedRegionData);
+      } else {
+        renderStep(def.id, def.label, owned, selectedRegionData);
+      }
+    }
 
-    // AM moisturizers preferred; PM moisturizers for evening repair
-    const amMoisturizers = moisturizers.filter(p => p.bestTimeOfDay === 'AM' || p.bestTimeOfDay === 'both');
-    const pmMoisturizers = moisturizers.filter(p => p.bestTimeOfDay === 'PM' || p.bestTimeOfDay === 'both');
+    // Active stack for conflict detection = every owned product (deduped).
+    const seen = new Set();
+    window._dermActiveStack = routineItems
+      .map(it => allProducts.find(p => p.id === it.product_id))
+      .filter(p => p && !seen.has(p.id) && (seen.add(p.id) || true));
+  }
 
-    // Merge user products into each slot pool — user picks show first so the
-    // tube they own is the visible default, catalog ranking still applies below.
-    const merge = (catalog, category, time) => [...userProductsFor(category, time), ...catalog];
-
-    // Cache the merged treatment pools so add/remove handlers can re-render
-    // the stack without re-running the rank/filter pipeline.
-    amTreatmentsCache = merge(amTreatments, 'treatment', 'AM');
-    pmTreatmentsCache = merge(pmTreatments, 'treatment', 'PM');
-
-    renderStep('am-cleanser',    'Step 1: Cleanser',    merge(cleansers,                                              'cleanser',    'AM'), selectedRegionData);
-    renderTreatmentStack('am-treatment', 'Step 2: Treatment',   amTreatmentsCache, selectedRegionData);
-    renderStep('am-moisturizer', 'Step 3: Moisturizer', merge(amMoisturizers.length ? amMoisturizers : moisturizers, 'moisturizer', 'AM'), selectedRegionData);
-    renderStep('am-sunscreen',   'Step 4: Sunscreen',   merge(sunscreens,                                             'sunscreen',   'AM'), selectedRegionData);
-
-    renderStep('pm-cleanser',    'Step 1: Cleanser',    merge(cleansers,                                              'cleanser',    'PM'), selectedRegionData);
-    renderTreatmentStack('pm-treatment', 'Step 2: Treatment',   pmTreatmentsCache, selectedRegionData);
-    renderStep('pm-moisturizer', 'Step 3: Moisturizer', merge(pmMoisturizers.length ? pmMoisturizers : moisturizers, 'moisturizer', 'PM'), selectedRegionData);
-
-    // Capture the default-selected product per slot for conflict detection
-    window._dermActiveStack = [
-      cleansers[0],
-      amTreatments[0],
-      (amMoisturizers.length ? amMoisturizers : moisturizers)[0],
-      sunscreens[0],
-      pmTreatments[0],
-      (pmMoisturizers.length ? pmMoisturizers : moisturizers)[0],
-    ].filter(Boolean);
+  // Empty-slot CTA — shown when the user owns no products for this slot.
+  // Uses .step-empty class (not .step-content) so initChecklist's
+  // "MARK DONE" button doesn't attach to an empty slot the user can't act on.
+  function renderEmptySlot(containerId, label, slotKey) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const noun = { cleanser: 'cleanser', treatment: 'treatment', moisturizer: 'moisturizer', sunscreen: 'sunscreen' }[slotKey] || slotKey;
+    container.innerHTML = `
+      <div class="step-label">${label}</div>
+      <div class="step-empty glass-panel" id="${containerId}-content">
+        <p class="step-empty-msg">Nothing in this slot yet.</p>
+        <a href="/dashboard.html#treatment" class="btn btn-primary">Browse ${noun}s in Treatment</a>
+      </div>`;
   }
 
   // Freshness pill — shows how recently the cited evidence was refreshed
@@ -538,48 +529,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderStep(containerId, label, products, regionData) {
     const container = document.getElementById(containerId);
-    const m = containerId.match(/^(am|pm)-(\w+)$/);
-    const slot = m ? m[1] : 'am';
-    const key  = m ? m[2] : containerId;
-
-    const addOwnButton = `
-      <details class="add-own-product">
-        <summary class="add-own-toggle">+ Add my own product</summary>
-        <form class="add-own-form" onsubmit="event.preventDefault(); window.addUserProduct('${slot}', '${key}', this);">
-          <label class="add-own-field">
-            <span>Name</span>
-            <input type="text" name="name" required maxlength="100" placeholder="e.g. Foaming Cleanser" />
-          </label>
-          <label class="add-own-field">
-            <span>Brand (optional)</span>
-            <input type="text" name="brand" maxlength="60" placeholder="e.g. CeraVe" />
-          </label>
-          <fieldset class="add-own-ingredients">
-            <legend>Active ingredients (pick what's in your product)</legend>
-            <div class="add-own-ing-grid"></div>
-          </fieldset>
-          <div class="add-own-actions">
-            <button type="submit" class="btn btn-primary">Save product</button>
-          </div>
-        </form>
-      </details>`;
-
-    if (!products || products.length === 0) {
-      container.innerHTML = `
-        <div class="step-label">${label}</div>
-        <p style="color:var(--neutral-400); margin-top:1.5rem; padding-left:0.5rem;">No matching products found.</p>
-        ${addOwnButton}`;
-      hydrateAddOwnIngredients(container);
-      return;
-    }
+    if (!container) return;
 
     const prod = products[0];
     let selectHTML = '';
     if (products.length > 1) {
       selectHTML = `<select class="product-picker" onchange="window.updateStep('${containerId}', this.value, '${regionData.tld}')">`;
       products.forEach(p => {
-        const prefix = p._source === 'user' ? '[Yours] ' : '';
-        selectHTML += `<option value="${p.id}">${prefix}${p.brand} — ${p.name}</option>`;
+        selectHTML += `<option value="${p.id}">${p.brand} — ${p.name}</option>`;
       });
       selectHTML += `</select>`;
     }
@@ -591,9 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="step-content glass-panel" id="${containerId}-content">
           ${buildProductCardHTML(prod, regionData)}
         </div>
-        ${addOwnButton}
       </div>`;
-    hydrateAddOwnIngredients(container);
   }
 
   // ── Treatment slot stack (multi-treatment support, P3) ────────────────
@@ -609,49 +564,28 @@ document.addEventListener('DOMContentLoaded', () => {
   // add a second treatment).
   function renderTreatmentStack(containerId, label, products, regionData) {
     const container = document.getElementById(containerId);
+    if (!container) return;
     const m = containerId.match(/^(am|pm)-(\w+)$/);
     const slot = m ? m[1] : 'am';
     const key  = 'treatment';
 
-    const addOwnButton = `
-      <details class="add-own-product">
-        <summary class="add-own-toggle">+ Add my own product</summary>
-        <form class="add-own-form" onsubmit="event.preventDefault(); window.addUserProduct('${slot}', '${key}', this);">
-          <label class="add-own-field"><span>Name</span><input type="text" name="name" required maxlength="100" placeholder="e.g. Niacinamide 10%" /></label>
-          <label class="add-own-field"><span>Brand (optional)</span><input type="text" name="brand" maxlength="60" placeholder="e.g. The Ordinary" /></label>
-          <fieldset class="add-own-ingredients"><legend>Active ingredients</legend><div class="add-own-ing-grid"></div></fieldset>
-          <div class="add-own-actions"><button type="submit" class="btn btn-primary">Save product</button></div>
-        </form>
-      </details>`;
-
-    if (!products || products.length === 0) {
-      container.innerHTML = `
-        <div class="step-label">${label}</div>
-        <p style="color:var(--neutral-400); margin-top:1.5rem; padding-left:0.5rem;">No matching treatments found.</p>
-        ${addOwnButton}`;
-      hydrateAddOwnIngredients(container);
-      return;
-    }
-
     // Resolve which instances to render. If slotChoices already has entries,
-    // honor them; otherwise default to a single instance with the top product.
+    // honor them; otherwise show all owned treatments stacked.
     const existingChoices = (slotChoices[slot] && Array.isArray(slotChoices[slot][key]))
       ? slotChoices[slot][key].slice()
       : [];
     const instances = existingChoices.length
       ? existingChoices.map(c => products.find(p => p.id === c.id) || products[0])
-      : [products[0]];
+      : products.slice();
 
     container.innerHTML = `
       <div class="step-label">${label}</div>
       <div class="treatment-stack" id="${containerId}-stack" style="margin-top: 1.5rem;">
         ${instances.map((prod, idx) => renderTreatmentInstance(slot, idx, prod, products, regionData)).join('')}
       </div>
-      <div class="treatment-stack-actions">
-        <button type="button" class="link-btn" onclick="window.addTreatment('${slot}', '${regionData.tld}')">+ Add another treatment</button>
-      </div>
-      ${addOwnButton}`;
-    hydrateAddOwnIngredients(container);
+      ${products.length > 1 ? `<div class="treatment-stack-actions">
+        <button type="button" class="link-btn" onclick="window.addTreatment('${slot}', '${regionData.tld}')">+ Layer another owned treatment</button>
+      </div>` : ''}`;
   }
 
   function renderTreatmentInstance(slot, idx, prod, products, regionData) {
@@ -660,9 +594,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (products.length > 1) {
       selectHTML = `<select class="product-picker" onchange="window.updateTreatment('${slot}', ${idx}, this.value, '${regionData.tld}')">`;
       products.forEach(p => {
-        const prefix = p._source === 'user' ? '[Yours] ' : '';
         const sel = p.id === prod.id ? ' selected' : '';
-        selectHTML += `<option value="${p.id}"${sel}>${prefix}${p.brand} — ${p.name}</option>`;
+        selectHTML += `<option value="${p.id}"${sel}>${p.brand} — ${p.name}</option>`;
       });
       selectHTML += `</select>`;
     }
@@ -681,19 +614,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Click handlers wired from inline onclick — write to slotChoices, sync, redraw.
   window.updateTreatment = function (slot, idx, prodId, tld) {
-    let source = 'catalog';
-    let prod = allProducts.find(p => p.id === prodId);
-    if (!prod) {
-      const own = userProducts.find(p => p.id === prodId);
-      if (own) { prod = projectUserProduct(own); source = 'user'; }
-    }
+    const prod = allProducts.find(p => p.id === prodId);
     if (!prod) return;
     const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || { tld };
     const cardEl = document.getElementById(`${slot}-treatment-tx-${idx}-content`);
     if (cardEl) cardEl.innerHTML = buildProductCardHTML(prod, regionData);
     if (!slotChoices[slot]) slotChoices[slot] = {};
     if (!Array.isArray(slotChoices[slot].treatment)) slotChoices[slot].treatment = [];
-    slotChoices[slot].treatment[idx] = { source, id: prodId };
+    slotChoices[slot].treatment[idx] = { source: 'catalog', id: prodId };
     rebuildActiveStack();
     syncSlotChoices();
   };
@@ -701,14 +629,13 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addTreatment = function (slot, tld) {
     if (!slotChoices[slot]) slotChoices[slot] = {};
     if (!Array.isArray(slotChoices[slot].treatment)) slotChoices[slot].treatment = [];
-    // Pick a different product than what's already in the stack if possible.
+    // Pick a different owned treatment than what's already in the stack.
     const treatments = (slot === 'am' ? amTreatmentsCache : pmTreatmentsCache) || [];
     const usedIds = new Set(slotChoices[slot].treatment.map(c => c.id));
     const next = treatments.find(p => !usedIds.has(p.id)) || treatments[0];
     if (!next) return;
-    slotChoices[slot].treatment.push({ source: next._source === 'user' ? 'user' : 'catalog', id: next.id });
+    slotChoices[slot].treatment.push({ source: 'catalog', id: next.id });
     syncSlotChoices();
-    // Re-render the stack — easier than splicing DOM.
     const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || amazonRegions[currentRegionCode] || { tld };
     renderTreatmentStack(`${slot}-treatment`, 'Step 2: Treatment', treatments, regionData);
     applySlotChoicesToUI();
@@ -727,14 +654,14 @@ document.addEventListener('DOMContentLoaded', () => {
     rebuildActiveStack();
   };
 
-  // Caches so add/remove can re-render without re-running rankProducts.
+  // Caches so add/remove can re-render without re-running the lookup.
   let amTreatmentsCache = null;
   let pmTreatmentsCache = null;
 
   function rebuildActiveStack() {
-    // Build _dermActiveStack from ALL chosen products in ALL slots so the
-    // conflict detector sees layered combinations. Falls back to top-ranked
-    // when no choice is recorded for a slot.
+    // Build _dermActiveStack from chosen products across all slots so the
+    // conflict detector sees layered combinations. Falls back to whatever
+    // is currently rendered for a slot when no choice is recorded.
     const stack = [];
     for (const slot of ['am', 'pm']) {
       for (const key of ['cleanser', 'treatment', 'moisturizer', 'sunscreen']) {
@@ -742,31 +669,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const choices = slotChoices[slot]?.[key];
         if (Array.isArray(choices)) {
           choices.forEach(c => {
-            const p = allProducts.find(pp => pp.id === c.id)
-              || (userProducts.find(up => up.id === c.id) && projectUserProduct(userProducts.find(up => up.id === c.id)));
+            const p = allProducts.find(pp => pp.id === c.id);
             if (p) stack.push(p);
           });
         } else if (choices && choices.id) {
-          const p = allProducts.find(pp => pp.id === choices.id)
-            || (userProducts.find(up => up.id === choices.id) && projectUserProduct(userProducts.find(up => up.id === choices.id)));
+          const p = allProducts.find(pp => pp.id === choices.id);
           if (p) stack.push(p);
         }
       }
     }
     if (stack.length) window._dermActiveStack = stack;
     if (typeof detectAndRenderConflicts === 'function') detectAndRenderConflicts();
-  }
-
-  // Populate the add-own-product form's ingredient checkboxes from ingredients.json
-  function hydrateAddOwnIngredients(container) {
-    const grid = container.querySelector('.add-own-ing-grid');
-    if (!grid || !allIngredients.length) return;
-    grid.innerHTML = allIngredients.map(ing =>
-      `<label class="add-own-ing-chip">
-         <input type="checkbox" name="ingredients" value="${ing.id}" />
-         <span>${ing.name}</span>
-       </label>`
-    ).join('');
   }
 
   // ── Checklist ────────────────────────────────────────────────────────
@@ -848,7 +761,6 @@ document.addEventListener('DOMContentLoaded', () => {
       slotChoices = todayRow.slot_choices;
       applySlotChoicesToUI();
     }
-    renderMyProductsList();
   }
 
   function computeStreak() {
@@ -1217,7 +1129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     banner.innerHTML = `
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       <span>Running low: <strong>${due.join(', ')}</strong></span>
-      <a href="/dashboard.html#shopping" class="btn btn-primary" style="padding:0.3rem 0.875rem;font-size:0.68rem;margin-left:auto;">Reorder →</a>
+      <a href="/dashboard.html#treatment" class="btn btn-primary" style="padding:0.3rem 0.875rem;font-size:0.68rem;margin-left:auto;">Reorder →</a>
       <button onclick="window.dismissReorderBanner()" class="stale-banner-dismiss" aria-label="Dismiss">&#x2715;</button>`;
   }
 
@@ -1405,196 +1317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── F14 — Skin diary ──────────────────────────────────────────────
-  // One-shot local migration: water values > 5 are legacy "glasses"
-  // logged before Phase 1 switched the unit to liters. Convert them
-  // (~250ml/glass) so they don't propagate to the server as 8 LITERS.
-  // Idempotent: new water input is clamped to 0-5L, so values > 5
-  // can only ever be legacy data.
-  (function migrateLegacyWaterToLiters() {
-    const diary = sGet('dermAI_diary');
-    if (!diary) return;
-    let touched = false;
-    for (const date in diary) {
-      const e = diary[date];
-      if (e && typeof e.water === 'number' && e.water > 5) {
-        e.water = +(e.water * 0.25).toFixed(2);
-        touched = true;
-      }
-    }
-    if (touched) sSet('dermAI_diary', diary);
-  })();
-
-  function initDiary() {
-    const section = document.getElementById('diary-section');
-    if (!section) return;
-    section.innerHTML = `
-      <div class="diary-section-header">
-        <div class="section-eyebrow" style="margin:0;">SKIN DIARY</div>
-        <span class="diary-autosave-hint">auto-saves on tap</span>
-      </div>
-      <div id="diary-today" class="diary-today"></div>
-      <div id="diary-chart" class="diary-chart" style="margin-top:1.75rem;"></div>`;
-    renderDiaryToday();
-    renderDiaryChart();
-    section.classList.remove('hidden');
-  }
-
-  function renderDiaryToday() {
-    const el = document.getElementById('diary-today');
-    if (!el) return;
-    const today = todayKey();
-    const diary  = sGet('dermAI_diary') || {};
-    const entry  = diary[today] || {};
-    const label  = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' }).toUpperCase();
-    const all3   = entry.sleep !== undefined && entry.water !== undefined && entry.stress !== undefined;
-
-    el.innerHTML = `
-      <div class="diary-today-label">
-        ${label}
-        ${all3 ? '<span class="diary-logged-badge">LOGGED</span>' : ''}
-      </div>
-      <div class="diary-field">
-        <span class="diary-field-label">SLEEP (HRS)</span>
-        <div class="diary-chips">
-          ${[5,6,7,8,9,10].map(v =>
-            `<button class="diary-chip${entry.sleep === v ? ' active' : ''}"
-              onclick="window.saveDiaryField('sleep',${v})">${v}</button>`).join('')}
-        </div>
-      </div>
-      <div class="diary-field">
-        <span class="diary-field-label">WATER (LITERS)</span>
-        <div class="diary-water-row" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-          <input type="number" id="diary-water-input"
-                 min="0" max="5" step="0.25"
-                 value="${entry.water ?? ''}"
-                 placeholder="0.0"
-                 onchange="window.saveDiaryWaterLiters(this.value)"
-                 style="width:5rem;padding:0.4rem 0.6rem;font:inherit;text-align:center;" />
-          <span class="diary-water-goal" style="font-size:0.85rem;opacity:0.7;">of 2.5 L goal</span>
-        </div>
-        <div class="diary-chips" style="margin-top:0.5rem;">
-          <button class="diary-chip" onclick="window.addDiaryWater(0.25)">+250 ml</button>
-          <button class="diary-chip" onclick="window.addDiaryWater(0.5)">+500 ml</button>
-          <button class="diary-chip" onclick="window.addDiaryWater(1)">+1 L</button>
-        </div>
-      </div>
-      <div class="diary-field">
-        <span class="diary-field-label">STRESS (1–5)</span>
-        <div class="diary-chips">
-          ${[1,2,3,4,5].map(v =>
-            `<button class="diary-chip${entry.stress === v ? ' active' : ''}"
-              onclick="window.saveDiaryField('stress',${v})">${v}</button>`).join('')}
-        </div>
-        <div class="diary-stress-scale-label" style="font-size:0.75rem;opacity:0.6;letter-spacing:0.05em;margin-top:0.4rem;display:flex;justify-content:space-between;max-width:14rem;">
-          <span>1 = CALM</span><span>5 = OVERWHELMED</span>
-        </div>
-      </div>`;
-  }
-
-  // Map local diary field names to Supabase column names.
-  const DIARY_COLUMN = { water: 'water_liters', stress: 'stress_1_5', sleep: 'sleep_hours' };
-
-  window.saveDiaryField = function (field, value) {
-    const today = todayKey();
-    const diary  = sGet('dermAI_diary') || {};
-    if (!diary[today]) diary[today] = {};
-    diary[today][field] = value;
-    sSet('dermAI_diary', diary);
-    renderDiaryToday();
-    renderDiaryChart();
-
-    // Sync just the changed field upstream — partial upsert keeps other
-    // fields the user touched today untouched server-side. Fail-silent.
-    if (window.Storage && Storage.server && DIARY_COLUMN[field]) {
-      Storage.server.post('/api/diary', {
-        log_date: today,
-        [DIARY_COLUMN[field]]: value,
-      }).catch(() => {});
-    }
-  };
-
-  async function hydrateDiaryFromServer() {
-    if (!window.Storage || !Storage.server) return;
-    if (!(await Storage.isLoggedIn())) return;
-    const body = await Storage.server.get('/api/diary');
-    if (!body || !Array.isArray(body.entries)) return;
-    const local = sGet('dermAI_diary') || {};
-    let changed = false;
-    for (const row of body.entries) {
-      const slot = local[row.log_date] || {};
-      if (row.water_liters != null && slot.water  === undefined) { slot.water  = Number(row.water_liters);  changed = true; }
-      if (row.stress_1_5   != null && slot.stress === undefined) { slot.stress = Number(row.stress_1_5);    changed = true; }
-      if (row.sleep_hours  != null && slot.sleep  === undefined) { slot.sleep  = Number(row.sleep_hours);   changed = true; }
-      local[row.log_date] = slot;
-    }
-    if (changed) {
-      sSet('dermAI_diary', local);
-      renderDiaryToday();
-      renderDiaryChart();
-    }
-  }
-
-  window.saveDiaryWaterLiters = function (val) {
-    const v = parseFloat(val);
-    const safe = isNaN(v) ? 0 : Math.max(0, Math.min(5, v));
-    window.saveDiaryField('water', +safe.toFixed(2));
-  };
-
-  window.addDiaryWater = function (deltaL) {
-    const today = todayKey();
-    const diary = sGet('dermAI_diary') || {};
-    const current = (diary[today] && typeof diary[today].water === 'number') ? diary[today].water : 0;
-    const next = Math.min(5, +(current + deltaL).toFixed(2));
-    window.saveDiaryField('water', next);
-  };
-
-  function renderDiaryChart() {
-    const el = document.getElementById('diary-chart');
-    if (!el) return;
-    const diary   = sGet('dermAI_diary') || {};
-    const history = JSON.parse(localStorage.getItem('dermAI_history') || '[]');
-    const today   = new Date();
-
-    const days = [];
-    for (let i = 13; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      const k     = d.toISOString().slice(0, 10);
-      const entry = diary[k] || {};
-      const scan  = history.find(h => h.date && h.date.slice(0, 10) === k);
-      days.push({ entry, scan, label: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) });
-    }
-
-    const logged = days.filter(d => Object.keys(d.entry).length > 0).length;
-    if (logged < 3) { el.innerHTML = ''; return; }
-
-    el.innerHTML = `
-      <div class="section-eyebrow" style="margin-bottom:1rem;">14-DAY OVERVIEW</div>
-      <div class="diary-grid">
-        ${days.map(d => {
-          const sleepH  = d.entry.sleep  !== undefined ? Math.round((d.entry.sleep  / 10) * 60) : 0;
-          const waterH  = d.entry.water  !== undefined ? Math.round(Math.min(d.entry.water / 3, 1) * 60) : 0;
-          const stressH = d.entry.stress !== undefined ? Math.round((d.entry.stress /  5) * 60) : 0;
-          return `
-            <div class="diary-col">
-              <div class="diary-bars">
-                <div class="diary-bar-slot"><div class="diary-bar diary-bar-sleep"  style="height:${sleepH}px"  title="Sleep: ${d.entry.sleep ?? '—'}h"></div></div>
-                <div class="diary-bar-slot"><div class="diary-bar diary-bar-water"  style="height:${waterH}px"  title="Water: ${d.entry.water ?? '—'} L"></div></div>
-                <div class="diary-bar-slot"><div class="diary-bar diary-bar-stress" style="height:${stressH}px" title="Stress: ${d.entry.stress ?? '—'}/5"></div></div>
-              </div>
-              <div class="diary-scan-dot${d.scan ? '' : ' diary-scan-empty'}" title="${d.scan ? 'Scan: ' + d.scan.overallHealth : 'No scan'}"></div>
-              <span class="diary-col-label">${d.label}</span>
-            </div>`;
-        }).join('')}
-      </div>
-      <div class="diary-legend">
-        <span class="diary-leg diary-leg-sleep">SLEEP</span>
-        <span class="diary-leg diary-leg-water">WATER</span>
-        <span class="diary-leg diary-leg-stress">STRESS</span>
-        <span class="diary-leg diary-leg-scan">SCAN DAY</span>
-      </div>`;
-  }
+  // ── F14 — Skin diary moved to frontend/js/diary.js (Phase 6 IA revamp).
 
   // ── F15 — Shareable routine card (Canvas → PNG) ───────────────────
   window.shareRoutineCard = async function () {
@@ -1723,12 +1446,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.updateStep = function(containerId, prodId, tld) {
-    let source = 'catalog';
-    let prod = allProducts.find(p => p.id === prodId);
-    if (!prod) {
-      const own = userProducts.find(p => p.id === prodId);
-      if (own) { prod = projectUserProduct(own); source = 'user'; }
-    }
+    const prod = allProducts.find(p => p.id === prodId);
     if (!prod) return;
     const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || { tld };
     const cardEl = document.getElementById(`${containerId}-content`);
@@ -1742,7 +1460,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const [, slot, key] = m;
       if (key === 'treatment') return; // routed through updateTreatment
       if (!slotChoices[slot]) slotChoices[slot] = {};
-      slotChoices[slot][key] = { source, id: prodId };
+      slotChoices[slot][key] = { source: 'catalog', id: prodId };
       rebuildActiveStack();
       syncSlotChoices();
     }
@@ -1760,40 +1478,6 @@ document.addEventListener('DOMContentLoaded', () => {
       slot_choices: slotChoices,
     }).catch(() => {});
   }
-
-  // Submit handler for the inline "+ Add my own product" form.
-  window.addUserProduct = async function(slot, key, formEl) {
-    const name = formEl.querySelector('[name=name]').value.trim();
-    const brand = formEl.querySelector('[name=brand]').value.trim();
-    const ingredients = Array.from(formEl.querySelectorAll('input[name=ingredients]:checked')).map(c => c.value);
-    if (!name) return;
-    if (!window.Storage || !Storage.server) return;
-
-    const submitBtn = formEl.querySelector('button[type=submit]');
-    if (submitBtn) submitBtn.disabled = true;
-
-    try {
-      const body = await Storage.server.post('/api/user-products', {
-        name,
-        brand: brand || null,
-        category: key,
-        best_time_of_day: slot.toUpperCase(),
-        ingredients,
-      });
-      if (body && body.product) {
-        userProducts.unshift(body.product);
-        // Re-render the routine so the new product shows in this and any
-        // matching slot. Re-hydrate today's slot choice and the checklist.
-        filterAndRenderProducts();
-        initChecklist();
-        applySlotChoicesToUI();
-        renderMyProductsList();
-      }
-    } catch (e) {
-      console.warn('Failed to add product', e);
-      if (submitBtn) submitBtn.disabled = false;
-    }
-  };
 
   // After (re-)render, reflect today's slot_choices in the dropdowns.
   // Treatment slots are array-shaped (multi-treatment); other slots are
@@ -1830,160 +1514,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     rebuildActiveStack();
   }
-
-  // Render the "My products" management list — populated when section exists.
-  function renderMyProductsList() {
-    const el = document.getElementById('my-products-list');
-    if (!el) return;
-    if (!userProducts.length) {
-      el.innerHTML = '<p class="my-products-empty">No custom products yet. Add one from any routine slot above.</p>';
-      return;
-    }
-    el.innerHTML = userProducts.map(p => `
-      <li class="my-product-row">
-        <div class="my-product-meta">
-          <span class="my-product-name">${p.brand ? `${p.brand} — ` : ''}${p.name}</span>
-          <span class="my-product-tag">${p.category} · ${p.best_time_of_day}</span>
-        </div>
-        <button class="my-product-delete" onclick="window.deleteUserProduct('${p.id}')" aria-label="Delete this product">Delete</button>
-      </li>
-    `).join('');
-  }
-
-  // ── Add-by-link: paste URL+ingredients, AI evaluates, add to routine ──
-  // Hits POST /api/evaluate-product (server caches verdicts globally so
-  // repeat lookups don't burn AI tokens). On success renders a verdict
-  // panel with score + recommended slot + conflicts + an "Add to routine"
-  // button that POSTs to /api/user-products/from-evaluation.
-  window.evaluateAndAddProduct = async function (formEl) {
-    if (!window.Storage || !Storage.server) return;
-    const submitBtn = formEl.querySelector('#abl-submit');
-    const verdictEl = document.getElementById('abl-verdict');
-    if (!verdictEl) return;
-
-    const body = {
-      name: formEl.querySelector('[name=name]').value.trim(),
-      brand: formEl.querySelector('[name=brand]').value.trim() || null,
-      source_url: formEl.querySelector('[name=source_url]').value.trim() || null,
-      raw_ingredients_text: formEl.querySelector('[name=raw_ingredients_text]').value.trim(),
-    };
-    if (!body.name || !body.raw_ingredients_text) return;
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Evaluating…';
-    verdictEl.classList.remove('hidden');
-    verdictEl.innerHTML = '<p class="abl-pending">⏳ Asking the AI to read the ingredient list and check the evidence…</p>';
-
-    let result;
-    try {
-      result = await Storage.server.post('/api/evaluate-product', body);
-    } catch (e) {
-      result = null;
-    }
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Evaluate with AI';
-
-    if (!result || !result.evaluation) {
-      verdictEl.innerHTML = '<p class="abl-error">Evaluation failed — try again in a moment.</p>';
-      return;
-    }
-
-    const ev = result.evaluation;
-    const v  = ev.verdict_json || {};
-    const cacheBadge = result.fromCache
-      ? '<span class="abl-cache-badge">⚡ FROM CACHE — no AI tokens burned</span>'
-      : '<span class="abl-cache-badge abl-cache-badge--fresh">✨ FRESH EVALUATION</span>';
-
-    const score = Number.isFinite(v.score) ? Math.max(1, Math.min(10, Math.round(v.score))) : 5;
-    const scoreColor = score >= 8 ? '#2a8a64' : score >= 5 ? '#9a5416' : 'var(--primary-700)';
-
-    const conflicts = Array.isArray(v.conflicts) && v.conflicts.length
-      ? `<div class="abl-conflicts"><strong>⚠ Conflicts:</strong> ${v.conflicts.join(', ')}</div>`
-      : '<div class="abl-no-conflicts">No conflicts flagged with common actives.</div>';
-
-    const slotPretty = ev.category && ev.best_time_of_day
-      ? `${ev.best_time_of_day} · ${ev.category}`
-      : 'unspecified';
-
-    const notes = Array.isArray(v.evidence_notes) && v.evidence_notes.length
-      ? `<ul class="abl-notes">${v.evidence_notes.slice(0, 4).map(n => `<li><strong>${n.ingredient}:</strong> ${n.note}</li>`).join('')}</ul>`
-      : '';
-
-    const ingredientChips = (ev.ingredients || []).map(id =>
-      `<span class="ing-chip">${id.replace(/_/g, ' ')}</span>`
-    ).join('');
-
-    const unmappedHint = (ev.unmapped_ingredients || []).length
-      ? `<p class="abl-unmapped">Unrecognized: ${ev.unmapped_ingredients.slice(0, 6).join(', ')}</p>`
-      : '';
-
-    verdictEl.innerHTML = `
-      <div class="abl-card">
-        ${cacheBadge}
-        <div class="abl-headline">
-          <div class="abl-score" style="color:${scoreColor}"><strong>${score}</strong><small>/10</small></div>
-          <div class="abl-summary">
-            <div class="abl-name">${ev.brand ? ev.brand + ' — ' : ''}${ev.name}</div>
-            <p class="abl-summary-text">${v.summary || 'AI provided no summary.'}</p>
-            <p class="abl-slot">Recommended slot: <strong>${slotPretty}</strong></p>
-          </div>
-        </div>
-        <div class="abl-section">
-          <span class="ing-prefix">MATCHED ACTIVES:</span> ${ingredientChips || '<em>none recognized</em>'}
-          ${unmappedHint}
-        </div>
-        ${conflicts}
-        ${notes}
-        <div class="abl-actions">
-          <button type="button" class="btn btn-primary" id="abl-add-btn">Add to my routine</button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('abl-add-btn').addEventListener('click', async () => {
-      const addBtn = document.getElementById('abl-add-btn');
-      addBtn.disabled = true;
-      addBtn.textContent = 'Adding…';
-      const addResult = await Storage.server.post('/api/user-products/from-evaluation', {
-        evaluation_id: ev.id,
-        source_url: body.source_url,
-      });
-      if (addResult?.product) {
-        userProducts.unshift(addResult.product);
-        filterAndRenderProducts();
-        initChecklist();
-        applySlotChoicesToUI();
-        renderMyProductsList();
-        addBtn.textContent = 'Added ✓';
-        formEl.reset();
-        setTimeout(() => verdictEl.classList.add('hidden'), 2500);
-      } else {
-        addBtn.disabled = false;
-        addBtn.textContent = 'Try again';
-      }
-    });
-  };
-
-  window.deleteUserProduct = async function(id) {
-    if (!window.Storage || !Storage.server) return;
-    try {
-      await Storage.server.delete('/api/user-products/' + encodeURIComponent(id));
-      userProducts = userProducts.filter(p => p.id !== id);
-      // Drop any slot_choice that referenced the deleted product
-      for (const slot of ['am', 'pm']) {
-        if (!slotChoices[slot]) continue;
-        for (const key of Object.keys(slotChoices[slot])) {
-          if (slotChoices[slot][key]?.id === id) delete slotChoices[slot][key];
-        }
-      }
-      filterAndRenderProducts();
-      initChecklist();
-      applySlotChoicesToUI();
-      renderMyProductsList();
-    } catch (e) {
-      console.warn('Failed to delete product', e);
-    }
-  };
 
   async function renderWeatherFromLocation() {
     if (!userLocation || !userLocation.latitude || !userLocation.longitude) return;

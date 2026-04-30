@@ -52,7 +52,9 @@
   }
 
   // ── Section routing ──────────────────────────────────────────────
-  const SECTIONS = ['overview', 'routine', 'history', 'ingredients', 'shopping', 'compare', 'connections'];
+  // Compare stays a section but no longer has a top-level sidebar tab —
+  // it's reached via a "Compare two scans →" link inside History.
+  const SECTIONS = ['overview', 'treatment', 'routine', 'diary', 'history', 'ingredients', 'compare', 'connections'];
   const mounted  = {};
 
   function showSection(key) {
@@ -63,15 +65,25 @@
       el.classList.toggle('active', el.dataset.section === key);
     });
 
-    // Update sidebar active state
+    // Update sidebar active state. Compare has no nav link of its own —
+    // when it's active, leave the History link highlighted as its parent.
+    const navKey = key === 'compare' ? 'history' : key;
     document.querySelectorAll('.dash-nav a').forEach(a => {
-      a.classList.toggle('active', a.dataset.section === key);
+      a.classList.toggle('active', a.dataset.section === navKey);
     });
 
     // Push hash without scroll jump
     history.replaceState(null, '', '#' + key);
 
     // Lazy-mount section modules on first reveal
+    if (key === 'treatment' && !mounted.treatment) {
+      if (window.Treatment) Treatment.mount();
+      mounted.treatment = true;
+    }
+    if (key === 'diary' && !mounted.diary) {
+      if (window.Diary) Diary.mount();
+      mounted.diary = true;
+    }
     if (key === 'history' && !mounted.history) {
       History.mount();
       mounted.history = true;
@@ -79,10 +91,6 @@
     if (key === 'ingredients' && !mounted.ingredients) {
       Ingredients.mount();
       mounted.ingredients = true;
-    }
-    if (key === 'shopping' && !mounted.shopping) {
-      Shopping.mount();
-      mounted.shopping = true;
     }
     if (key === 'compare' && !mounted.compare) {
       History.mountCompare();
