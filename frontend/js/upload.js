@@ -630,11 +630,23 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('dermAI_analysis', JSON.stringify(data));
     const history = saveToHistory(data);
 
-    // Capture scan ID for Drive backup (resolves asynchronously)
+    // Capture scan ID for Drive backup (resolves asynchronously). When the
+    // user is logged in, also clear the stale localStorage cache if the POST
+    // failed — otherwise the routine page would render a scan that doesn't
+    // exist on the server (the source-of-truth bug fix in P1 depends on this).
     let savedScanId = null;
-    Storage.server.post('/api/scans', { result_json: data })
-      .then(r => { savedScanId = r?.scan?.id ?? null; })
-      .catch(() => {});
+    Storage.isLoggedIn().then(loggedIn => {
+      Storage.server.post('/api/scans', { result_json: data })
+        .then(r => {
+          savedScanId = r?.scan?.id ?? null;
+          if (loggedIn && !r) {
+            localStorage.removeItem('dermAI_analysis');
+          }
+        })
+        .catch(() => {
+          if (loggedIn) localStorage.removeItem('dermAI_analysis');
+        });
+    });
 
     renderHistory(history);
 

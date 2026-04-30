@@ -122,13 +122,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function init() {
-    const savedData = localStorage.getItem('dermAI_analysis');
-    if (!savedData) {
-      noAnalysisWarning.classList.remove('hidden');
-      return;
-    }
+    // Source-of-truth fix: when logged in, the server's most-recent scan
+    // is authoritative. localStorage is only a fallback for anonymous users.
+    // Otherwise routine drifts from history (the bug screenshotted on
+    // 2026-04-30 — routine showed Oily/Acne when /api/scans was empty).
+    const loggedIn = window.Storage ? await Storage.isLoggedIn() : false;
 
-    userAnalysis = JSON.parse(savedData);
+    if (loggedIn) {
+      const latest = await Storage.fetchLatestScan();
+      if (!latest) {
+        // Server says no scans for this user — don't render stale local data.
+        noAnalysisWarning.classList.remove('hidden');
+        // Clear stale local cache so other surfaces (badges/streak) don't
+        // disagree with history either.
+        localStorage.removeItem('dermAI_analysis');
+        return;
+      }
+      userAnalysis = latest.result_json;
+      // Refresh local cache from server so subsequent loads are fast.
+      localStorage.setItem('dermAI_analysis', JSON.stringify(userAnalysis));
+    } else {
+      const savedData = localStorage.getItem('dermAI_analysis');
+      if (!savedData) {
+        noAnalysisWarning.classList.remove('hidden');
+        return;
+      }
+      userAnalysis = JSON.parse(savedData);
+    }
 
     // Show staleness banner if analysis is older than 30 days
     const savedAt = userAnalysis.savedAt;

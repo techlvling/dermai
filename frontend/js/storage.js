@@ -42,6 +42,28 @@ const Storage = (() => {
     } catch { return null; }
   }
 
+  // Fetch the most-recent scan from the server. Returns null when:
+  //   - user is not logged in
+  //   - server returns no rows
+  //   - request fails
+  // Used by recommendations.js init() so routine page is server-first
+  // when logged in instead of trusting potentially-stale localStorage.
+  async function fetchLatestScan() {
+    if (!(await isLoggedIn())) return null;
+    const body = await serverGet('/api/scans');
+    const scans = body?.scans;
+    if (!Array.isArray(scans) || !scans.length) return null;
+    // /api/scans returns newest-first (verified in backend/routes/scans.js)
+    const latest = scans[0];
+    if (!latest?.result_json) return null;
+    return {
+      id: latest.id,
+      result_json: latest.result_json,
+      image_urls: latest.image_urls || null,
+      created_at: latest.created_at,
+    };
+  }
+
   async function serverDelete(endpoint) {
     const token = await getToken();
     if (!token) return false;
@@ -68,6 +90,9 @@ const Storage = (() => {
       get: serverGet,
       post: serverPost,
       delete: serverDelete
-    }
+    },
+
+    // High-level: server-first scan fetch with auth + empty handling
+    fetchLatestScan,
   };
 })();
