@@ -836,11 +836,20 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
       <div class="diary-field">
-        <span class="diary-field-label">WATER (GLASSES)</span>
-        <div class="diary-chips">
-          ${[2,4,6,8,10].map(v =>
-            `<button class="diary-chip${entry.water === v ? ' active' : ''}"
-              onclick="window.saveDiaryField('water',${v})">${v}</button>`).join('')}
+        <span class="diary-field-label">WATER (LITERS)</span>
+        <div class="diary-water-row" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+          <input type="number" id="diary-water-input"
+                 min="0" max="5" step="0.25"
+                 value="${entry.water ?? ''}"
+                 placeholder="0.0"
+                 onchange="window.saveDiaryWaterLiters(this.value)"
+                 style="width:5rem;padding:0.4rem 0.6rem;font:inherit;text-align:center;" />
+          <span class="diary-water-goal" style="font-size:0.85rem;opacity:0.7;">of 2.5 L goal</span>
+        </div>
+        <div class="diary-chips" style="margin-top:0.5rem;">
+          <button class="diary-chip" onclick="window.addDiaryWater(0.25)">+250 ml</button>
+          <button class="diary-chip" onclick="window.addDiaryWater(0.5)">+500 ml</button>
+          <button class="diary-chip" onclick="window.addDiaryWater(1)">+1 L</button>
         </div>
       </div>
       <div class="diary-field">
@@ -849,6 +858,9 @@ document.addEventListener('DOMContentLoaded', () => {
           ${[1,2,3,4,5].map(v =>
             `<button class="diary-chip${entry.stress === v ? ' active' : ''}"
               onclick="window.saveDiaryField('stress',${v})">${v}</button>`).join('')}
+        </div>
+        <div class="diary-stress-scale-label" style="font-size:0.75rem;opacity:0.6;letter-spacing:0.05em;margin-top:0.4rem;display:flex;justify-content:space-between;max-width:14rem;">
+          <span>1 = CALM</span><span>5 = OVERWHELMED</span>
         </div>
       </div>`;
   }
@@ -861,6 +873,20 @@ document.addEventListener('DOMContentLoaded', () => {
     sSet('dermAI_diary', diary);
     renderDiaryToday();
     renderDiaryChart();
+  };
+
+  window.saveDiaryWaterLiters = function (val) {
+    const v = parseFloat(val);
+    const safe = isNaN(v) ? 0 : Math.max(0, Math.min(5, v));
+    window.saveDiaryField('water', +safe.toFixed(2));
+  };
+
+  window.addDiaryWater = function (deltaL) {
+    const today = todayKey();
+    const diary = sGet('dermAI_diary') || {};
+    const current = (diary[today] && typeof diary[today].water === 'number') ? diary[today].water : 0;
+    const next = Math.min(5, +(current + deltaL).toFixed(2));
+    window.saveDiaryField('water', next);
   };
 
   function renderDiaryChart() {
@@ -888,13 +914,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="diary-grid">
         ${days.map(d => {
           const sleepH  = d.entry.sleep  !== undefined ? Math.round((d.entry.sleep  / 10) * 60) : 0;
-          const waterH  = d.entry.water  !== undefined ? Math.round((d.entry.water  / 10) * 60) : 0;
+          const waterH  = d.entry.water  !== undefined ? Math.round(Math.min(d.entry.water / 3, 1) * 60) : 0;
           const stressH = d.entry.stress !== undefined ? Math.round((d.entry.stress /  5) * 60) : 0;
           return `
             <div class="diary-col">
               <div class="diary-bars">
                 <div class="diary-bar-slot"><div class="diary-bar diary-bar-sleep"  style="height:${sleepH}px"  title="Sleep: ${d.entry.sleep ?? '—'}h"></div></div>
-                <div class="diary-bar-slot"><div class="diary-bar diary-bar-water"  style="height:${waterH}px"  title="Water: ${d.entry.water ?? '—'} glasses"></div></div>
+                <div class="diary-bar-slot"><div class="diary-bar diary-bar-water"  style="height:${waterH}px"  title="Water: ${d.entry.water ?? '—'} L"></div></div>
                 <div class="diary-bar-slot"><div class="diary-bar diary-bar-stress" style="height:${stressH}px" title="Stress: ${d.entry.stress ?? '—'}/5"></div></div>
               </div>
               <div class="diary-scan-dot${d.scan ? '' : ' diary-scan-empty'}" title="${d.scan ? 'Scan: ' + d.scan.overallHealth : 'No scan'}"></div>
