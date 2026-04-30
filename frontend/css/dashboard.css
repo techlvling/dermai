@@ -352,10 +352,20 @@
   inset: 0;
   background: rgba(20, 20, 14, 0.5);
   z-index: 19;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out);
 }
 
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  /* Stack vertically on mobile: topbar on top, main below.
+     The default `.dash-body { display: flex }` is row direction which
+     squeezes the topbar into a left column on phones. */
+  .dash-body {
+    flex-direction: column;
+  }
+
   .dash-sidebar {
     transform: translateX(-100%);
   }
@@ -371,6 +381,8 @@
 
   .dash-overlay {
     display: block;
+    /* Stay invisible until .open is toggled. Without explicit opacity
+       the overlay was fully opaque all the time on mobile. */
   }
 
   .dash-overlay.open {
