@@ -2111,7 +2111,7 @@
 .trends-rows {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 6px;
 }
 .trends-row {
   display: grid;
@@ -2127,52 +2127,60 @@
   color: var(--neutral-500);
   text-align: right;
 }
+/* GitHub-style: square cells, fixed-size grid columns, tight gap, subtle
+   rounded corners. Cells stay square via aspect-ratio so the row sizes
+   itself naturally; tight ranges (90/365) shrink the cell width to keep
+   things readable. */
 .trends-row-cells {
   display: grid;
   gap: 3px;
 }
-.trends-row-cells.range-30  { grid-template-columns: repeat(30, 1fr); }
-.trends-row-cells.range-90  { grid-template-columns: repeat(90, 1fr); }
-.trends-row-cells.range-365 { grid-template-columns: repeat(365, 1fr); }
-.trends-cell {
-  height: 14px;
-  border-radius: 2px;
-  background: rgba(0, 0, 0, 0.04);
+.trends-row-cells.range-30  {
+  grid-template-columns: repeat(30, minmax(0, 1fr));
+  max-width: 700px;
 }
-.range-90  .trends-cell { height: 11px; }
-.range-365 .trends-cell { height: 7px;  border-radius: 1px; }
+.trends-row-cells.range-90  {
+  grid-template-columns: repeat(90, minmax(0, 1fr));
+  gap: 2px;
+}
+.trends-row-cells.range-365 {
+  grid-template-columns: repeat(365, minmax(0, 1fr));
+  gap: 1px;
+}
+.trends-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 2px;
+  background: #ebedf0;
+  outline: 1px solid rgba(27, 31, 35, 0.04);
+  outline-offset: -1px;
+}
 
-/* Per-metric color scales — 4 levels each (0 = empty/no log, 3 = strongest). */
-.trends-color-water.level-0    { background: rgba(0, 0, 0, 0.04); }
-.trends-color-water.level-1    { background: rgba(96, 165, 250, 0.35); }
-.trends-color-water.level-2    { background: rgba(59, 130, 246, 0.65); }
-.trends-color-water.level-3    { background: rgba(37, 99, 235, 0.95); }
+/* Per-metric color scales — 4 levels each, GitHub-style intensity ramp.
+   level-0 stays the neutral empty grey defined on .trends-cell above. */
+.trends-color-water.level-1    { background: #c2e0ff; }
+.trends-color-water.level-2    { background: #6db0ff; }
+.trends-color-water.level-3    { background: #1f6feb; }
 
-.trends-color-sleep.level-0    { background: rgba(0, 0, 0, 0.04); }
-.trends-color-sleep.level-1    { background: rgba(165, 180, 252, 0.35); }
-.trends-color-sleep.level-2    { background: rgba(129, 140, 248, 0.65); }
-.trends-color-sleep.level-3    { background: rgba(79, 70, 229, 0.95); }
+.trends-color-sleep.level-1    { background: #d3d6ff; }
+.trends-color-sleep.level-2    { background: #8b96f5; }
+.trends-color-sleep.level-3    { background: #4f46e5; }
 
-.trends-color-stress.level-0   { background: rgba(0, 0, 0, 0.04); }
-.trends-color-stress.level-1   { background: rgba(252, 165, 165, 0.4); }
-.trends-color-stress.level-2   { background: rgba(248, 113, 113, 0.7); }
-.trends-color-stress.level-3   { background: rgba(220, 38, 38, 0.95); }
+.trends-color-stress.level-1   { background: #ffd6cc; }
+.trends-color-stress.level-2   { background: #ff857a; }
+.trends-color-stress.level-3   { background: #d92822; }
 
-.trends-color-sun.level-0      { background: rgba(0, 0, 0, 0.04); }
-.trends-color-sun.level-1      { background: rgba(253, 224, 71, 0.4); }
-.trends-color-sun.level-2      { background: rgba(250, 204, 21, 0.7); }
-.trends-color-sun.level-3      { background: rgba(217, 119, 6, 0.95); }
+.trends-color-sun.level-1      { background: #fff2a8; }
+.trends-color-sun.level-2      { background: #ffd54a; }
+.trends-color-sun.level-3      { background: #d97706; }
 
-.trends-color-alcohol.level-0  { background: rgba(0, 0, 0, 0.04); }
-.trends-color-alcohol.level-1  { background: rgba(216, 180, 254, 0.4); }
-.trends-color-alcohol.level-2  { background: rgba(168, 85, 247, 0.7); }
-.trends-color-alcohol.level-3  { background: rgba(126, 34, 206, 0.95); }
+.trends-color-alcohol.level-1  { background: #ead4fc; }
+.trends-color-alcohol.level-2  { background: #b478f0; }
+.trends-color-alcohol.level-3  { background: #7e22ce; }
 
 /* Wellness uses a red→yellow→green meaning gradient (not just intensity). */
-.trends-color-wellness.level-0 { background: rgba(0, 0, 0, 0.04); }
-.trends-color-wellness.level-1 { background: rgba(220, 38, 38, 0.7); }
-.trends-color-wellness.level-2 { background: rgba(250, 204, 21, 0.85); }
-.trends-color-wellness.level-3 { background: rgba(34, 197, 94, 0.95); }
+.trends-color-wellness.level-1 { background: #ff857a; }
+.trends-color-wellness.level-2 { background: #ffd54a; }
+.trends-color-wellness.level-3 { background: #2ea043; }
 
 .trends-correlation {
   margin-top: 1.5rem;
@@ -2212,7 +2220,5 @@
 @media (max-width: 600px) {
   .trends-row { grid-template-columns: 4.5rem 1fr; gap: 0.5rem; }
   .trends-row-label { font-size: 0.62rem; }
-  .trends-cell { height: 12px; }
-  .range-90 .trends-cell { height: 9px; }
-  .range-365 .trends-cell { height: 5px; }
+  .trends-row-cells.range-30 { max-width: none; }
 }
