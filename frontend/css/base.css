@@ -177,6 +177,12 @@ ul {
   color: #0a3d27;
 }
 
+.badge-tier-3,
+.badge-tier-\? {
+  background: rgba(160, 124, 255, 0.18);
+  color: var(--accent-600);
+}
+
 /* ── Scroll reveal ───────────────────────────────────────────────── */
 .reveal {
   opacity: 0;
