@@ -736,10 +736,10 @@ details.faq-item[open] summary.faq-q::after { content: '−'; }
 }
 
 .footer-links h4 {
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--neutral-400);
+  color: var(--neutral-500);
   margin-bottom: 0.75rem;
   font-family: var(--font-primary);
   font-weight: 700;
