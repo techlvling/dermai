@@ -7,7 +7,7 @@
 
   const user = await window.Auth.getUser();
   if (!user) {
-    sessionStorage.setItem('dermai_redirect', '/dashboard.html');
+    sessionStorage.setItem('tinkskin_redirect', '/dashboard.html');
     window.location.href = '/';
     return;
   }
@@ -29,7 +29,7 @@
   // covers anyone who skipped here.
   if (typeof Drive !== 'undefined'
       && !Drive.hasScope()
-      && localStorage.getItem('dermAI_drive_declined') !== 'true') {
+      && localStorage.getItem('tinkskin_drive_declined') !== 'true') {
     const banner = document.createElement('div');
     banner.className = 'drive-login-banner';
     banner.style.cssText = 'position:sticky; top:0; z-index:50; padding:0.875rem 1.25rem; background:rgba(245,88,142,0.06); border-bottom:1px solid rgba(245,88,142,0.18); display:flex; align-items:center; gap:1rem; flex-wrap:wrap; font-size:0.875rem;';
@@ -46,7 +46,7 @@
       Drive.requestDriveScope(); // redirects to OAuth
     });
     document.getElementById('drive-login-skip').addEventListener('click', () => {
-      localStorage.setItem('dermAI_drive_declined', 'true');
+      localStorage.setItem('tinkskin_drive_declined', 'true');
       banner.remove();
     });
   }
@@ -164,8 +164,8 @@
     // Step 6: upload a tiny test file
     let testFileId = null;
     try {
-      const blob = new Blob([`DermAI Drive test ${new Date().toISOString()}`], { type: 'text/plain' });
-      const file = new File([blob], `dermai-test-${Date.now()}.txt`, { type: 'text/plain' });
+      const blob = new Blob([`tinkskin Drive test ${new Date().toISOString()}`], { type: 'text/plain' });
+      const file = new File([blob], `tinkskin-test-${Date.now()}.txt`, { type: 'text/plain' });
       const result = await Drive.uploadPhoto(file, file.name, folderId);
       testFileId = result?.id;
       log(`Step 6: uploaded test file → ${testFileId} (${result?.webViewLink || 'no link'})`, true);
@@ -195,13 +195,13 @@
       return;
     }
     const granted  = Drive.hasScope();
-    const declined = localStorage.getItem('dermAI_drive_declined') === 'true';
+    const declined = localStorage.getItem('tinkskin_drive_declined') === 'true';
 
     if (granted) {
       statusEl.textContent = 'hooked up ✓';
       statusEl.className   = 'conn-card__status conn-card__status--on';
       actionsEl.innerHTML = `
-        <p class="conn-help">scans save to <code>DermAI Photos/Scans/Day N - DATE/</code> in ur drive, organized by days since ur first scan.</p>
+        <p class="conn-help">scans save to <code>tinkskin Photos/Scans/Day N - DATE/</code> in ur drive, organized by days since ur first scan.</p>
         <div class="conn-actions-row">
           <button type="button" class="btn btn-primary" id="conn-drive-open">open my drive folder</button>
           <button type="button" class="btn btn-outline" id="conn-drive-test">test if it works</button>
@@ -232,11 +232,11 @@
       document.getElementById('conn-drive-test').addEventListener('click', () => testDriveConnection());
       document.getElementById('conn-drive-forget').addEventListener('click', () => {
         // Local-only forget. Tells user to revoke at Google for a clean cut.
-        localStorage.setItem('dermAI_drive_declined', 'true');
-        localStorage.removeItem('dermai-drive-scope');
-        localStorage.removeItem('dermai-drive-folder-root');
-        localStorage.removeItem('dermai-drive-folder-scans');
-        localStorage.removeItem('dermai-drive-folder-progress');
+        localStorage.setItem('tinkskin_drive_declined', 'true');
+        localStorage.removeItem('tinkskin-drive-scope');
+        localStorage.removeItem('tinkskin-drive-folder-root');
+        localStorage.removeItem('tinkskin-drive-folder-scans');
+        localStorage.removeItem('tinkskin-drive-folder-progress');
         renderConnections();
       });
     } else {
@@ -253,7 +253,7 @@
       document.getElementById('conn-drive-grant').addEventListener('click', () => {
         // Granting redirects to OAuth. Clear the declined flag so the post-
         // return state reflects the user's intent.
-        localStorage.removeItem('dermAI_drive_declined');
+        localStorage.removeItem('tinkskin_drive_declined');
         Drive.requestDriveScope();
       });
     }
@@ -303,7 +303,7 @@
     const recentEl = document.getElementById('dash-recent-grid');
 
     // Load from localStorage first (fast)
-    const localHistory = (Storage.get('dermAI_history') || []);
+    const localHistory = (Storage.get('tinkskin_history') || []);
     let   scans = localHistory.slice();
 
     // Then merge server scans

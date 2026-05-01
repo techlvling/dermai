@@ -10,7 +10,7 @@ if (!window.supabase) {
   window.Auth = null;
 } else {
   const _client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: { persistSession: true, storageKey: 'dermai-auth' }
+    auth: { persistSession: true, storageKey: 'tinkskin-auth' }
   });
 
   window.Auth = {
@@ -72,12 +72,12 @@ if (!window.supabase) {
   // Set Drive scope flag when a session with provider_token arrives
   _client.auth.onAuthStateChange((_event, session) => {
     if (session?.provider_token) {
-      localStorage.setItem('dermai-drive-scope', 'true');
+      localStorage.setItem('tinkskin-drive-scope', 'true');
     } else {
-      localStorage.removeItem('dermai-drive-scope');
-      localStorage.removeItem('dermai-drive-folder-root');
-      localStorage.removeItem('dermai-drive-folder-scans');
-      localStorage.removeItem('dermai-drive-folder-progress');
+      localStorage.removeItem('tinkskin-drive-scope');
+      localStorage.removeItem('tinkskin-drive-folder-root');
+      localStorage.removeItem('tinkskin-drive-folder-scans');
+      localStorage.removeItem('tinkskin-drive-folder-progress');
     }
   });
 }

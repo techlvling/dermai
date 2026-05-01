@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const FRESH_LOCAL_MS = 60 * 60 * 1000; // 1 hour
 
     function readLocal() {
-      const raw = localStorage.getItem('dermAI_analysis');
+      const raw = localStorage.getItem('tinkskin_analysis');
       if (!raw) return null;
       try { return JSON.parse(raw); } catch { return null; }
     }
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (latest) {
         userAnalysis = latest.result_json;
         userAnalysis.__closeup_meta = latest.closeup_meta || null;
-        localStorage.setItem('dermAI_analysis', JSON.stringify({ ...userAnalysis, savedAt: userAnalysis.savedAt || Date.now() }));
+        localStorage.setItem('tinkskin_analysis', JSON.stringify({ ...userAnalysis, savedAt: userAnalysis.savedAt || Date.now() }));
       } else {
         // Server is empty. If localStorage has a recent unsynced scan,
         // trust it — the POST probably failed in flight. Otherwise show CTA.
@@ -160,13 +160,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           noAnalysisWarning.classList.remove('hidden');
           // Stale local cache — prune so badges/streak don't disagree.
-          if (local) localStorage.removeItem('dermAI_analysis');
+          if (local) localStorage.removeItem('tinkskin_analysis');
           initDailyCtas();
           return;
         }
       }
     } else {
-      const savedData = localStorage.getItem('dermAI_analysis');
+      const savedData = localStorage.getItem('tinkskin_analysis');
       if (!savedData) {
         noAnalysisWarning.classList.remove('hidden');
         initDailyCtas();
@@ -579,9 +579,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagParam = regionData.tag ? `&tag=${regionData.tag}` : '';
     const buyURL = `https://www.amazon.${regionData.tld}/s?k=${searchQuery}${tagParam}`;
     const evidenceHTML = buildEvidenceHTML(prod, ingredient);
-    const savedFavs = sGet('dermAI_favorites') || [];
+    const savedFavs = sGet('tinkskin_favorites') || [];
     const isFav = savedFavs.includes(prod.id);
-    const reactions = sGet('dermAI_reactions') || {};
+    const reactions = sGet('tinkskin_reactions') || {};
     const hasReaction = !!(reactions[prod.id] && reactions[prod.id].length);
 
     return `
@@ -768,7 +768,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Checklist ────────────────────────────────────────────────────────
   function initChecklist() {
-    const log = sGet('dermAI_routineLog') || {};
+    const log = sGet('tinkskin_routineLog') || {};
     const today = todayKey();
     const todayLog = log[today] || {};
     ROUTINE_SLOTS.forEach(({ id, slot, key }) => {
@@ -791,12 +791,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function onCheckClick(slot, key, btn) {
-    const log = sGet('dermAI_routineLog') || {};
+    const log = sGet('tinkskin_routineLog') || {};
     const today = todayKey();
     if (!log[today]) log[today] = {};
     if (!log[today][slot]) log[today][slot] = {};
     log[today][slot][key] = !log[today][slot][key];
-    sSet('dermAI_routineLog', log);
+    sSet('tinkskin_routineLog', log);
     const checked = log[today][slot][key];
     btn.className = 'step-check-btn' + (checked ? ' checked' : '');
     btn.setAttribute('aria-pressed', String(checked));
@@ -822,7 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!(await Storage.isLoggedIn())) return;
     const body = await Storage.server.get('/api/routine');
     if (!body || !Array.isArray(body.logs)) return;
-    const local = sGet('dermAI_routineLog') || {};
+    const local = sGet('tinkskin_routineLog') || {};
     let changed = false;
     for (const row of body.logs) {
       if (!local[row.log_date] && row.steps_done) {
@@ -831,7 +831,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     if (changed) {
-      sSet('dermAI_routineLog', local);
+      sSet('tinkskin_routineLog', local);
       renderStreak();
       renderStats(getRange());
       renderHeatmap();
@@ -848,7 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function computeStreak() {
-    const log = sGet('dermAI_routineLog') || {};
+    const log = sGet('tinkskin_routineLog') || {};
     let streak = 0;
     const now = new Date();
     for (let i = 0; i < 365; i++) {
@@ -941,7 +941,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderStats(rangeDays) {
     const el = document.getElementById('routine-stats');
     if (!el) return;
-    const log = sGet('dermAI_routineLog') || {};
+    const log = sGet('tinkskin_routineLog') || {};
     const s = computeStats(log, rangeDays);
     const stepRows = ['am', 'pm'].flatMap(slot =>
       STATS_ROUTINE_STEPS[slot].map(k => `
@@ -968,13 +968,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getRange() {
-    const stored = parseInt(localStorage.getItem('dermAI_statsRange') || '30', 10);
+    const stored = parseInt(localStorage.getItem('tinkskin_statsRange') || '30', 10);
     return [30, 90, 365].includes(stored) ? stored : 30;
   }
 
   function setRange(days) {
     if (![30, 90, 365].includes(days)) days = 30;
-    localStorage.setItem('dermAI_statsRange', String(days));
+    localStorage.setItem('tinkskin_statsRange', String(days));
     document.querySelectorAll('#range-toggle button').forEach(btn => {
       const sel = parseInt(btn.dataset.range, 10) === days;
       btn.setAttribute('aria-selected', String(sel));
@@ -999,7 +999,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderHeatmap(rangeDaysOverride) {
     const container = document.getElementById('adherence-heatmap');
     if (!container) return;
-    const log = sGet('dermAI_routineLog') || {};
+    const log = sGet('tinkskin_routineLog') || {};
     const rangeDays = Number.isInteger(rangeDaysOverride) ? rangeDaysOverride : getRange();
     const TOTAL = STATS_PER_DAY;
     const now = new Date();
@@ -1043,12 +1043,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const el = document.getElementById('badges-row');
     if (!el) return;
     const streak = computeStreak();
-    const favCount = (sGet('dermAI_favorites') || []).length;
-    const earned = sGet('dermAI_earnedBadges') || [];
+    const favCount = (sGet('tinkskin_favorites') || []).length;
+    const earned = sGet('tinkskin_earnedBadges') || [];
     BADGE_DEFS.forEach(def => {
       if (def.check(streak, favCount) && !earned.includes(def.id)) earned.push(def.id);
     });
-    sSet('dermAI_earnedBadges', earned);
+    sSet('tinkskin_earnedBadges', earned);
     const earnedDefs = BADGE_DEFS.filter(d => earned.includes(d.id));
     if (!earnedDefs.length) { el.classList.add('hidden'); return; }
     el.classList.remove('hidden');
@@ -1058,12 +1058,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.toggleFavorite = function (prodId, btn) {
-    const favs = sGet('dermAI_favorites') || [];
+    const favs = sGet('tinkskin_favorites') || [];
     const idx = favs.indexOf(prodId);
     const isAdding = idx < 0;
     if (idx >= 0) favs.splice(idx, 1);
     else favs.push(prodId);
-    sSet('dermAI_favorites', favs);
+    sSet('tinkskin_favorites', favs);
     if (isAdding) {
       Storage.server.post('/api/favorites', { product_id: prodId }).catch(() => {});
     } else {
@@ -1104,8 +1104,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function initPatchTest() {
     const stack = window._dermActiveStack || [];
     if (!stack.length) return;
-    const seen  = sGet('dermAI_seen')       || {};
-    const queue = sGet('dermAI_patchQueue') || {};
+    const seen  = sGet('tinkskin_seen')       || {};
+    const queue = sGet('tinkskin_patchQueue') || {};
     const now   = Date.now();
     stack.forEach(prod => {
       if (!seen[prod.id]) {
@@ -1113,8 +1113,8 @@ document.addEventListener('DOMContentLoaded', () => {
         queue[prod.id] = { addedAt: now, reviewed: false };
       }
     });
-    sSet('dermAI_seen', seen);
-    sSet('dermAI_patchQueue', queue);
+    sSet('tinkskin_seen', seen);
+    sSet('tinkskin_patchQueue', queue);
 
     const HOURS_48 = 48 * 60 * 60 * 1000;
     const due = Object.entries(queue)
@@ -1136,13 +1136,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.dismissPatchTest = function (logReaction) {
-    const queue = sGet('dermAI_patchQueue') || {};
+    const queue = sGet('tinkskin_patchQueue') || {};
     const now   = Date.now();
     const H48   = 48 * 60 * 60 * 1000;
     Object.keys(queue).forEach(id => {
       if (!queue[id].reviewed && (now - queue[id].addedAt) >= H48) queue[id].reviewed = true;
     });
-    sSet('dermAI_patchQueue', queue);
+    sSet('tinkskin_patchQueue', queue);
     const banner = document.getElementById('patch-test-banner');
     if (banner) banner.classList.add('hidden');
     if (logReaction) window.openReactionModal(null);
@@ -1178,10 +1178,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const severity = parseInt(modal.querySelector('.reaction-severity-input').value);
     const symptoms = Array.from(modal.querySelectorAll('.reaction-symptom.active')).map(s => s.dataset.symptom);
     const notes    = modal.querySelector('.reaction-notes').value.trim();
-    const reactions = sGet('dermAI_reactions') || {};
+    const reactions = sGet('tinkskin_reactions') || {};
     if (!reactions[prodId]) reactions[prodId] = [];
     reactions[prodId].push({ date: new Date().toISOString(), severity, symptoms, notes });
-    sSet('dermAI_reactions', reactions);
+    sSet('tinkskin_reactions', reactions);
     Storage.server.post('/api/reactions', {
       product_id: prodId,
       severity: severity,
@@ -1196,7 +1196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Reorder reminders ─────────────────────────────────────────────────
   function checkReorderReminders() {
-    const data = sGet('dermAI_reorderData') || {};
+    const data = sGet('tinkskin_reorderData') || {};
     const now  = Date.now();
     const WEEK = 7 * 24 * 60 * 60 * 1000;
     const due  = Object.entries(data)
@@ -1244,9 +1244,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const freq    = parseInt(modal.querySelector('#reorder-freq').value);
     const mlPerDay = freq * 0.3; // ~0.3ml per application
     const days    = Math.round(sizeML / mlPerDay);
-    const data    = sGet('dermAI_reorderData') || {};
+    const data    = sGet('tinkskin_reorderData') || {};
     data[prodId]  = { sizeML, freq, estimatedEmpty: Date.now() + days * 24 * 60 * 60 * 1000, dismissed: false };
-    sSet('dermAI_reorderData', data);
+    sSet('tinkskin_reorderData', data);
     window.closeReorderModal();
   };
 
@@ -1466,7 +1466,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── F15 — Shareable routine card (Canvas → PNG) ───────────────────
   window.shareRoutineCard = async function () {
-    const analysis = JSON.parse(localStorage.getItem('dermAI_analysis') || 'null');
+    const analysis = JSON.parse(localStorage.getItem('tinkskin_analysis') || 'null');
     if (!analysis) { alert('no scan yet — go scan ur face first.'); return; }
 
     await document.fonts.ready;
@@ -1493,7 +1493,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Wordmark
     ctx.fillStyle = '#f5588e';
     ctx.font = '700 52px "Space Mono", monospace';
-    ctx.fillText('DermAI', 72, 108);
+    ctx.fillText('tinkskin', 72, 108);
 
     // Health score
     ctx.fillStyle = '#ffffff';
@@ -1572,7 +1572,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.textAlign = 'left';
 
     const link = document.createElement('a');
-    link.download = `dermai-${new Date().toISOString().slice(0, 10)}.png`;
+    link.download = `tinkskin-${new Date().toISOString().slice(0, 10)}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
   };
@@ -1580,14 +1580,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.dismissReorderBanner = function () {
     const banner = document.getElementById('reorder-banner');
     if (banner) banner.classList.add('hidden');
-    const data = sGet('dermAI_reorderData') || {};
+    const data = sGet('tinkskin_reorderData') || {};
     const now  = Date.now();
     const WEEK = 7 * 24 * 60 * 60 * 1000;
     Object.keys(data).forEach(id => {
       if (!data[id].dismissed && data[id].estimatedEmpty > now && (data[id].estimatedEmpty - now) < WEEK)
         data[id].dismissed = true;
     });
-    sSet('dermAI_reorderData', data);
+    sSet('tinkskin_reorderData', data);
   };
 
   window.updateStep = function(containerId, prodId, tld) {
@@ -1615,7 +1615,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // never clobber the day's checklist progress.
   function syncSlotChoices() {
     if (!window.Storage || !Storage.server) return;
-    const log = sGet('dermAI_routineLog') || {};
+    const log = sGet('tinkskin_routineLog') || {};
     const today = todayKey();
     Storage.server.post('/api/routine', {
       log_date: today,

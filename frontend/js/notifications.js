@@ -1,5 +1,5 @@
 const NotifPrefs = (() => {
-  const KEY = 'dermAI_notifPrefs';
+  const KEY = 'tinkskin_notifPrefs';
   const DEFAULTS = {
     enabled: false,        // routine AM/PM reminders master toggle
     amTime: '08:00',
@@ -35,14 +35,14 @@ const NotifPrefs = (() => {
       ];
       [prefs.amTime, prefs.pmTime].forEach((t, i) => {
         setTimeout(() => {
-          new Notification('DermAI', { body: bodies[i], icon: '/favicon.ico' });
+          new Notification('tinkskin', { body: bodies[i], icon: '/favicon.ico' });
           schedule();
         }, msUntil(t));
       });
     }
     if (prefs.scanEnabled) {
       setTimeout(() => {
-        new Notification('DermAI', { body: 'scan time. cook ☕', icon: '/favicon.ico' });
+        new Notification('tinkskin', { body: 'scan time. cook ☕', icon: '/favicon.ico' });
         schedule();
       }, msUntil(prefs.scanTime));
     }

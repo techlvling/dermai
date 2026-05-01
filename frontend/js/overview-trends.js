@@ -1,7 +1,7 @@
 // Overview trends — 6 stacked heatmaps (water / sleep / stress / sun /
 // alcohol / wellness), wellness-today stat card, correlation insight.
 // Mounted by dashboard.js when Overview is rendered. Reads from
-// localStorage `dermAI_diary` and hydrates from /api/diary on first mount.
+// localStorage `tinkskin_diary` and hydrates from /api/diary on first mount.
 window.OverviewTrends = (function () {
   let _hydrated = false;
   let _scans = [];      // populated when correlation insight wants scan_health joins
@@ -82,7 +82,7 @@ window.OverviewTrends = (function () {
       if (!loggedIn) return;
       const body = await Storage.server.get('/api/diary');
       if (!body || !Array.isArray(body.entries)) return;
-      const local = sGet('dermAI_diary') || {};
+      const local = sGet('tinkskin_diary') || {};
       let changed = false;
       for (const row of body.entries) {
         const slot = local[row.log_date] || {};
@@ -95,7 +95,7 @@ window.OverviewTrends = (function () {
         if (row.wellness_score  != null && slot.wellness === undefined) { slot.wellness = Number(row.wellness_score);  changed = true; }
         local[row.log_date] = slot;
       }
-      if (changed) sSet('dermAI_diary', local);
+      if (changed) sSet('tinkskin_diary', local);
     } catch (_) { /* silent */ }
   }
 
@@ -116,7 +116,7 @@ window.OverviewTrends = (function () {
       } catch (_) {}
     }
     // Fallback to local history
-    const hist = JSON.parse(localStorage.getItem('dermAI_history') || '[]');
+    const hist = JSON.parse(localStorage.getItem('tinkskin_history') || '[]');
     _scans = hist.map(h => ({
       date: (h.date || '').slice(0, 10),
       health: h.analysis?.overallHealth ?? h.overallHealth ?? null,
@@ -124,13 +124,13 @@ window.OverviewTrends = (function () {
   }
 
   function getRange() {
-    const stored = parseInt(localStorage.getItem('dermAI_trendsRange') || '30', 10);
+    const stored = parseInt(localStorage.getItem('tinkskin_trendsRange') || '30', 10);
     return [30, 90, 365].includes(stored) ? stored : 30;
   }
 
   function setRange(days) {
     if (![30, 90, 365].includes(days)) days = 30;
-    localStorage.setItem('dermAI_trendsRange', String(days));
+    localStorage.setItem('tinkskin_trendsRange', String(days));
     document.querySelectorAll('#trends-range-toggle button').forEach(btn => {
       const sel = parseInt(btn.dataset.range, 10) === days;
       btn.classList.toggle('active', sel);
@@ -142,7 +142,7 @@ window.OverviewTrends = (function () {
   function renderRows(rangeDays) {
     const rowsEl = document.getElementById('trends-rows');
     if (!rowsEl) return;
-    const diary = sGet('dermAI_diary') || {};
+    const diary = sGet('tinkskin_diary') || {};
 
     // Build per-day entries (oldest → newest), filling in missing days with empty.
     const days = [];

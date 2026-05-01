@@ -1,6 +1,6 @@
 (function () {
   async function migrateToServer(userId, token) {
-    const migrationKey = `dermai:migrated:${userId}`;
+    const migrationKey = `tinkskin:migrated:${userId}`;
     if (localStorage.getItem(migrationKey)) return; // already done
 
     const headers = {
@@ -19,7 +19,7 @@
     }
 
     // 1. Scans (modern format only)
-    const history = Storage.get('dermAI_history') || [];
+    const history = Storage.get('tinkskin_history') || [];
     for (const entry of history) {
       if (entry.analysis) {
         await post('/api/scans', { result_json: entry.analysis });
@@ -27,14 +27,14 @@
     }
 
     // 2. Favorites
-    const favorites = Storage.get('dermAI_favorites') || [];
+    const favorites = Storage.get('tinkskin_favorites') || [];
     for (const productId of favorites) {
       if (productId) await post('/api/favorites', { product_id: String(productId) });
     }
 
     // 3. Routine logs — send the full per-step shape directly (matches
     //    the backend's steps_done jsonb column added in migration 0004).
-    const routineLog = Storage.get('dermAI_routineLog') || {};
+    const routineLog = Storage.get('tinkskin_routineLog') || {};
     for (const [date, dayLog] of Object.entries(routineLog)) {
       if (!dayLog || typeof dayLog !== 'object') continue;
       await post('/api/routine', { log_date: date, steps_done: dayLog });
@@ -42,7 +42,7 @@
 
     // 3b. Diary entries — backfill water/stress/sleep from local cache so a
     //     user's history follows them after sign-in.
-    const diary = Storage.get('dermAI_diary') || {};
+    const diary = Storage.get('tinkskin_diary') || {};
     for (const [date, entry] of Object.entries(diary)) {
       if (!entry || typeof entry !== 'object') continue;
       const body = { log_date: date };
@@ -53,7 +53,7 @@
     }
 
     // 4. Reactions
-    const reactions = Storage.get('dermAI_reactions') || {};
+    const reactions = Storage.get('tinkskin_reactions') || {};
     for (const [productId, entries] of Object.entries(reactions)) {
       if (!Array.isArray(entries) || entries.length === 0) continue;
       // Use the most recent reaction entry for this product

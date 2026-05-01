@@ -31,7 +31,7 @@ window.Treatment = (function () {
       if (latest?.result_json) analysis = latest.result_json;
     }
     if (!analysis) {
-      const local = localStorage.getItem('dermAI_analysis');
+      const local = localStorage.getItem('tinkskin_analysis');
       if (local) { try { analysis = JSON.parse(local); } catch (_) {} }
     }
     _userAnalysis = analysis;

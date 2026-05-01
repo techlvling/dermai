@@ -1,5 +1,5 @@
 const PhotoDB = (() => {
-  const DB_NAME = 'dermAI_photos';
+  const DB_NAME = 'tinkskin_photos';
   const STORE   = 'photos';
   const VERSION = 1;
 

@@ -31,7 +31,7 @@ window.Nav = {
     mount.innerHTML = `
       <nav class="navbar container" aria-label="Main navigation">
         <div class="logo">
-          <a href="/"><span style="color:var(--primary-500)">DermAI</span></a>
+          <a href="/"><span style="color:var(--primary-500)">tinkskin</span></a>
         </div>
         <div class="nav-links">
           ${links.map(l => linkHTML(l)).join('')}
@@ -56,7 +56,7 @@ window.Nav = {
       <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
       <nav class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true">
         <div class="nav-drawer-header">
-          <span style="font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--primary-500);">DermAI</span>
+          <span style="font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:var(--primary-500);">tinkskin</span>
           <button class="nav-drawer-close" aria-label="Close navigation menu">${_NAV_CLOSE}</button>
         </div>
         <div class="nav-drawer-links">
@@ -113,7 +113,7 @@ function _initDrawer() {
   const drawerSignout = document.getElementById('drawer-signout-btn');
   const drawerSignin  = document.getElementById('drawer-signin-btn');
   if (drawerSignout && window.Auth) drawerSignout.addEventListener('click', () => { closeDrawer(); window.Auth.signOut(); });
-  if (drawerSignin  && window.Auth) drawerSignin.addEventListener('click',  () => { closeDrawer(); sessionStorage.setItem('dermai_redirect', '/dashboard.html'); window.Auth.signInWithGoogle(); });
+  if (drawerSignin  && window.Auth) drawerSignin.addEventListener('click',  () => { closeDrawer(); sessionStorage.setItem('tinkskin_redirect', '/dashboard.html'); window.Auth.signInWithGoogle(); });
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
@@ -153,7 +153,7 @@ function _initUserMenu(initialUser) {
   if (window.Auth) {
     window.Auth.onAuthStateChange((_event, session) => update(session?.user ?? null));
     signinBtn.addEventListener('click', () => {
-      sessionStorage.setItem('dermai_redirect', '/dashboard.html');
+      sessionStorage.setItem('tinkskin_redirect', '/dashboard.html');
       window.Auth.signInWithGoogle();
     });
     signoutBtn && signoutBtn.addEventListener('click', () => window.Auth.signOut());

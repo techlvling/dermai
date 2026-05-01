@@ -128,7 +128,7 @@
 
   function _renderDone(card, driveUrl, streak) {
     card.className = 'progress-card';
-    const progFolderId = localStorage.getItem('dermai-drive-folder-progress') || '';
+    const progFolderId = localStorage.getItem('tinkskin-drive-folder-progress') || '';
     card.innerHTML = `
       <div class="progress-card__row">
         <img class="progress-card__thumb" src="${driveUrl}" alt="Today's progress photo" onerror="this.style.display='none'">

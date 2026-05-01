@@ -85,7 +85,7 @@
 }
 
 /* Direct 1→2→3 flow strip — sits between hero CTAs and trust badges so
-   skimmers grok what DermAI does without scrolling to the "How it works"
+   skimmers grok what tinkskin does without scrolling to the "How it works"
    section further down. */
 .hero-flow {
   display: flex;
@@ -322,7 +322,7 @@
   line-height: 1.7;
 }
 
-/* ── What is DermAI? (value-prop 3-column) ───────────────────────── */
+/* ── What is tinkskin? (value-prop 3-column) ───────────────────────── */
 .value-props {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -28,7 +28,7 @@ window.LifestyleModal = (function () {
   // One-shot legacy water migration (was in diary.js) — values >5 came from
   // the pre-Phase-1 "glasses" unit. Idempotent: new water input is clamped.
   (function migrateLegacyWaterToLiters() {
-    const diary = sGet('dermAI_diary');
+    const diary = sGet('tinkskin_diary');
     if (!diary) return;
     let touched = false;
     for (const date in diary) {
@@ -38,7 +38,7 @@ window.LifestyleModal = (function () {
         touched = true;
       }
     }
-    if (touched) sSet('dermAI_diary', diary);
+    if (touched) sSet('tinkskin_diary', diary);
   })();
 
   // Wellness score: average of available normalised metric scores.
@@ -240,11 +240,11 @@ window.LifestyleModal = (function () {
 
     // Honor today's skip — but only when auto-opening after scan, not
     // when user explicitly hits Quick Check-in.
-    const skippedAt = sGet('dermAI_lifestyle_skipped');
+    const skippedAt = sGet('tinkskin_lifestyle_skipped');
     if (options.respectSkip && skippedAt === todayKey()) return;
 
     // Prefer existing today's entry > caller-supplied prefill > yesterday's entry
-    const diary = sGet('dermAI_diary') || {};
+    const diary = sGet('tinkskin_diary') || {};
     const today = todayKey();
     const yesterday = diary[yesterdayKey()];
     const initial = diary[today] || prefill || null;
@@ -267,7 +267,7 @@ window.LifestyleModal = (function () {
     }
 
     modal.querySelector('#lifestyle-skip-btn').onclick = () => {
-      sSet('dermAI_lifestyle_skipped', today);
+      sSet('tinkskin_lifestyle_skipped', today);
       close(modal);
       if (typeof onSkip === 'function') onSkip();
     };
@@ -286,7 +286,7 @@ window.LifestyleModal = (function () {
       // round-trip. Merge with existing today-row in case multiple saves.
       const next = { ...(diary[today] || {}), ...entry };
       diary[today] = next;
-      sSet('dermAI_diary', diary);
+      sSet('tinkskin_diary', diary);
 
       // Build server payload — use the schema column names.
       const body = { log_date: today };
@@ -306,7 +306,7 @@ window.LifestyleModal = (function () {
       } catch (e) { /* fail-silent — local cache is the immediate truth */ }
 
       // Clear today's skip flag — they DID engage today.
-      if (sGet('dermAI_lifestyle_skipped') === today) localStorage.removeItem('dermAI_lifestyle_skipped');
+      if (sGet('tinkskin_lifestyle_skipped') === today) localStorage.removeItem('tinkskin_lifestyle_skipped');
 
       saveBtn.disabled = false;
       saveBtn.textContent = original;

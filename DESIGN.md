@@ -1,4 +1,4 @@
-# DermAI Design System (refreshed 2026-05-01)
+# tinkskin Design System (refreshed 2026-05-01)
 
 > Replaces the "Soft Brutalist + Space Mono" DESIGN.md, which described
 > an earlier visual direction the codebase has since walked away from

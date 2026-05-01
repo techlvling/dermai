@@ -66,4 +66,4 @@
 
 ## [1.0.0] — initial release
 
-Anonymous-only DermAI: scan analysis, ingredient lookup, product recommendations, routine tracking, reaction log, shopping list. All state in localStorage / IndexedDB.
+Anonymous-only tinkskin: scan analysis, ingredient lookup, product recommendations, routine tracking, reaction log, shopping list. All state in localStorage / IndexedDB.

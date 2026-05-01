@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <title>DermAI | privacy. no bs.</title>
+    <title>tinkskin | privacy. no bs.</title>
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/privacy.css" />
   </head>
@@ -28,7 +28,7 @@
         <li>u upload a selfie → it sits in our server's RAM just long enough to forward to the AI vision model.</li>
         <li>the AI returns a result → ur image is yeeted from server memory in the same request. usually a few seconds, never beyond.</li>
         <li>we don't log it, save it, back it up, or peek at it. no copy ever lands on disk.</li>
-        <li><strong>opting into Drive backup?</strong> ur photo goes straight to <em>ur own</em> Google Drive. dermai never holds a copy.</li>
+        <li><strong>opting into Drive backup?</strong> ur photo goes straight to <em>ur own</em> Google Drive. tinkskin never holds a copy.</li>
         <li><strong>optional close-ups</strong> (step 2 of the scan, "anything specific?") follow the exact same path as the main 3 angles — held in server RAM only long enough to forward to the AI, then dropped. backed up to ur own Drive only if u opted in. the short notes u type for each close-up are sent to the AI alongside the photo.</li>
       </ul>
 
@@ -42,18 +42,18 @@
 
       <span class="privacy-eyebrow">ur device</span>
       <h2>what stays on ur browser (not us)</h2>
-      <p>everything below lives <strong>only</strong> on ur device. nothing is transmitted, synced, or backed up to dermai's servers.</p>
+      <p>everything below lives <strong>only</strong> on ur device. nothing is transmitted, synced, or backed up to tinkskin's servers.</p>
       <ul class="storage-list">
-        <li><code>dermAI_analysis</code><span class="storage-desc">ur most recent scan + recommendations. overwritten on each new scan.</span></li>
-        <li><code>dermAI_history</code><span class="storage-desc">last 20 scans so the History page works. JSON in localStorage.</span></li>
-        <li><code>dermAI_favorites</code><span class="storage-desc">products u saved.</span></li>
-        <li><code>dermAI_routineLog</code><span class="storage-desc">daily AM/PM routine check-ins powering the streak.</span></li>
-        <li><code>dermAI_earnedBadges</code><span class="storage-desc">gamification badges u've unlocked.</span></li>
-        <li><code>dermAI_diary</code> + <code>dermAI_reactions</code><span class="storage-desc">post-scan check-in notes and patch test reactions.</span></li>
-        <li><code>dermAI_patchQueue</code> + <code>dermAI_reorderData</code><span class="storage-desc">queued patch tests and reorder reminders.</span></li>
-        <li><code>dermAI_notifPrefs</code><span class="storage-desc">ur in-app notification settings.</span></li>
-        <li><code>dermAI_seen</code> + <code>dermAI_statsRange</code> + <code>dermAI_trendsRange</code><span class="storage-desc">UI state — what u've already seen, default chart ranges, etc.</span></li>
-        <li><code>dermAI_photos</code> (IndexedDB)<span class="storage-desc">progress photos, only if u opted in. never leaves ur device.</span></li>
+        <li><code>tinkskin_analysis</code><span class="storage-desc">ur most recent scan + recommendations. overwritten on each new scan.</span></li>
+        <li><code>tinkskin_history</code><span class="storage-desc">last 20 scans so the History page works. JSON in localStorage.</span></li>
+        <li><code>tinkskin_favorites</code><span class="storage-desc">products u saved.</span></li>
+        <li><code>tinkskin_routineLog</code><span class="storage-desc">daily AM/PM routine check-ins powering the streak.</span></li>
+        <li><code>tinkskin_earnedBadges</code><span class="storage-desc">gamification badges u've unlocked.</span></li>
+        <li><code>tinkskin_diary</code> + <code>tinkskin_reactions</code><span class="storage-desc">post-scan check-in notes and patch test reactions.</span></li>
+        <li><code>tinkskin_patchQueue</code> + <code>tinkskin_reorderData</code><span class="storage-desc">queued patch tests and reorder reminders.</span></li>
+        <li><code>tinkskin_notifPrefs</code><span class="storage-desc">ur in-app notification settings.</span></li>
+        <li><code>tinkskin_seen</code> + <code>tinkskin_statsRange</code> + <code>tinkskin_trendsRange</code><span class="storage-desc">UI state — what u've already seen, default chart ranges, etc.</span></li>
+        <li><code>tinkskin_photos</code> (IndexedDB)<span class="storage-desc">progress photos, only if u opted in. never leaves ur device.</span></li>
       </ul>
       <p>close-up photos and the notes u attach to them are <strong>not</strong> stored in ur browser — they're persisted server-side on ur scan record (in <code>scans.closeup_meta</code>) so the report can echo them back later. the AI provider sees them as part of the analysis request; nothing about them goes to amazon, google analytics, or any third party beyond the AI provider.</p>
 
@@ -67,13 +67,13 @@
       <h2>recommendations + amazon</h2>
       <ul>
         <li>recommendations are computed in ur browser by matching ur scan to our local product database. nothing about u gets shipped to amazon for this step.</li>
-        <li>amazon links are affiliate links — dermai earns a small cut on qualifying purchases at no extra cost to u. recommendations are picked on clinical evidence; affiliate doesn't move the rankings.</li>
+        <li>amazon links are affiliate links — tinkskin earns a small cut on qualifying purchases at no extra cost to u. recommendations are picked on clinical evidence; affiliate doesn't move the rankings.</li>
       </ul>
 
       <span class="privacy-eyebrow">tracking</span>
       <h2>analytics + cookies</h2>
       <ul>
-        <li>on production deployments, dermai uses <a href="https://vercel.com/docs/analytics" target="_blank" rel="noopener noreferrer">Vercel Web Analytics</a> for page views and basic perf metrics. no cookies, no cross-site tracking, anonymized by Vercel.</li>
+        <li>on production deployments, tinkskin uses <a href="https://vercel.com/docs/analytics" target="_blank" rel="noopener noreferrer">Vercel Web Analytics</a> for page views and basic perf metrics. no cookies, no cross-site tracking, anonymized by Vercel.</li>
         <li>on local dev or self-hosted instances, no analytics scripts run at all (the script is hostname-gated).</li>
         <li>we don't use Google Analytics, Segment, PostHog, Intercom, Hotjar, or any fingerprinting / behavioural tracker.</li>
         <li>we don't set any cookies. ur session is held in localStorage, scoped to this domain.</li>
@@ -81,7 +81,7 @@
 
       <section class="privacy-medical">
         <h2>Medical disclaimer</h2>
-        <p>DermAI provides cosmetic skin analysis only and is <strong>not a medical diagnosis tool</strong>. The analysis is generated by an AI vision model and may not accurately reflect your skin condition. Always consult a board-certified dermatologist for skin health concerns.</p>
+        <p>tinkskin provides cosmetic skin analysis only and is <strong>not a medical diagnosis tool</strong>. The analysis is generated by an AI vision model and may not accurately reflect your skin condition. Always consult a board-certified dermatologist for skin health concerns.</p>
       </section>
 
       <span class="privacy-eyebrow">contact</span>
@@ -91,7 +91,7 @@
 
     <footer class="footer-minimal container">
       Cosmetic analysis only &mdash; not a substitute for professional medical advice.
-      &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
+      &copy; 2026 tinkskin &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
       &nbsp;&bull;&nbsp; <a href="/donate.html">Donate</a>
       &nbsp;&bull;&nbsp; Made with ♥ by helldock
       &nbsp;&bull;&nbsp; <a class="tip-pill" href="https://coindrop.to/helldock0" target="_blank" rel="noopener noreferrer">tip the dev ☕</a>
@@ -109,7 +109,7 @@
 
         btn.addEventListener('click', async () => {
           const ok = window.confirm(
-            "this wipes every dermai key from localStorage and deletes ur progress-photo IndexedDB on this device. ur scans and progress photos won't be recoverable. continue?"
+            "this wipes every tinkskin key from localStorage and deletes ur progress-photo IndexedDB on this device. ur scans and progress photos won't be recoverable. continue?"
           );
           if (!ok) return;
 
@@ -117,18 +117,18 @@
           status.textContent = 'wiping…';
 
           try {
-            // 1. localStorage — only dermAI_* keys, leave other origins' data alone
+            // 1. localStorage — only tinkskin_* keys, leave other origins' data alone
             const toRemove = [];
             for (let i = 0; i < localStorage.length; i++) {
               const k = localStorage.key(i);
-              if (k && k.startsWith('dermAI_')) toRemove.push(k);
+              if (k && k.startsWith('tinkskin_')) toRemove.push(k);
             }
             toRemove.forEach((k) => localStorage.removeItem(k));
 
-            // 2. IndexedDB — best-effort delete of the dermai photos DB
+            // 2. IndexedDB — best-effort delete of the tinkskin photos DB
             if ('indexedDB' in window) {
               await new Promise((resolve) => {
-                const req = indexedDB.deleteDatabase('dermAI_photos');
+                const req = indexedDB.deleteDatabase('tinkskin_photos');
                 req.onsuccess = () => resolve();
                 req.onerror = () => resolve();
                 req.onblocked = () => resolve();

@@ -1,4 +1,4 @@
-# DermAI — Open TODOs
+# tinkskin — Open TODOs
 
 ---
 

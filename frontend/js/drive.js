@@ -1,10 +1,10 @@
 (() => {
   const DRIVE_API        = 'https://www.googleapis.com/drive/v3';
   const DRIVE_UPLOAD_API = 'https://www.googleapis.com/upload/drive/v3';
-  const SCOPE_KEY        = 'dermai-drive-scope';
-  const FOLDER_ROOT_KEY  = 'dermai-drive-folder-root';
-  const FOLDER_SCANS_KEY = 'dermai-drive-folder-scans';
-  const FOLDER_PROG_KEY  = 'dermai-drive-folder-progress';
+  const SCOPE_KEY        = 'tinkskin-drive-scope';
+  const FOLDER_ROOT_KEY  = 'tinkskin-drive-folder-root';
+  const FOLDER_SCANS_KEY = 'tinkskin-drive-folder-scans';
+  const FOLDER_PROG_KEY  = 'tinkskin-drive-folder-progress';
 
   function hasScope() {
     return localStorage.getItem(SCOPE_KEY) === 'true';
@@ -60,11 +60,11 @@
   }
 
   async function ensureScansFolder() {
-    const root = await _ensureFolder('DermAI Photos', null, FOLDER_ROOT_KEY);
+    const root = await _ensureFolder('tinkskin Photos', null, FOLDER_ROOT_KEY);
     return _ensureFolder('Scans', root, FOLDER_SCANS_KEY);
   }
 
-  // Per-day subfolder under DermAI Photos/Scans/. Names look like
+  // Per-day subfolder under tinkskin Photos/Scans/. Names look like
   //   Day 0 - 2026-05-01 (Initial)
   //   Day 5 - 2026-05-06
   // Cached per (day_index + date) in localStorage so repeat photo uploads
@@ -73,12 +73,12 @@
     const scansFolder = await ensureScansFolder();
     const suffix = dayIndex === 0 ? ' (Initial)' : '';
     const name = `Day ${dayIndex} - ${dateYYYYMMDD}${suffix}`;
-    const cacheKey = `dermai-drive-folder-day-${dayIndex}-${dateYYYYMMDD}`;
+    const cacheKey = `tinkskin-drive-folder-day-${dayIndex}-${dateYYYYMMDD}`;
     return _ensureFolder(name, scansFolder, cacheKey);
   }
 
   async function ensureProgressFolder() {
-    const root = await _ensureFolder('DermAI Photos', null, FOLDER_ROOT_KEY);
+    const root = await _ensureFolder('tinkskin Photos', null, FOLDER_ROOT_KEY);
     return _ensureFolder('Progress', root, FOLDER_PROG_KEY);
   }
 
@@ -116,9 +116,9 @@
     await _apiFetch(`${DRIVE_API}/files/${fileId}`, { method: 'DELETE' });
   }
 
-  // Silently migrate existing PhotoDB blobs to DermAI Photos/Scans/ on first Drive grant.
+  // Silently migrate existing PhotoDB blobs to tinkskin Photos/Scans/ on first Drive grant.
   async function migrateFromIndexedDB(userId) {
-    const key = `dermai-drive-migrated:${userId}`;
+    const key = `tinkskin-drive-migrated:${userId}`;
     if (localStorage.getItem(key) || typeof PhotoDB === 'undefined') return;
     try {
       const photos = await PhotoDB.getAll();

@@ -34,7 +34,7 @@ const Storage = (() => {
     };
     console.warn(`[storage] ${method} ${endpoint} -> ${status}`, bodyText?.slice(0, 200));
     // Fire a custom event so any page can react to recurring failures.
-    try { window.dispatchEvent(new CustomEvent('dermai:server-error', { detail: _lastServerError })); }
+    try { window.dispatchEvent(new CustomEvent('tinkskin:server-error', { detail: _lastServerError })); }
     catch (_) { /* SSR safety */ }
   }
 

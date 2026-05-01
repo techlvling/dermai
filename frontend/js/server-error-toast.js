@@ -15,10 +15,10 @@
     if (now - last < COOLDOWN_MS) return;
     seen.set(key, now);
 
-    let host = document.getElementById('dermai-server-error-toast');
+    let host = document.getElementById('tinkskin-server-error-toast');
     if (!host) {
       host = document.createElement('div');
-      host.id = 'dermai-server-error-toast';
+      host.id = 'tinkskin-server-error-toast';
       host.style.cssText = 'position:fixed; left:50%; bottom:1rem; transform:translateX(-50%); z-index:9999; max-width:90vw; padding:0.75rem 1rem; background:#fde7ed; border:1px solid #f5588e; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.15); font:600 0.78rem/1.4 system-ui, sans-serif; color:#a01640; display:flex; gap:0.6rem; align-items:flex-start; cursor:pointer;';
       host.title = 'Click to dismiss';
       host.addEventListener('click', () => host.remove());
@@ -45,7 +45,7 @@
     setTimeout(() => { if (host.parentNode) host.remove(); }, 8000);
   }
 
-  window.addEventListener('dermai:server-error', e => {
+  window.addEventListener('tinkskin:server-error', e => {
     if (e?.detail) show(e.detail);
   });
 })();

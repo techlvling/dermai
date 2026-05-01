@@ -106,7 +106,7 @@ function getClient() {
       apiKey: key,
       defaultHeaders: {
         'HTTP-Referer': 'https://dermai-livid.vercel.app',
-        'X-Title': 'DermAI'
+        'X-Title': 'tinkskin'
       }
     });
   }
@@ -132,7 +132,7 @@ function getGroqClient() {
 // ---------------------------------------------------------------------------
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', message: 'DermAI backend is running' });
+  res.json({ status: 'ok', message: 'tinkskin backend is running' });
 });
 
 app.get('/api/health-ai', async (_req, res) => {
@@ -260,7 +260,7 @@ app.use((err, _req, res, _next) => {
 // ---------------------------------------------------------------------------
 
 app.listen(PORT, () => {
-  console.log(`DermAI running at http://localhost:${PORT}`);
+  console.log(`tinkskin running at http://localhost:${PORT}`);
 });
 
 module.exports = app;

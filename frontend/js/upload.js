@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loggedIn = await Storage.isLoggedIn();
     if (!loggedIn) return; // anon users skip the gate
 
-    if (localStorage.getItem('dermAI_drive_declined') === 'true') {
+    if (localStorage.getItem('tinkskin_drive_declined') === 'true') {
       // User opted out earlier. Allow scan but surface a soft warning so
       // they remember backup is off and can re-enable from Connections.
       showDriveOptOutNotice();
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gate.innerHTML = `
       <div style="flex:1; min-width:240px;">
         <div style="font-weight:700; color:var(--neutral-900); margin-bottom:0.25rem;">${message}</div>
-        <div style="font-size:0.78rem; color:var(--neutral-600);">Your scan photos will save to <code>DermAI Photos/Scans/</code> in your own Drive. We can only see files we created — never your other files.</div>
+        <div style="font-size:0.78rem; color:var(--neutral-600);">Your scan photos will save to <code>tinkskin Photos/Scans/</code> in your own Drive. We can only see files we created — never your other files.</div>
       </div>
       <button class="btn btn-primary" id="drive-gate-connect">Connect Drive</button>
       <button class="link-btn link-btn--muted" id="drive-gate-skip">Skip — local only</button>
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
       Drive.requestDriveScope(); // redirects to OAuth
     });
     document.getElementById('drive-gate-skip').addEventListener('click', () => {
-      localStorage.setItem('dermAI_drive_declined', 'true');
+      localStorage.setItem('tinkskin_drive_declined', 'true');
       gate.remove();
       if (btn) btn.disabled = false;
       if (cameraBtn) cameraBtn.disabled = false;
@@ -586,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         if (rotateInterval) clearInterval(rotateInterval);
         data.savedAt = Date.now();
-        localStorage.setItem('dermAI_analysis', JSON.stringify(data));
+        localStorage.setItem('tinkskin_analysis', JSON.stringify(data));
 
         const saveOpt = document.getElementById('save-photo-opt-in');
         if (saveOpt && saveOpt.checked && capturedFiles[0] && typeof PhotoDB !== 'undefined') {
@@ -653,11 +653,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveToHistory(data) {
     const id    = data.savedAt || Date.now();
     const entry = { id, date: new Date(id).toISOString(), analysis: data };
-    const raw   = localStorage.getItem('dermAI_history');
+    const raw   = localStorage.getItem('tinkskin_history');
     const history = raw ? JSON.parse(raw) : [];
     history.push(entry);
     if (history.length > 20) history.splice(0, history.length - 20);
-    localStorage.setItem('dermAI_history', JSON.stringify(history));
+    localStorage.setItem('tinkskin_history', JSON.stringify(history));
     return history;
   }
 
@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Stamp savedAt so the routine page can tell "just scanned" from "stale
     // cache" when deciding whether to trust localStorage over an empty server.
     if (!data.savedAt) data.savedAt = Date.now();
-    localStorage.setItem('dermAI_analysis', JSON.stringify(data));
+    localStorage.setItem('tinkskin_analysis', JSON.stringify(data));
     const history = saveToHistory(data);
 
     // Capture scan ID for Drive backup (resolves asynchronously). The POST
@@ -1124,13 +1124,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (Drive.hasScope()) {
         // Scope already granted — fire automatically.
         runDriveBackup();
-      } else if (localStorage.getItem('dermAI_drive_declined') === 'true') {
+      } else if (localStorage.getItem('tinkskin_drive_declined') === 'true') {
         // User said no earlier — don't nag. Show a quiet enable affordance.
         label.textContent  = 'drive backup is off';
         status.textContent = '';
         hint.innerHTML     = '<button id="drive-reenable" class="link-btn">turn on backup</button> to save scan pics to ur google drive';
         document.getElementById('drive-reenable').addEventListener('click', async () => {
-          localStorage.removeItem('dermAI_drive_declined');
+          localStorage.removeItem('tinkskin_drive_declined');
           hint.textContent = 'redirecting to google…';
           await Drive.requestDriveScope(); // page redirects; photos in memory are lost
         });
@@ -1146,11 +1146,11 @@ document.addEventListener('DOMContentLoaded', () => {
           await Drive.requestDriveScope();
         });
         document.getElementById('drive-skip').addEventListener('click', () => {
-          localStorage.setItem('dermAI_drive_declined', 'true');
+          localStorage.setItem('tinkskin_drive_declined', 'true');
           label.textContent  = 'drive backup is off';
           hint.innerHTML     = '<button id="drive-reenable2" class="link-btn">turn it on</button> later from any scan';
           document.getElementById('drive-reenable2').addEventListener('click', async () => {
-            localStorage.removeItem('dermAI_drive_declined');
+            localStorage.removeItem('tinkskin_drive_declined');
             hint.textContent = 'redirecting to google…';
             await Drive.requestDriveScope();
           });

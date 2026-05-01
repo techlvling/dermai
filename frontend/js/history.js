@@ -54,7 +54,7 @@ window.History = (function () {
       }));
     } else {
       // Anonymous OR server unreachable — fall back to local cache.
-      historyData = (Storage.get('dermAI_history') || []).slice();
+      historyData = (Storage.get('tinkskin_history') || []).slice();
     }
     historyData.sort((a, b) => new Date(b.date || b.id) - new Date(a.date || a.id));
 
@@ -227,7 +227,7 @@ window.History = (function () {
   function _viewRoutine(id) {
     const entry = historyData.find(e => String(e.id || e.date) === id);
     if (!entry || !entry.analysis) return;
-    localStorage.setItem('dermAI_analysis', JSON.stringify({ ...entry.analysis, savedAt: Date.now() }));
+    localStorage.setItem('tinkskin_analysis', JSON.stringify({ ...entry.analysis, savedAt: Date.now() }));
     if (typeof window.showSection === 'function') {
       window.showSection('routine');
     } else {
@@ -239,7 +239,7 @@ window.History = (function () {
     const idx = historyData.findIndex(e => String(e.id || e.date) === id);
     if (idx === -1) return;
     const entry = historyData.splice(idx, 1)[0];
-    Storage.set('dermAI_history', historyData);
+    Storage.set('tinkskin_history', historyData);
 
     // Server-backed entries: also DELETE on the server, otherwise the next
     // _init re-merges them from /api/scans and the row "respawns".
@@ -468,7 +468,7 @@ window.History = (function () {
   window.clearAll = function () {
     if (!confirm('nuke all scan history + saved pics? no take-backs fr.')) return;
     historyData = [];
-    Storage.set('dermAI_history', []);
+    Storage.set('tinkskin_history', []);
     PhotoDB.getAll()
       .then(photos => Promise.all(photos.map(p => PhotoDB.remove(p.id))))
       .catch(() => {});
@@ -478,7 +478,7 @@ window.History = (function () {
   window.exportJSON = function () {
     const payload = JSON.stringify({ history: historyData, exportedAt: new Date().toISOString(), version: 2 }, null, 2);
     const url = URL.createObjectURL(new Blob([payload], { type: 'application/json' }));
-    const a   = Object.assign(document.createElement('a'), { href: url, download: `dermAI-history-${Date.now()}.json` });
+    const a   = Object.assign(document.createElement('a'), { href: url, download: `tinkskin-history-${Date.now()}.json` });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
