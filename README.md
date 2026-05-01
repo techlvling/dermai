@@ -2,7 +2,7 @@
 
 AI-powered skin analysis. Upload photos of your face, get a science-backed routine with evidence-rated ingredients.
 
-Live: [dermai-livid.vercel.app](https://dermai-livid.vercel.app)
+Live: [tinkskin.com](https://tinkskin.com)
 
 ---
 

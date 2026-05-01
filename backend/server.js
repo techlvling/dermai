@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 // ALLOWED_ORIGINS env var supports preview deploys: comma-separated list
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : ['http://localhost:3000', 'https://dermai-livid.vercel.app'];
+  : ['http://localhost:3000', 'https://tinkskin.com', 'https://www.tinkskin.com', 'https://dermai-livid.vercel.app'];
 
 app.use(cors({
   origin: allowedOrigins,
@@ -105,7 +105,7 @@ function getClient() {
       baseURL: 'https://openrouter.ai/api/v1',
       apiKey: key,
       defaultHeaders: {
-        'HTTP-Referer': 'https://dermai-livid.vercel.app',
+        'HTTP-Referer': 'https://tinkskin.com',
         'X-Title': 'tinkskin'
       }
     });
