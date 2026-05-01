@@ -54,7 +54,9 @@
   // ── Section routing ──────────────────────────────────────────────
   // Compare stays a section but no longer has a top-level sidebar tab —
   // it's reached via a "Compare two scans →" link inside History.
-  const SECTIONS = ['overview', 'treatment', 'routine', 'diary', 'history', 'ingredients', 'compare', 'connections'];
+  // Diary was removed in Phase 7 — lifestyle entries now happen in the
+  // post-scan modal (LifestyleModal) and the heatmaps live on Overview.
+  const SECTIONS = ['overview', 'treatment', 'routine', 'history', 'ingredients', 'compare', 'connections'];
   const mounted  = {};
 
   function showSection(key) {
@@ -79,10 +81,6 @@
     if (key === 'treatment' && !mounted.treatment) {
       if (window.Treatment) Treatment.mount();
       mounted.treatment = true;
-    }
-    if (key === 'diary' && !mounted.diary) {
-      if (window.Diary) Diary.mount();
-      mounted.diary = true;
     }
     if (key === 'history' && !mounted.history) {
       History.mount();
@@ -293,6 +291,10 @@
 
   // ── Overview: load stats ─────────────────────────────────────────
   await loadOverview(user);
+
+  // Mount the trends panel (6 heatmaps + correlation + wellness card).
+  // Fire-and-forget — has its own loading state and won't block Overview.
+  if (window.OverviewTrends) OverviewTrends.mount();
 
   async function loadOverview(user) {
     const totalEl  = document.getElementById('stat-total-scans');

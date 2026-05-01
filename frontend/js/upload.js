@@ -733,6 +733,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderHistory(history);
 
+    // Post-scan lifestyle check-in. Modal is dismissable — we don't gate the
+    // scan results behind a form. Fires once we have the scan ID so the
+    // diary row can link back to this scan via scan_id. Anonymous users
+    // skip entirely (they can't persist to /api/diary anyway).
+    if (typeof LifestyleModal !== 'undefined') {
+      Storage.isLoggedIn().then(loggedIn => {
+        if (!loggedIn) return;
+        savedScanInfoPromise.then(scanInfo => {
+          // 600ms grace so the user sees their results land before the
+          // modal pops. Skips if user already engaged with today's check-in.
+          setTimeout(() => {
+            LifestyleModal.open({
+              scanId: scanInfo?.id ?? null,
+              respectSkip: true,
+            });
+          }, 600);
+        });
+      });
+    }
+
     // Soft gate: sign-in CTA for anonymous users
     Storage.isLoggedIn().then(async loggedIn => {
       if (!loggedIn) {

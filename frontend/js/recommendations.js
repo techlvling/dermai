@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
           noAnalysisWarning.classList.remove('hidden');
           // Stale local cache — prune so badges/streak don't disagree.
           if (local) localStorage.removeItem('dermAI_analysis');
+          initDailyCtas();
           return;
         }
       }
@@ -167,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const savedData = localStorage.getItem('dermAI_analysis');
       if (!savedData) {
         noAnalysisWarning.classList.remove('hidden');
+        initDailyCtas();
         return;
       }
       userAnalysis = JSON.parse(savedData);
@@ -258,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderWeatherFromLocation();
       initPhotoTimeline();
       initNotifications();
+      initDailyCtas();
       hydrateRoutineFromServer();
     } catch (err) {
       console.error('Failed to load DB', err);
@@ -1284,6 +1287,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const amInput  = document.getElementById('notif-am');
     const pmInput  = document.getElementById('notif-pm');
     const hint     = document.getElementById('notif-hint');
+    const scanToggle  = document.getElementById('notif-scan-toggle');
+    const scanRow     = document.getElementById('notif-scan-time-row');
+    const scanInput   = document.getElementById('notif-scan-time');
 
     toggle.checked = prefs.enabled && Notification.permission === 'granted';
     amInput.value  = prefs.amTime;
@@ -1312,12 +1318,70 @@ document.addEventListener('DOMContentLoaded', () => {
         p.amTime   = amInput.value;
         p.pmTime   = pmInput.value;
         NotifPrefs.set(p);
-        if (p.enabled) NotifPrefs.schedule();
+        if (p.enabled || p.scanEnabled) NotifPrefs.schedule();
       });
     });
+
+    // Daily scan reminder — separate toggle, shares the browser permission.
+    if (scanToggle && scanRow && scanInput) {
+      scanToggle.checked = prefs.scanEnabled && Notification.permission === 'granted';
+      scanInput.value    = prefs.scanTime;
+      if (scanToggle.checked) scanRow.classList.remove('hidden');
+
+      scanToggle.addEventListener('change', async () => {
+        if (scanToggle.checked) {
+          const granted = await NotifPrefs.enableScan();
+          if (!granted) {
+            scanToggle.checked = false;
+            if (hint) hint.textContent = 'Permission denied — enable notifications in browser settings.';
+            return;
+          }
+          scanRow.classList.remove('hidden');
+          if (hint) hint.textContent = '';
+        } else {
+          NotifPrefs.disableScan();
+          scanRow.classList.add('hidden');
+        }
+      });
+
+      scanInput.addEventListener('change', () => {
+        const p = NotifPrefs.get();
+        p.scanTime = scanInput.value;
+        NotifPrefs.set(p);
+        if (p.scanEnabled) NotifPrefs.schedule();
+      });
+    }
   }
 
-  // ── F14 — Skin diary moved to frontend/js/diary.js (Phase 6 IA revamp).
+  // ── Daily Scan + Quick Check-in CTAs ──────────────────────────────
+  // Shows "Scanned today ✓" when there's already a scan stamped today.
+  // Anonymous users see the buttons but the modal POST silently no-ops.
+  function initDailyCtas() {
+    const scanBtn   = document.getElementById('daily-scan-btn');
+    const scanLabel = document.getElementById('daily-scan-btn-label');
+    const checkinBtn = document.getElementById('quick-checkin-btn');
+
+    if (scanBtn && scanLabel) {
+      const stamp = userAnalysis?.savedAt;
+      const isToday = stamp && (new Date(stamp).toDateString() === new Date().toDateString());
+      if (isToday) {
+        scanLabel.textContent = 'Scanned today ✓ — Re-scan';
+        scanBtn.classList.remove('btn-primary');
+        scanBtn.classList.add('btn-outline');
+      }
+    }
+
+    if (checkinBtn) {
+      checkinBtn.addEventListener('click', () => {
+        if (typeof LifestyleModal !== 'undefined') {
+          LifestyleModal.open({});
+        }
+      });
+    }
+  }
+
+  // ── F14 — Skin diary replaced by post-scan lifestyle-modal.js + Overview
+  //         heatmaps in overview-trends.js (Phase 7 daily-scan flow).
 
   // ── F15 — Shareable routine card (Canvas → PNG) ───────────────────
   window.shareRoutineCard = async function () {

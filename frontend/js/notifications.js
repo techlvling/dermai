@@ -1,10 +1,17 @@
 const NotifPrefs = (() => {
   const KEY = 'dermAI_notifPrefs';
+  const DEFAULTS = {
+    enabled: false,        // routine AM/PM reminders master toggle
+    amTime: '08:00',
+    pmTime: '21:00',
+    scanEnabled: false,    // daily-scan reminder toggle (separate from routine)
+    scanTime: '20:00',
+  };
 
   function get() {
     try {
-      return JSON.parse(localStorage.getItem(KEY)) || { enabled: false, amTime: '08:00', pmTime: '21:00' };
-    } catch { return { enabled: false, amTime: '08:00', pmTime: '21:00' }; }
+      return { ...DEFAULTS, ...(JSON.parse(localStorage.getItem(KEY)) || {}) };
+    } catch { return { ...DEFAULTS }; }
   }
 
   function set(prefs) { localStorage.setItem(KEY, JSON.stringify(prefs)); }
@@ -20,17 +27,25 @@ const NotifPrefs = (() => {
 
   function schedule() {
     const prefs = get();
-    if (!prefs.enabled || Notification.permission !== 'granted') return;
-    const bodies = [
-      'Time for your morning skincare routine!',
-      'Evening routine reminder — your skin will thank you.'
-    ];
-    [prefs.amTime, prefs.pmTime].forEach((t, i) => {
+    if (Notification.permission !== 'granted') return;
+    if (prefs.enabled) {
+      const bodies = [
+        'Time for your morning skincare routine!',
+        'Evening routine reminder — your skin will thank you.'
+      ];
+      [prefs.amTime, prefs.pmTime].forEach((t, i) => {
+        setTimeout(() => {
+          new Notification('DermAI', { body: bodies[i], icon: '/favicon.ico' });
+          schedule();
+        }, msUntil(t));
+      });
+    }
+    if (prefs.scanEnabled) {
       setTimeout(() => {
-        new Notification('DermAI', { body: bodies[i], icon: '/favicon.ico' });
+        new Notification('DermAI', { body: 'Time for today\'s skin scan + check-in.', icon: '/favicon.ico' });
         schedule();
-      }, msUntil(t));
-    });
+      }, msUntil(prefs.scanTime));
+    }
   }
 
   async function enable() {
@@ -49,13 +64,31 @@ const NotifPrefs = (() => {
     set(prefs);
   }
 
+  // Same enable/disable shape, but for the daily-scan reminder. Permission
+  // grant is shared (one Notification.requestPermission per browser).
+  async function enableScan() {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') return false;
+    const prefs = get();
+    prefs.scanEnabled = true;
+    set(prefs);
+    schedule();
+    return true;
+  }
+
+  function disableScan() {
+    const prefs = get();
+    prefs.scanEnabled = false;
+    set(prefs);
+  }
+
   function init() {
     if (!('Notification' in window)) return;
     const prefs = get();
-    if (prefs.enabled && Notification.permission === 'granted') schedule();
+    if ((prefs.enabled || prefs.scanEnabled) && Notification.permission === 'granted') schedule();
   }
 
-  return { get, set, enable, disable, schedule, init };
+  return { get, set, enable, disable, enableScan, disableScan, schedule, init };
 })();
 
 document.addEventListener('DOMContentLoaded', () => NotifPrefs.init());
