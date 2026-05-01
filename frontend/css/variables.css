@@ -18,6 +18,17 @@
   --calm-500:    #5b8def;
   --relax-500:   #8a6dd6;
 
+  /* Accent — Lavender (used for evidence panels, CTA gradient, .fi-lav icon
+     tile, etc). These were referenced in CSS for ages but never defined,
+     causing var(--accent-500) to fall through to inherited color and making
+     accent-styled chips/icons render invisible. */
+  --accent-100: #ede5ff;
+  --accent-300: #c2b5ff;
+  --accent-400: #b09bff;
+  --accent-500: #a07cff;
+  --accent-600: #7e58e8;
+  --accent-700: #5b3da8;
+
   /* Accent — Mint */
   --mint-300: #a8f0d0;
   --mint-500: #34c4a3;
