@@ -1818,7 +1818,7 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin: 0 0 1.25rem 0;
+  margin: 0 0 0.5rem 0;
   font-size: 1.4rem;
   letter-spacing: -0.01em;
   color: var(--neutral-800);
@@ -1835,6 +1835,12 @@
   font-size: 0.75rem;
   font-weight: 700;
 }
+.tx-cat-subtitle {
+  margin: 0 0 1.25rem 0;
+  font-size: 0.82rem;
+  color: var(--neutral-500);
+  line-height: 1.5;
+}
 
 .tx-grid {
   display: grid;
@@ -1843,6 +1849,7 @@
 }
 
 .tx-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -1856,6 +1863,29 @@
 .tx-card:hover {
   box-shadow: var(--shadow-pop);
   transform: translateY(-1px);
+}
+
+/* Top-pick callout — pink ribbon + pink border accent on the first
+   ranked product per category. Lifts it out so users know where to start. */
+.tx-card--top {
+  border: 2px solid var(--primary-500);
+  box-shadow: var(--shadow-pop);
+}
+.tx-pick-badge {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  padding: 0.2rem 0.7rem;
+  background: var(--primary-500);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-soft);
+  white-space: nowrap;
+  z-index: 1;
 }
 .tx-card-head {
   display: flex;

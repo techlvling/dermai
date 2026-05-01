@@ -77,12 +77,62 @@
 .hero-actions {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .btn-large {
   padding: 1rem 2rem;
   font-size: 0.9rem;
+}
+
+/* Direct 1→2→3 flow strip — sits between hero CTAs and trust badges so
+   skimmers grok what DermAI does without scrolling to the "How it works"
+   section further down. */
+.hero-flow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+  padding: 0.85rem 1.1rem;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border-glass, rgba(0,0,0,0.06));
+  border-radius: var(--radius-md, 14px);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--neutral-800, #2a2620);
+}
+.hero-flow-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 1;
+  min-width: 0;
+}
+.hero-flow-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.hero-flow-arrow {
+  color: var(--neutral-400, #9c958a);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .hero-flow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
+  .hero-flow-arrow { display: none; }
 }
 
 /* Trust badges */

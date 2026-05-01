@@ -160,14 +160,20 @@ window.Treatment = (function () {
 
     catsEl.innerHTML = ['cleanser', 'treatment', 'moisturizer', 'sunscreen']
       .filter(cat => byCat[cat].length > 0)
-      .map(cat => `
+      .map(cat => {
+        const items = byCat[cat];
+        // Only mark a top pick + show the budget subtitle when there's a real
+        // choice to make. Single-item categories ARE the pick by default.
+        const showSubtitle = items.length > 1;
+        return `
         <section class="tx-cat">
-          <h2 class="tx-cat-title">${labels[cat]} <span class="tx-cat-count">${byCat[cat].length}</span></h2>
+          <h2 class="tx-cat-title">${labels[cat]} <span class="tx-cat-count">${items.length}</span></h2>
+          ${showSubtitle ? `<p class="tx-cat-subtitle">start with #1. the rest are solid alternates if budget or stock is tight.</p>` : ''}
           <div class="tx-grid">
-            ${byCat[cat].map(p => _buildProductCardHTML(p)).join('')}
+            ${items.map((p, i) => _buildProductCardHTML(p, i === 0 && showSubtitle)).join('')}
           </div>
         </section>
-      `).join('');
+      `;}).join('');
 
     // Wire toggle buttons
     catsEl.querySelectorAll('[data-tx-toggle]').forEach(btn => {
@@ -239,7 +245,7 @@ window.Treatment = (function () {
 
   // ── Card rendering (self-contained — duplicated from recommendations.js
   //   intentionally so each page can evolve independently) ───────────────────
-  function _buildProductCardHTML(prod) {
+  function _buildProductCardHTML(prod, isTopPick = false) {
     const ingredient = _allIngredients.find(i => i.id === prod.primaryIngredientId);
     const owned = !!_ownedRowFor(prod);
     const evidenceTier = ingredient?.evidenceTier ?? '?';
@@ -247,7 +253,8 @@ window.Treatment = (function () {
     const evidenceHTML = _buildEvidenceHTML(prod, ingredient);
 
     return `
-      <div class="tx-card">
+      <div class="tx-card${isTopPick ? ' tx-card--top' : ''}">
+        ${isTopPick ? '<span class="tx-pick-badge">our pick</span>' : ''}
         <div class="tx-card-head">
           <div>
             <div class="tx-card-brand">${prod.brand}</div>
