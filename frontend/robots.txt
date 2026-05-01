@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /recommendations.html
+Disallow: /login-callback.html
+Disallow: /api/
+Disallow: /uploads/
+
+Sitemap: https://tinkskin.in/sitemap.xml
