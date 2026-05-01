@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5588e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>DermAI | tip the dev</title>
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/privacy.css" />
+    <style>
+      .donate-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        margin: 1rem 0 0.5rem;
+        padding: 0.95rem 1.6rem;
+        font-family: var(--font-primary);
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        background: var(--primary-500);
+        border: none;
+        border-radius: var(--radius-pill);
+        text-decoration: none;
+        transition: background var(--duration-base), transform var(--duration-fast);
+        min-height: 48px;
+      }
+      .donate-cta:hover {
+        background: var(--primary-600);
+        transform: translateY(-1px);
+        color: #fff;
+      }
+      .donate-cta:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow-glow);
+      }
+
+      .donate-cost-list {
+        list-style: none;
+        padding: 0;
+        margin: 0.5rem 0 1.5rem;
+        display: grid;
+        gap: 0.5rem;
+      }
+      .donate-cost-list li {
+        display: grid;
+        grid-template-columns: 1.5rem 1fr;
+        gap: 0.65rem;
+        align-items: start;
+        padding: 0.6rem 0.85rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+      }
+      .donate-cost-list .donate-cost-emoji {
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+      .donate-cost-list .donate-cost-text {
+        color: var(--text-body);
+        font-size: 0.95rem;
+        line-height: 1.55;
+      }
+      .donate-cost-list .donate-cost-text strong {
+        color: var(--text-strong);
+      }
+
+      .donate-alt-list {
+        list-style: none;
+        padding: 0;
+        margin: 0.5rem 0 0;
+        display: grid;
+        gap: 0.5rem;
+      }
+      .donate-alt-list li {
+        padding: 0.65rem 0.85rem;
+        background: rgba(160, 124, 255, 0.08);
+        border: 1px solid rgba(160, 124, 255, 0.18);
+        border-radius: var(--radius-md);
+        font-size: 0.95rem;
+        color: var(--text-body);
+        line-height: 1.55;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="nav-mount"></div>
+
+    <main class="privacy-container">
+      <h1>tip <span class="gradient-text">the dev</span></h1>
+      <p class="privacy-last-updated">last updated: may 1, 2026</p>
+
+      <div class="privacy-tldr">
+        <span class="privacy-tldr-label">tldr</span>
+        <p>dermai is built solo. no VC, no team, no ads, no upsell. scans are free and stay free. if it's helping ur skin, throw me a few coins. zero obligation.</p>
+      </div>
+
+      <span class="privacy-eyebrow">why tip</span>
+      <h2>real talk on what it takes to run this</h2>
+      <p>dermai is built and maintained by one person — me, helldock. there's no team, no investors, and no plan to slap ads on ur scan results. scans are free and that's not changing.</p>
+      <p>but every scan costs me real money. AI vision API calls. supabase storage + auth. the domain. the lights. tips don't go to anyone's salary — they keep the lights on so the next person who wants to know wtf is on their face can scan for free too.</p>
+
+      <span class="privacy-eyebrow">where it goes</span>
+      <h2>what tips actually pay for</h2>
+      <ul class="donate-cost-list">
+        <li>
+          <span class="donate-cost-emoji" aria-hidden="true">🧠</span>
+          <span class="donate-cost-text"><strong>AI inference.</strong> every scan = a few cents in vision-model tokens. 1000 scans = real money.</span>
+        </li>
+        <li>
+          <span class="donate-cost-emoji" aria-hidden="true">🗄️</span>
+          <span class="donate-cost-text"><strong>supabase.</strong> auth, scan history, daily check-ins. free tier breaks ~10k users.</span>
+        </li>
+        <li>
+          <span class="donate-cost-emoji" aria-hidden="true">🌐</span>
+          <span class="donate-cost-text"><strong>domain + hosting.</strong> the .com renews yearly. vercel handles the deploy.</span>
+        </li>
+        <li>
+          <span class="donate-cost-emoji" aria-hidden="true">🍜</span>
+          <span class="donate-cost-text"><strong>ramen.</strong> shipping new features at 3am isn't sustainable on water.</span>
+        </li>
+      </ul>
+
+      <span class="privacy-eyebrow">tip jar</span>
+      <h2>throw me a few coins</h2>
+      <p>one button. crypto, card, whatever. coindrop handles the rest.</p>
+      <a class="donate-cta" href="https://coindrop.to/helldock0" target="_blank" rel="noopener noreferrer">tip the dev ☕ →</a>
+      <p style="font-size:0.82rem; color:var(--neutral-500); margin-top:0.5rem;">opens coindrop in a new tab. no account needed on either side.</p>
+
+      <span class="privacy-eyebrow">free help</span>
+      <h2>broke? these also help fr</h2>
+      <ul class="donate-alt-list">
+        <li>tell one friend who'd actually use it. organic word-of-mouth beats ads every time.</li>
+        <li>found a bug? send a screenshot to <a href="mailto:jamesjoy696@gmail.com">jamesjoy696@gmail.com</a>. honest bug reports = better app.</li>
+        <li>got feedback? same email. tell me what's broken, what's mid, what slaps. i actually read it.</li>
+      </ul>
+
+      <span class="privacy-eyebrow">small print</span>
+      <h2>the boring bits</h2>
+      <p>tips are gifts, not purchases — no refunds, no perks unlocked, no premium tier waiting on the other side. ur scan history, recommendations, treatment list, and routine all work the same whether u tip or u don't.</p>
+      <p>see <a href="/privacy.html">privacy policy</a> for how scans + photos are handled. the medical disclaimer applies regardless: dermai is cosmetic skin analysis only, not a medical diagnosis tool.</p>
+    </main>
+
+    <footer class="footer-minimal container">
+      Cosmetic analysis only &mdash; not a substitute for professional medical advice.
+      &copy; 2026 DermAI &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy Policy</a>
+      &nbsp;&bull;&nbsp; <a href="/donate.html">Donate</a>
+      &nbsp;&bull;&nbsp; Made with ♥ by helldock
+      &nbsp;&bull;&nbsp; <a class="tip-pill" href="https://coindrop.to/helldock0" target="_blank" rel="noopener noreferrer">tip the dev ☕</a>
+    </footer>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/nav.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', () => Nav.render(''));</script>
+    <script>
+      // Vercel Web Analytics — only inject in production (skip localhost / private IPs)
+      if (!/^(localhost|127\.|10\.|192\.168\.|\[::1\])/.test(location.hostname)) {
+        var s = document.createElement('script');
+        s.defer = true; s.src = '/_vercel/insights/script.js';
+        document.head.appendChild(s);
+      }
+    </script>
+  </body>
+</html>
