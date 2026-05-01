@@ -202,14 +202,19 @@ ul {
 }
 
 /* ── Section eyebrow ─────────────────────────────────────────────── */
+/* Pink pill chip — used above section titles to call out what's coming.
+   Replaces the older gray-uppercase stamp look. */
 .section-eyebrow {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--neutral-500);
-  text-transform: uppercase;
-  margin-bottom: 0.75rem;
-  display: block;
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--primary-700);
+  background: rgba(245, 88, 142, 0.12);
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+  text-transform: lowercase;
 }
 
 /* ── Shared minimal footer ───────────────────────────────────────── */
