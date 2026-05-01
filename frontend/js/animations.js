@@ -1,11 +1,23 @@
 // Scroll-reveal via IntersectionObserver
 (async function () {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reveals = document.querySelectorAll('.reveal');
 
   // Immediately show all reveals if reduced-motion is on
   if (prefersReduced) {
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    reveals.forEach(el => el.classList.add('visible'));
     return;
+  }
+
+  // Fail-safe: if IO is missing or anything below errors out, force every
+  // reveal visible after 2.5s so the page is never permanently blank below
+  // the fold.
+  const failSafe = setTimeout(() => {
+    reveals.forEach(el => el.classList.add('visible'));
+  }, 2500);
+
+  if (typeof IntersectionObserver !== 'function') {
+    return; // failSafe will reveal everything
   }
 
   // Scroll reveal
@@ -18,7 +30,9 @@
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  reveals.forEach(el => revealObserver.observe(el));
+  // Once we've successfully wired observers we don't need the broad fallback —
+  // but we still keep it as a safety net in case observer callbacks never fire.
 
   // Fetch real ingredient counts and update stat tiles before count-up runs.
   // Falls back to hardcoded data-count values on any error or timeout.
