@@ -17,26 +17,26 @@ window.OverviewTrends = (function () {
   //    red = high stress). For wellness, dark green = good.
   const METRIC_DEFS = {
     water: {
-      label: 'WATER',
+      label: 'h2o',
       colorClass: 'trends-color-water',
       level: v => v == null ? 0 : v < 0.5 ? 1 : v < 1.5 ? 2 : 3,
       title: v => v == null ? 'no log' : `${v} L`,
     },
     sleep: {
-      label: 'SLEEP',
+      label: 'sleep',
       colorClass: 'trends-color-sleep',
       level: v => v == null ? 0 : v < 6 ? 1 : v < 8 ? 2 : 3,
       title: v => v == null ? 'no log' : `${v} h`,
     },
     stress: {
-      label: 'STRESS',
+      label: 'stress',
       // higher value = higher stress = darker
       colorClass: 'trends-color-stress',
       level: v => v == null ? 0 : v <= 2 ? 1 : v === 3 ? 2 : 3,
       title: v => v == null ? 'no log' : `${v}/5`,
     },
     sun: {
-      label: 'SUN',
+      label: 'sun',
       colorClass: 'trends-color-sun',
       // sweet spot 15-60 = level 3, 60-120 = 2, 5-15 or >120 = 1, 0 = 0
       level: v => {
@@ -50,13 +50,13 @@ window.OverviewTrends = (function () {
       title: v => v == null ? 'no log' : `${v} min`,
     },
     alcohol: {
-      label: 'ALCOHOL',
+      label: 'drinks',
       colorClass: 'trends-color-alcohol',
       level: v => v == null ? 0 : v === 0 ? 0 : v === 1 ? 1 : v === 2 ? 2 : 3,
       title: v => v == null ? 'no log' : `${v} drinks`,
     },
     wellness: {
-      label: 'WELLNESS',
+      label: 'vibe',
       colorClass: 'trends-color-wellness',
       level: v => v == null ? 0 : v < 40 ? 1 : v < 70 ? 2 : 3,
       title: v => v == null ? 'no log' : `${v}/100`,
@@ -220,15 +220,15 @@ window.OverviewTrends = (function () {
       if (Math.abs(delta) < 4) return; // not interesting
       insights.push({
         label, delta, n: matching.length,
-        text: `On days you ${comparisonText}, your skin scored <strong>${Math.abs(delta)} points ${delta < 0 ? 'lower' : 'higher'}</strong> than other days (across ${matching.length} observed days).`,
+        text: `on days u ${comparisonText}, ur skin scored <strong>${Math.abs(delta)} points ${delta < 0 ? 'worse' : 'better'}</strong> than other days (${matching.length} days observed).`,
       });
     };
 
-    tryMetric('sleep',    'sleep_low',    (v, t) => v < t, 6,   'slept under 6 hours');
-    tryMetric('water',    'water_low',    (v, t) => v < t, 1.5, 'drank less than 1.5 L of water');
+    tryMetric('sleep',    'sleep_low',    (v, t) => v < t, 6,   'slept <6h');
+    tryMetric('water',    'water_low',    (v, t) => v < t, 1.5, 'drank <1.5L water');
     tryMetric('stress',   'stress_high',  (v, t) => v >= t, 4,  'rated stress 4 or 5');
     tryMetric('alcohol',  'alcohol_any',  (v, t) => v >= t, 2,  'had 2+ drinks');
-    tryMetric('sun',      'sun_low',      (v, t) => v < t, 5,   'spent under 5 min outside');
+    tryMetric('sun',      'sun_low',      (v, t) => v < t, 5,   'spent <5 min outside');
 
     if (insights.length === 0) {
       card.classList.add('hidden');
@@ -242,7 +242,7 @@ window.OverviewTrends = (function () {
     let idx = 0;
     function show() {
       card.innerHTML = `
-        <div class="correlation-eyebrow">PATTERN SPOTTED</div>
+        <div class="correlation-eyebrow">bro look at this</div>
         <p class="correlation-body">${top[idx].text}</p>
         ${top.length > 1 ? `<div class="correlation-dots">${top.map((_, i) => `<span class="${i === idx ? 'active' : ''}"></span>`).join('')}</div>` : ''}`;
     }
@@ -266,11 +266,11 @@ window.OverviewTrends = (function () {
     root.innerHTML = `
       <section class="trends-panel">
         <div class="trends-header">
-          <h2>Your trends</h2>
+          <h2>how u been</h2>
           <div class="range-toggle" id="trends-range-toggle" role="tablist" aria-label="Trends range">
-            <button type="button" data-range="30" role="tab" aria-selected="true" class="active">30 DAYS</button>
-            <button type="button" data-range="90" role="tab" aria-selected="false">90 DAYS</button>
-            <button type="button" data-range="365" role="tab" aria-selected="false">YEAR</button>
+            <button type="button" data-range="30" role="tab" aria-selected="true" class="active">30 days</button>
+            <button type="button" data-range="90" role="tab" aria-selected="false">90 days</button>
+            <button type="button" data-range="365" role="tab" aria-selected="false">year</button>
           </div>
         </div>
         <div class="trends-rows" id="trends-rows"></div>

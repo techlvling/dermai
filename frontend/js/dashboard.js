@@ -35,11 +35,11 @@
     banner.style.cssText = 'position:sticky; top:0; z-index:50; padding:0.875rem 1.25rem; background:rgba(245,88,142,0.06); border-bottom:1px solid rgba(245,88,142,0.18); display:flex; align-items:center; gap:1rem; flex-wrap:wrap; font-size:0.875rem;';
     banner.innerHTML = `
       <span style="flex:1; min-width:200px;">
-        <strong>Back up scan photos to Google Drive?</strong>
-        Granting access now means future scans save automatically without an extra redirect.
+        <strong>back up ur pics to google drive?</strong>
+        say yes now and future scans auto-save without an extra redirect.
       </span>
-      <button class="btn btn-primary" id="drive-login-allow" style="padding:0.4rem 0.875rem; font-size:0.78rem;">Allow Drive access</button>
-      <button class="link-btn link-btn--muted" id="drive-login-skip">Not now</button>
+      <button class="btn btn-primary" id="drive-login-allow" style="padding:0.4rem 0.875rem; font-size:0.78rem;">hook up drive</button>
+      <button class="link-btn link-btn--muted" id="drive-login-skip">nah skip</button>
     `;
     document.body.insertBefore(banner, document.body.firstChild);
     document.getElementById('drive-login-allow').addEventListener('click', () => {
@@ -198,35 +198,35 @@
     const declined = localStorage.getItem('dermAI_drive_declined') === 'true';
 
     if (granted) {
-      statusEl.textContent = 'Connected';
+      statusEl.textContent = 'hooked up ✓';
       statusEl.className   = 'conn-card__status conn-card__status--on';
       actionsEl.innerHTML = `
-        <p class="conn-help">Scans save to <code>DermAI Photos/Scans/Day N - DATE/</code> in your Drive, organized by days since your first scan.</p>
+        <p class="conn-help">scans save to <code>DermAI Photos/Scans/Day N - DATE/</code> in ur drive, organized by days since ur first scan.</p>
         <div class="conn-actions-row">
-          <button type="button" class="btn btn-primary" id="conn-drive-open">Open my Drive folder</button>
-          <button type="button" class="btn btn-outline" id="conn-drive-test">Test Drive connection</button>
-          <button type="button" class="btn btn-outline" id="conn-drive-forget">Forget</button>
-          <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener" class="link-btn">Revoke at Google →</a>
+          <button type="button" class="btn btn-primary" id="conn-drive-open">open my drive folder</button>
+          <button type="button" class="btn btn-outline" id="conn-drive-test">test if it works</button>
+          <button type="button" class="btn btn-outline" id="conn-drive-forget">yeet</button>
+          <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener" class="link-btn">revoke at google →</a>
         </div>
         <pre id="conn-drive-test-output" style="display:none; margin-top:1rem; padding:0.875rem; background:#0f172a; color:#e2e8f0; border-radius:8px; font-family:ui-monospace, monospace; font-size:0.72rem; line-height:1.45; white-space:pre-wrap; max-height:280px; overflow:auto;"></pre>
       `;
       document.getElementById('conn-drive-open').addEventListener('click', async () => {
         const btn = document.getElementById('conn-drive-open');
         btn.disabled = true;
-        btn.textContent = 'Looking up folder…';
+        btn.textContent = 'looking up folder…';
         try {
           // Resolve fresh — don't trust localStorage cache that may have
           // been cleared since last sign-in.
           const folderId = await Drive.ensureScansFolder();
           if (folderId) {
             window.open(`https://drive.google.com/drive/folders/${encodeURIComponent(folderId)}`, '_blank', 'noopener');
-            btn.textContent = 'Open my Drive folder';
+            btn.textContent = 'open my drive folder';
             btn.disabled = false;
           } else {
-            btn.textContent = 'Folder not found — try Test Drive';
+            btn.textContent = 'folder not found — try the test btn';
           }
         } catch (e) {
-          btn.textContent = `Couldn't open: ${(e?.message || 'error').slice(0, 60)}`;
+          btn.textContent = `couldn't open: ${(e?.message || 'error').slice(0, 60)}`;
         }
       });
       document.getElementById('conn-drive-test').addEventListener('click', () => testDriveConnection());
@@ -240,14 +240,14 @@
         renderConnections();
       });
     } else {
-      statusEl.textContent = declined ? 'Declined' : 'Not connected';
+      statusEl.textContent = declined ? 'declined' : 'not hooked up';
       statusEl.className   = 'conn-card__status conn-card__status--off';
       actionsEl.innerHTML = `
         <p class="conn-help">${declined
-          ? 'You skipped the Drive prompt earlier. Connect now to start auto-saving scan photos.'
-          : 'Connect your Google Drive so every scan is auto-saved to a private folder.'}</p>
+          ? 'u skipped the drive prompt earlier. hook it up now to auto-save scan pics.'
+          : 'hook up ur google drive so every scan auto-saves to a private folder.'}</p>
         <div class="conn-actions-row">
-          <button type="button" class="btn btn-primary" id="conn-drive-grant">Connect Google Drive</button>
+          <button type="button" class="btn btn-primary" id="conn-drive-grant">hook up google drive</button>
         </div>
       `;
       document.getElementById('conn-drive-grant').addEventListener('click', () => {
@@ -340,9 +340,9 @@
       if (recent.length === 0) {
         recentEl.innerHTML = `
           <div class="dash-empty" style="grid-column:1/-1">
-            <h2>No scans yet</h2>
-            <p>Take your first AI skin analysis to start tracking your progress.</p>
-            <a href="/analyze.html" class="btn btn-primary">Analyze My Skin</a>
+            <h2>no scans yet</h2>
+            <p>scan ur face to start tracking ur progress.</p>
+            <a href="/analyze.html" class="btn btn-primary">scan ur shit</a>
           </div>`;
       } else {
         recentEl.innerHTML = recent.map(entry => {

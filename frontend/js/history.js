@@ -109,7 +109,7 @@ window.History = (function () {
     emptyEl.classList.add('hidden');
     bulkEl.classList.remove('hidden');
     if (countEl) {
-      countEl.textContent = `${historyData.length} scan${historyData.length !== 1 ? 's' : ''} stored`;
+      countEl.textContent = `${historyData.length} scan${historyData.length !== 1 ? 's' : ''} on file`;
     }
 
     const reversed = [...historyData].reverse();
@@ -197,14 +197,14 @@ window.History = (function () {
               ? `<button class="btn btn-primary btn-sm" data-action="view" data-id="${entryId}">VIEW ROUTINE</button>`
               : ''}
             ${canCompare
-              ? `<button class="btn-ghost btn-sm" data-action="compare-pick" data-id="${entryId}">Compare ↕</button>`
+              ? `<button class="btn-ghost btn-sm" data-action="compare-pick" data-id="${entryId}">compare ↕</button>`
               : ''}
             <button class="btn-ghost btn-sm" data-action="del" data-id="${entryId}">DELETE</button>
           </div>
           ${canCompare ? `
           <div class="hc-compare-picker" id="picker-${entryId}" hidden>
             <select class="hc-picker-select" data-entry-id="${entryId}">
-              <option value="">Compare with…</option>
+              <option value="">compare with…</option>
               ${eligibleOptions}
             </select>
           </div>` : ''}
@@ -274,7 +274,7 @@ window.History = (function () {
     panel.dataset.loaded = 'false';
     panel.dataset.comparedWith = String(prevEntryId);
 
-    panel.innerHTML = '<div class="hc-compare-loading"><span class="hc-spinner"></span> Comparing scans…</div>';
+    panel.innerHTML = '<div class="hc-compare-loading"><span class="hc-spinner"></span> comparing scans…</div>';
     panel.hidden = false;
 
     try {
@@ -289,7 +289,7 @@ window.History = (function () {
       if (hasPhotos) {
         const googleToken = window.Auth ? await window.Auth.getProviderToken() : null;
         if (!googleToken) {
-          panel.innerHTML = '<p class="hc-compare-error">Sign in with Google and enable Drive backup to use comparison.</p>';
+          panel.innerHTML = '<p class="hc-compare-error">sign in with google + hook up drive to use compare.</p>';
           return;
         }
 
@@ -323,7 +323,7 @@ window.History = (function () {
       const supabaseToken = window.Auth ? await window.Auth.getToken() : null;
       if (!supabaseToken) {
         if (hasPhotos) { URL.revokeObjectURL(objUrlOlder); URL.revokeObjectURL(objUrlNewer); }
-        panel.innerHTML = '<p class="hc-compare-error">Sign in to use comparison.</p>';
+        panel.innerHTML = '<p class="hc-compare-error">sign in to use compare.</p>';
         return;
       }
 
@@ -343,9 +343,9 @@ window.History = (function () {
 
       if (!apiRes.ok) {
         if (hasPhotos) { URL.revokeObjectURL(objUrlOlder); URL.revokeObjectURL(objUrlNewer); }
-        if (apiRes.status === 404)      panel.innerHTML = '<p class="hc-compare-error">Scan not found.</p>';
-        else if (apiRes.status === 429) panel.innerHTML = '<p class="hc-compare-error">AI rate limit reached. Wait a moment and try again.</p>';
-        else                            panel.innerHTML = '<p class="hc-compare-error">Comparison failed. Try again.</p>';
+        if (apiRes.status === 404)      panel.innerHTML = '<p class="hc-compare-error">scan not found.</p>';
+        else if (apiRes.status === 429) panel.innerHTML = '<p class="hc-compare-error">AI is cooked rn. wait a sec.</p>';
+        else                            panel.innerHTML = '<p class="hc-compare-error">compare failed. try again.</p>';
         return;
       }
 
@@ -374,7 +374,7 @@ window.History = (function () {
 
     } catch (err) {
       console.error('[compareScans]', err);
-      panel.innerHTML = '<p class="hc-compare-error">Comparison failed. Try again.</p>';
+      panel.innerHTML = '<p class="hc-compare-error">compare failed. try again.</p>';
     }
   }
 
@@ -409,7 +409,7 @@ window.History = (function () {
         const d = new Date(e.id || e.date);
         return `<option value="${e.id}">${d.toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric', year:'numeric' })}</option>`;
       }).join('');
-      sel.innerHTML = `<option value="">Select a scan…</option>${opts}`;
+      sel.innerHTML = `<option value="">pick a scan…</option>${opts}`;
     }
 
     buildOptions(selectA);
@@ -423,7 +423,7 @@ window.History = (function () {
 
     runBtn.addEventListener('click', async () => {
       if (!selectA.value || !selectB.value) return;
-      resultEl.innerHTML = '<div class="hc-compare-loading"><span class="hc-spinner"></span> Comparing…</div>';
+      resultEl.innerHTML = '<div class="hc-compare-loading"><span class="hc-spinner"></span> comparing…</div>';
       resultEl.classList.remove('hidden');
 
       // Determine which is older/newer by date
@@ -453,20 +453,20 @@ window.History = (function () {
       });
       if (!apiRes.ok) {
         resultEl.innerHTML = apiRes.status === 429
-          ? '<p class="hc-compare-error">Rate limit reached. Wait a moment.</p>'
-          : '<p class="hc-compare-error">Comparison failed. Try again.</p>';
+          ? '<p class="hc-compare-error">AI is cooked rn. wait a sec.</p>'
+          : '<p class="hc-compare-error">compare failed. try again.</p>';
         return;
       }
       const { narrative } = await apiRes.json();
       resultEl.innerHTML = `<p class="hc-compare-narrative">${narrative}</p>`;
     } catch (err) {
-      resultEl.innerHTML = '<p class="hc-compare-error">Comparison failed. Try again.</p>';
+      resultEl.innerHTML = '<p class="hc-compare-error">compare failed. try again.</p>';
     }
   }
 
   // ── Public exports ───────────────────────────────────────────────
   window.clearAll = function () {
-    if (!confirm('Delete all scan history and saved photos? This cannot be undone.')) return;
+    if (!confirm('nuke all scan history + saved pics? no take-backs fr.')) return;
     historyData = [];
     Storage.set('dermAI_history', []);
     PhotoDB.getAll()

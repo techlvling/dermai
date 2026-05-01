@@ -8,11 +8,11 @@
 // trip. Computes a 0-100 wellness_score client-side and persists it too.
 window.LifestyleModal = (function () {
   const SYMPTOMS = [
-    { id: 'acne_flare', label: 'Acne flare' },
-    { id: 'dryness',    label: 'Dryness' },
-    { id: 'redness',    label: 'Redness' },
-    { id: 'irritation', label: 'Irritation' },
-    { id: 'breakout',   label: 'Breakout' },
+    { id: 'acne_flare', label: 'acne flare' },
+    { id: 'dryness',    label: 'dry asf' },
+    { id: 'redness',    label: 'red' },
+    { id: 'irritation', label: 'irritated' },
+    { id: 'breakout',   label: 'breakout' },
   ];
 
   // ── Helpers ─────────────────────────────────────────────────────────
@@ -79,13 +79,13 @@ window.LifestyleModal = (function () {
     modal.innerHTML = `
       <div class="modal-panel lifestyle-modal-panel">
         <div class="modal-header">
-          <h3 id="lifestyle-modal-title">Today's check-in</h3>
-          <button class="modal-close" id="lifestyle-skip-btn" aria-label="Skip for today">Skip for today</button>
+          <h3 id="lifestyle-modal-title">how's today</h3>
+          <button class="modal-close" id="lifestyle-skip-btn" aria-label="Skip for today">nah skip</button>
         </div>
         <div class="modal-body lifestyle-modal-body" id="lifestyle-body"></div>
         <div class="modal-footer lifestyle-modal-footer">
-          <button class="btn btn-outline" id="lifestyle-yesterday-btn">Same as yesterday</button>
-          <button class="btn btn-primary" id="lifestyle-save-btn">Save check-in</button>
+          <button class="btn btn-outline" id="lifestyle-yesterday-btn">same as yesterday lol</button>
+          <button class="btn btn-primary" id="lifestyle-save-btn">log it</button>
         </div>
       </div>`;
     document.body.appendChild(modal);
@@ -103,11 +103,11 @@ window.LifestyleModal = (function () {
     const sympSet = new Set(e.symptoms || []);
     return `
       <div class="lifestyle-field">
-        <span class="lifestyle-field-label">WATER (LITERS)</span>
+        <span class="lifestyle-field-label">h2o today</span>
         <div class="lifestyle-row">
           <input type="number" id="lf-water" min="0" max="5" step="0.25"
                  value="${e.water ?? ''}" placeholder="0.0" />
-          <span class="lifestyle-goal">of 2.5 L goal</span>
+          <span class="lifestyle-goal">of 2.5L goal</span>
         </div>
         <div class="lifestyle-chips">
           <button class="lifestyle-chip" data-add-water="0.25">+250 ml</button>
@@ -117,7 +117,7 @@ window.LifestyleModal = (function () {
       </div>
 
       <div class="lifestyle-field">
-        <span class="lifestyle-field-label">SLEEP (HOURS)</span>
+        <span class="lifestyle-field-label">sleep hrs</span>
         <div class="lifestyle-chips">
           ${[5,6,7,8,9,10].map(v =>
             `<button class="lifestyle-chip${e.sleep === v ? ' active' : ''}" data-set-sleep="${v}">${v}</button>`
@@ -126,20 +126,20 @@ window.LifestyleModal = (function () {
       </div>
 
       <div class="lifestyle-field">
-        <span class="lifestyle-field-label">STRESS (1–5)</span>
+        <span class="lifestyle-field-label">stress (1–5)</span>
         <div class="lifestyle-chips">
           ${[1,2,3,4,5].map(v =>
             `<button class="lifestyle-chip${e.stress === v ? ' active' : ''}" data-set-stress="${v}">${v}</button>`
           ).join('')}
         </div>
-        <div class="lifestyle-scale-label"><span>1 = CALM</span><span>5 = OVERWHELMED</span></div>
+        <div class="lifestyle-scale-label"><span>1 = chillin</span><span>5 = losing it</span></div>
       </div>
 
       <div class="lifestyle-field">
-        <span class="lifestyle-field-label">SUN (MIN OUTSIDE)</span>
+        <span class="lifestyle-field-label">sun (min outside)</span>
         <div class="lifestyle-row">
           <input type="number" id="lf-sun" min="0" max="720" step="5" value="${e.sun ?? ''}" placeholder="0" />
-          <span class="lifestyle-goal">15–60 min ideal</span>
+          <span class="lifestyle-goal">15–60 min is the sweet spot</span>
         </div>
         <div class="lifestyle-chips">
           ${[15, 30, 60, 90].map(v =>
@@ -149,7 +149,7 @@ window.LifestyleModal = (function () {
       </div>
 
       <div class="lifestyle-field">
-        <span class="lifestyle-field-label">ALCOHOL (DRINKS)</span>
+        <span class="lifestyle-field-label">drinks today</span>
         <div class="lifestyle-chips">
           ${[0,1,2,3].map(v =>
             `<button class="lifestyle-chip${e.alcohol === v ? ' active' : ''}" data-set-alcohol="${v}">${v === 3 ? '3+' : v}</button>`
@@ -158,7 +158,7 @@ window.LifestyleModal = (function () {
       </div>
 
       <div class="lifestyle-field">
-        <span class="lifestyle-field-label">SYMPTOMS (TAP ANY)</span>
+        <span class="lifestyle-field-label">anything weird? (tap any)</span>
         <div class="lifestyle-chips lifestyle-chips--symptoms">
           ${SYMPTOMS.map(s =>
             `<button class="lifestyle-chip${sympSet.has(s.id) ? ' active' : ''}" data-toggle-symptom="${s.id}">${s.label}</button>`
@@ -256,10 +256,10 @@ window.LifestyleModal = (function () {
     const yBtn = modal.querySelector('#lifestyle-yesterday-btn');
     if (!yesterday) {
       yBtn.disabled = true;
-      yBtn.textContent = 'No yesterday data';
+      yBtn.textContent = 'no yesterday data';
     } else {
       yBtn.disabled = false;
-      yBtn.textContent = 'Same as yesterday';
+      yBtn.textContent = 'same as yesterday lol';
       yBtn.onclick = () => {
         modal.querySelector('#lifestyle-body').innerHTML = renderBody(yesterday);
         wireBody(modal);
@@ -276,7 +276,7 @@ window.LifestyleModal = (function () {
       const saveBtn = modal.querySelector('#lifestyle-save-btn');
       saveBtn.disabled = true;
       const original = saveBtn.textContent;
-      saveBtn.textContent = 'Saving…';
+      saveBtn.textContent = 'saving…';
 
       const entry = readForm(modal);
       const wellness = computeWellness(entry);

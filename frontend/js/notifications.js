@@ -30,8 +30,8 @@ const NotifPrefs = (() => {
     if (Notification.permission !== 'granted') return;
     if (prefs.enabled) {
       const bodies = [
-        'Time for your morning skincare routine!',
-        'Evening routine reminder — your skin will thank you.'
+        'yo, morning routine. lock in.',
+        'night routine ping. ur face will thank u.'
       ];
       [prefs.amTime, prefs.pmTime].forEach((t, i) => {
         setTimeout(() => {
@@ -42,7 +42,7 @@ const NotifPrefs = (() => {
     }
     if (prefs.scanEnabled) {
       setTimeout(() => {
-        new Notification('DermAI', { body: 'Time for today\'s skin scan + check-in.', icon: '/favicon.ico' });
+        new Notification('DermAI', { body: 'scan time. cook ☕', icon: '/favicon.ico' });
         schedule();
       }, msUntil(prefs.scanTime));
     }

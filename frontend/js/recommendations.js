@@ -178,17 +178,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const banner = document.createElement('div');
       banner.className = 'sync-pending-banner';
       banner.style.cssText = 'margin-bottom:1rem; padding:0.75rem 1rem; background:rgba(255,170,122,0.12); border:1px solid rgba(255,170,122,0.35); border-radius:var(--radius-md,12px); font-size:0.78rem; color:#9a5416;';
-      banner.innerHTML = '⚠ This scan hasn\'t synced to your account yet. <button id="sync-retry" style="background:none;border:none;color:var(--primary-700);text-decoration:underline;cursor:pointer;font-weight:600;">Retry sync</button>';
+      banner.innerHTML = '⚠ this scan didn\'t sync to ur account yet. <button id="sync-retry" style="background:none;border:none;color:var(--primary-700);text-decoration:underline;cursor:pointer;font-weight:600;">retry sync</button>';
       const target = document.getElementById('routine-content') || document.body;
       target.prepend(banner);
       document.getElementById('sync-retry')?.addEventListener('click', async () => {
         if (!Storage.server) return;
         const r = await Storage.server.post('/api/scans', { result_json: userAnalysis });
         if (r?.scan?.id) {
-          banner.innerHTML = '✓ Synced!';
+          banner.innerHTML = '✓ synced fr';
           setTimeout(() => banner.remove(), 1500);
         } else {
-          banner.querySelector('button').textContent = 'Sync failed — try again';
+          banner.querySelector('button').textContent = 'still didn\'t sync — try again';
         }
       });
     }
@@ -202,8 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (banner) {
           banner.classList.remove('hidden');
           banner.innerHTML = `
-            <span>Your skin analysis is ${Math.floor(ageDays)} days old. Results may no longer reflect your current skin.</span>
-            <a href="/analyze.html">Re-analyze</a>
+            <span>this scan is ${Math.floor(ageDays)} days old. ur face has had a whole arc since then.</span>
+            <a href="/analyze.html">re-scan</a>
             <button class="stale-banner-dismiss" aria-label="Dismiss">&#x2715;</button>`;
           banner.querySelector('.stale-banner-dismiss').addEventListener('click', () => {
             banner.classList.add('hidden');
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const newest = Math.max(...refreshedTimes);
           const days = Math.floor((Date.now() - newest) / 86400000);
           const ago = days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
-          evidenceLine = ` &nbsp;·&nbsp; Evidence last checked: <strong>${ago}</strong>`;
+          evidenceLine = ` &nbsp;·&nbsp; receipts last checked: <strong>${ago}</strong>`;
         }
         detectedRegionEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Showing products on amazon.${region.tld} (${region.name}).${evidenceLine}`;
       }
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hydrateRoutineFromServer();
     } catch (err) {
       console.error('Failed to load DB', err);
-      document.querySelector('.routine-timeline').innerHTML = '<p class="error" style="text-align: center;">Failed to connect to database. Ensure backend is running.</p>';
+      document.querySelector('.routine-timeline').innerHTML = '<p class="error" style="text-align: center;">couldn\'t connect to the db. backend probably napping.</p>';
     } finally {
       loadingIndicator.classList.add('hidden');
       routineContent.classList.remove('hidden');
@@ -329,13 +329,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedRegionData = amazonRegions[currentRegionCode];
 
     const SLOT_DEFS = [
-      { id: 'am-cleanser',    label: 'Step 1: Cleanser',    slotKey: 'cleanser',    time: 'AM' },
-      { id: 'am-treatment',   label: 'Step 2: Treatment',   slotKey: 'treatment',   time: 'AM' },
-      { id: 'am-moisturizer', label: 'Step 3: Moisturizer', slotKey: 'moisturizer', time: 'AM' },
-      { id: 'am-sunscreen',   label: 'Step 4: Sunscreen',   slotKey: 'sunscreen',   time: 'AM' },
-      { id: 'pm-cleanser',    label: 'Step 1: Cleanser',    slotKey: 'cleanser',    time: 'PM' },
-      { id: 'pm-treatment',   label: 'Step 2: Treatment',   slotKey: 'treatment',   time: 'PM' },
-      { id: 'pm-moisturizer', label: 'Step 3: Moisturizer', slotKey: 'moisturizer', time: 'PM' },
+      { id: 'am-cleanser',    label: 'step 1 — wash',         slotKey: 'cleanser',    time: 'AM' },
+      { id: 'am-treatment',   label: 'step 2 — actives',      slotKey: 'treatment',   time: 'AM' },
+      { id: 'am-moisturizer', label: 'step 3 — moisturize',   slotKey: 'moisturizer', time: 'AM' },
+      { id: 'am-sunscreen',   label: 'step 4 — spf',          slotKey: 'sunscreen',   time: 'AM' },
+      { id: 'pm-cleanser',    label: 'step 1 — wash',         slotKey: 'cleanser',    time: 'PM' },
+      { id: 'pm-treatment',   label: 'step 2 — actives',      slotKey: 'treatment',   time: 'PM' },
+      { id: 'pm-moisturizer', label: 'step 3 — moisturize',   slotKey: 'moisturizer', time: 'PM' },
     ];
 
     // Cache the owned treatment pools so add/remove handlers can re-render
@@ -373,8 +373,8 @@ document.addEventListener('DOMContentLoaded', () => {
     container.innerHTML = `
       <div class="step-label">${label}</div>
       <div class="step-empty glass-panel" id="${containerId}-content">
-        <p class="step-empty-msg">Nothing in this slot yet.</p>
-        <a href="/dashboard.html#treatment" class="btn btn-primary">Browse ${noun}s in Treatment</a>
+        <p class="step-empty-msg">this slot's empty asf.</p>
+        <a href="/dashboard.html#treatment" class="btn btn-primary">go yeet a ${noun} in there →</a>
       </div>`;
   }
 
@@ -510,18 +510,18 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="badge badge-tier-${evidenceTier}">${evidenceTier === 1 ? 'Tier 1 RCT' : 'Tier 2'}</span>
         </div>
         <p class="prod-name">${prod.name}</p>
-        <p class="prod-meta"><strong>Active:</strong> ${ingredient ? ingredient.name : prod.primaryIngredientId}</p>
-        <p class="prod-meta"><strong>Treats:</strong> ${prod.concerns.filter(c => userAnalysis.concerns.map(uc => uc.name).includes(c)).join(', ') || prod.concerns.join(', ')}</p>
+        <p class="prod-meta"><strong>active:</strong> ${ingredient ? ingredient.name : prod.primaryIngredientId}</p>
+        <p class="prod-meta"><strong>fixes:</strong> ${prod.concerns.filter(c => userAnalysis.concerns.map(uc => uc.name).includes(c)).join(', ') || prod.concerns.join(', ')}</p>
         ${evidenceHTML}
         <div class="reaction-row">
-          ${hasReaction ? `<span class="reaction-indicator" id="reaction-ind-${prod.id}">REACTION LOGGED</span>` : `<span class="reaction-indicator hidden" id="reaction-ind-${prod.id}">REACTION LOGGED</span>`}
-          <button class="reaction-log-btn" onclick="window.openReactionModal('${prod.id}')" aria-label="Log a skin reaction to this product">LOG REACTION</button>
+          ${hasReaction ? `<span class="reaction-indicator" id="reaction-ind-${prod.id}">flagged</span>` : `<span class="reaction-indicator hidden" id="reaction-ind-${prod.id}">flagged</span>`}
+          <button class="reaction-log-btn" onclick="window.openReactionModal('${prod.id}')" aria-label="Log a skin reaction to this product">report a reaction</button>
         </div>
       </div>
       <div class="step-actions">
-        <button class="fav-btn${isFav ? ' fav-active' : ''}" onclick="window.toggleFavorite('${prod.id}', this)" aria-pressed="${isFav}" aria-label="${isFav ? 'Remove from favorites' : 'Save to favorites'}">
+        <button class="fav-btn${isFav ? ' fav-active' : ''}" onclick="window.toggleFavorite('${prod.id}', this)" aria-pressed="${isFav}" aria-label="${isFav ? 'unsave' : 'save'}">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          ${isFav ? 'SAVED' : 'SAVE'}
+          ${isFav ? 'saved' : 'save'}
         </button>
         <a href="${buyURL}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ${instances.map((prod, idx) => renderTreatmentInstance(slot, idx, prod, products, regionData)).join('')}
       </div>
       ${products.length > 1 ? `<div class="treatment-stack-actions">
-        <button type="button" class="link-btn" onclick="window.addTreatment('${slot}', '${regionData.tld}')">+ Layer another owned treatment</button>
+        <button type="button" class="link-btn" onclick="window.addTreatment('${slot}', '${regionData.tld}')">+ layer another active</button>
       </div>` : ''}`;
   }
 
@@ -603,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectHTML += `</select>`;
     }
     const removeBtn = idx > 0
-      ? `<button type="button" class="treatment-remove-btn link-btn link-btn--muted" onclick="window.removeTreatment('${slot}', ${idx}, '${regionData.tld}')" aria-label="Remove this treatment">Remove</button>`
+      ? `<button type="button" class="treatment-remove-btn link-btn link-btn--muted" onclick="window.removeTreatment('${slot}', ${idx}, '${regionData.tld}')" aria-label="Remove this treatment">yeet</button>`
       : '';
     return `
       <div class="treatment-instance" data-tx-idx="${idx}">
@@ -640,7 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
     slotChoices[slot].treatment.push({ source: 'catalog', id: next.id });
     syncSlotChoices();
     const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || amazonRegions[currentRegionCode] || { tld };
-    renderTreatmentStack(`${slot}-treatment`, 'Step 2: Treatment', treatments, regionData);
+    renderTreatmentStack(`${slot}-treatment`, 'step 2 — actives', treatments, regionData);
     applySlotChoicesToUI();
     rebuildActiveStack();
   };
@@ -652,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
     syncSlotChoices();
     const treatments = (slot === 'am' ? amTreatmentsCache : pmTreatmentsCache) || [];
     const regionData = Object.values(amazonRegions).find(r => r.tld === tld) || amazonRegions[currentRegionCode] || { tld };
-    renderTreatmentStack(`${slot}-treatment`, 'Step 2: Treatment', treatments, regionData);
+    renderTreatmentStack(`${slot}-treatment`, 'step 2 — actives', treatments, regionData);
     applySlotChoicesToUI();
     rebuildActiveStack();
   };
@@ -699,10 +699,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = document.createElement('button');
       btn.className = 'step-check-btn' + (checked ? ' checked' : '');
       btn.setAttribute('aria-pressed', String(checked));
-      btn.setAttribute('aria-label', checked ? 'Unmark step' : 'Mark step done');
+      btn.setAttribute('aria-label', checked ? 'undo' : 'mark done');
       btn.innerHTML = checked
-        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> DONE'
-        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg> MARK DONE';
+        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> ate ✓'
+        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg> did it';
       btn.addEventListener('click', () => onCheckClick(slot, key, btn));
       content.appendChild(btn);
     });
@@ -793,7 +793,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const streak = computeStreak();
     if (streak === 0) { el.classList.add('hidden'); return; }
     el.classList.remove('hidden');
-    el.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>&nbsp;<strong>${streak}</strong>&nbsp;day streak`;
+    el.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>&nbsp;<strong>${streak}</strong>&nbsp;days locked in`;
   }
 
   // ── Routine stats — pure computation kept in sync with backend/lib/routineStats.js ──
@@ -802,7 +802,7 @@ document.addEventListener('DOMContentLoaded', () => {
     pm: ['cleanser', 'treatment', 'moisturizer'],
   };
   const STATS_PER_DAY = STATS_ROUTINE_STEPS.am.length + STATS_ROUTINE_STEPS.pm.length; // 7
-  const STEP_LABEL = { cleanser: 'Cleanser', treatment: 'Treatment', moisturizer: 'Moisturizer', sunscreen: 'Sunscreen' };
+  const STEP_LABEL = { cleanser: 'wash', treatment: 'actives', moisturizer: 'moisturize', sunscreen: 'spf' };
 
   function computeStats(logs, rangeDays, today) {
     if (!logs || typeof logs !== 'object') logs = {};
@@ -878,8 +878,8 @@ document.addEventListener('DOMContentLoaded', () => {
           ${trendArrow(s.trend)}
         </div>
         <div class="stats-meta">
-          <span class="stats-meta-label">OVERALL ADHERENCE · LAST ${rangeDays} DAYS</span>
-          <span class="stats-meta-sub">${s.total_steps_completed} of ${s.total_steps_possible} steps complete</span>
+          <span class="stats-meta-label">how locked in u are · last ${rangeDays} days</span>
+          <span class="stats-meta-sub">${s.total_steps_completed}/${s.total_steps_possible} steps done</span>
         </div>
       </div>
       <div class="stats-grid">${stepRows}</div>`;
@@ -937,7 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const sizeClass = rangeDays === 30 ? 'range-30' : rangeDays === 90 ? 'range-90' : 'range-365';
     container.innerHTML = `
-      <span class="section-eyebrow">${rangeDays}-DAY ADHERENCE</span>
+      <span class="section-eyebrow">${rangeDays}-day adherence</span>
       <div class="heatmap-grid ${sizeClass}">${cells}</div>
       <div class="heatmap-legend">
         <span>Less</span>
@@ -951,11 +951,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const BADGE_DEFS = [
-    { id: 'first-scan', label: 'FIRST SCAN',    check: ()     => true },
-    { id: '3-day',      label: '3 DAY STREAK',  check: (s)    => s >= 3 },
-    { id: '7-day',      label: 'WEEK STREAK',   check: (s)    => s >= 7 },
-    { id: '30-day',     label: '30 DAY STREAK', check: (s)    => s >= 30 },
-    { id: '5-faves',    label: '5 FAVORITES',   check: (s, f) => f >= 5 },
+    { id: 'first-scan', label: 'first scan ✓',     check: ()     => true },
+    { id: '3-day',      label: '3 days locked in', check: (s)    => s >= 3 },
+    { id: '7-day',      label: 'week locked in',   check: (s)    => s >= 7 },
+    { id: '30-day',     label: '30 days. sigma.',  check: (s)    => s >= 30 },
+    { id: '5-faves',    label: '5 saved 🛍️',       check: (s, f) => f >= 5 },
   ];
 
   function renderBadges() {
@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const earnedDefs = BADGE_DEFS.filter(d => earned.includes(d.id));
     if (!earnedDefs.length) { el.classList.add('hidden'); return; }
     el.classList.remove('hidden');
-    el.innerHTML = `<span class="section-eyebrow">ACHIEVEMENTS</span><div class="badges-grid">${
+    el.innerHTML = `<span class="section-eyebrow">trophies</span><div class="badges-grid">${
       earnedDefs.map(b => `<div class="badge-item">${b.label}</div>`).join('')
     }</div>`;
   }
@@ -991,8 +991,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const isFav = favs.includes(prodId);
     btn.className = 'fav-btn' + (isFav ? ' fav-active' : '');
     btn.setAttribute('aria-pressed', String(isFav));
-    btn.setAttribute('aria-label', isFav ? 'Remove from favorites' : 'Save to favorites');
-    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${isFav ? 'SAVED' : 'SAVE'}`;
+    btn.setAttribute('aria-label', isFav ? 'unsave' : 'save');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${isFav ? 'saved' : 'save'}`;
     if (isAdding) setTimeout(() => window.openReorderModal(prodId), 350);
     renderBadges();
   };
@@ -1007,7 +1007,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!found.length) { container.classList.add('hidden'); return; }
     container.classList.remove('hidden');
     container.innerHTML = `
-      <span class="section-eyebrow">INGREDIENT ALERTS</span>
+      <span class="section-eyebrow">⚠ ingredient conflicts</span>
       ${found.map(c => `
         <div class="conflict-card">
           <div class="conflict-header">
@@ -1047,10 +1047,10 @@ document.addEventListener('DOMContentLoaded', () => {
     banner.classList.remove('hidden');
     banner.innerHTML = `
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span>48h patch test complete for <strong>${due.join(', ')}</strong> — any reaction?</span>
+      <span>48h patch test on <strong>${due.join(', ')}</strong> — face still alive?</span>
       <div class="patch-test-actions">
-        <button class="btn btn-outline" style="padding:0.3rem 0.75rem;font-size:0.68rem;" onclick="window.dismissPatchTest(false)">No reaction</button>
-        <button class="btn btn-primary" style="padding:0.3rem 0.75rem;font-size:0.68rem;" onclick="window.dismissPatchTest(true)">Log reaction</button>
+        <button class="btn btn-outline" style="padding:0.3rem 0.75rem;font-size:0.68rem;" onclick="window.dismissPatchTest(false)">all good</button>
+        <button class="btn btn-primary" style="padding:0.3rem 0.75rem;font-size:0.68rem;" onclick="window.dismissPatchTest(true)">log a reaction</button>
       </div>`;
   }
 
@@ -1131,8 +1131,8 @@ document.addEventListener('DOMContentLoaded', () => {
     banner.classList.remove('hidden');
     banner.innerHTML = `
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-      <span>Running low: <strong>${due.join(', ')}</strong></span>
-      <a href="/dashboard.html#treatment" class="btn btn-primary" style="padding:0.3rem 0.875rem;font-size:0.68rem;margin-left:auto;">Reorder →</a>
+      <span>almost out of <strong>${due.join(', ')}</strong></span>
+      <a href="/dashboard.html#treatment" class="btn btn-primary" style="padding:0.3rem 0.875rem;font-size:0.68rem;margin-left:auto;">restock →</a>
       <button onclick="window.dismissReorderBanner()" class="stale-banner-dismiss" aria-label="Dismiss">&#x2715;</button>`;
   }
 
@@ -1181,7 +1181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     photos.sort((a, b) => a.scanAt - b.scanAt);
 
     if (!photos.length) {
-      section.innerHTML = `<p class="photos-empty-msg">No progress photos yet — tick "Save front photo" when you next analyze your skin.</p>`;
+      section.innerHTML = `<p class="photos-empty-msg">no pics yet — tick "save front pic" next time u scan.</p>`;
       section.classList.remove('hidden');
       return;
     }
@@ -1194,7 +1194,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const newDate = new Date(photos[photos.length - 1].scanAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
       sliderHTML = `
         <div class="ba-wrapper">
-          <div class="section-eyebrow" style="margin-bottom:0.75rem;">BEFORE / AFTER</div>
+          <div class="section-eyebrow" style="margin-bottom:0.75rem;">before / after</div>
           <div class="ba-slider" id="ba-slider">
             <div class="ba-before" style="background-image:url('${oldest}')"></div>
             <div class="ba-after" id="ba-after" style="background-image:url('${newest}')"></div>
@@ -1225,7 +1225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="photo-entry-date">${date}</span>
             <div class="photo-entry-score">
               <span class="photo-score-num">${p.score}</span>
-              <span class="photo-score-label">HEALTH</span>
+              <span class="photo-score-label">health</span>
               ${deltaEl}
             </div>
             <span class="photo-skin-type">${p.skinType}</span>
@@ -1240,7 +1240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     section.innerHTML = `
       <div class="photos-section-header">
-        <div class="section-eyebrow" style="margin:0;">PROGRESS PHOTOS</div>
+        <div class="section-eyebrow" style="margin:0;">progress pics</div>
         <span class="photos-count-badge">${photos.length} scan${photos.length > 1 ? 's' : ''}</span>
       </div>
       ${sliderHTML}
@@ -1267,7 +1267,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.deleteProgressPhoto = async function (id) {
-    if (!confirm('Remove this progress photo?')) return;
+    if (!confirm('yeet this progress pic?')) return;
     try {
       await PhotoDB.remove(id);
       initPhotoTimeline();
@@ -1301,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const granted = await NotifPrefs.enable();
         if (!granted) {
           toggle.checked = false;
-          if (hint) hint.textContent = 'Permission denied — enable notifications in browser settings.';
+          if (hint) hint.textContent = 'permission denied — enable notifs in browser settings.';
           return;
         }
         timesRow.classList.remove('hidden');
@@ -1333,7 +1333,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const granted = await NotifPrefs.enableScan();
           if (!granted) {
             scanToggle.checked = false;
-            if (hint) hint.textContent = 'Permission denied — enable notifications in browser settings.';
+            if (hint) hint.textContent = 'permission denied — enable notifs in browser settings.';
             return;
           }
           scanRow.classList.remove('hidden');
@@ -1365,7 +1365,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const stamp = userAnalysis?.savedAt;
       const isToday = stamp && (new Date(stamp).toDateString() === new Date().toDateString());
       if (isToday) {
-        scanLabel.textContent = 'Scanned today ✓ — Re-scan';
+        scanLabel.textContent = 'scanned today ✓ — re-scan';
         scanBtn.classList.remove('btn-primary');
         scanBtn.classList.add('btn-outline');
       }
@@ -1386,7 +1386,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── F15 — Shareable routine card (Canvas → PNG) ───────────────────
   window.shareRoutineCard = async function () {
     const analysis = JSON.parse(localStorage.getItem('dermAI_analysis') || 'null');
-    if (!analysis) { alert('No skin analysis found — run a scan first.'); return; }
+    if (!analysis) { alert('no scan yet — go scan ur face first.'); return; }
 
     await document.fonts.ready;
 
@@ -1420,7 +1420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillText(String(analysis.overallHealth ?? '--'), 72, 290);
     ctx.fillStyle = 'rgba(255,255,255,0.32)';
     ctx.font = '700 24px "Space Mono", monospace';
-    ctx.fillText('HEALTH SCORE', 72, 330);
+    ctx.fillText('health score', 72, 330);
 
     // Skin type badge
     ctx.font = '700 21px "Space Mono", monospace';
@@ -1442,7 +1442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Targeting row
     ctx.fillStyle = 'rgba(255,255,255,0.28)';
     ctx.font = '700 18px "Space Mono", monospace';
-    ctx.fillText('TARGETING', 72, 470);
+    ctx.fillText('fixing', 72, 470);
 
     let cx = 72;
     (analysis.concerns || []).slice(0, 4).forEach(c => {
@@ -1471,11 +1471,11 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.fillText(String(streak), 72, 695);
       ctx.fillStyle = 'rgba(255,255,255,0.32)';
       ctx.font = '700 24px "Space Mono", monospace';
-      ctx.fillText('DAY STREAK', 72, 734);
+      ctx.fillText('days locked in', 72, 734);
     } else {
       ctx.fillStyle = 'rgba(255,255,255,0.2)';
       ctx.font = '700 24px "Space Mono", monospace';
-      ctx.fillText('START YOUR STREAK TODAY', 72, 650);
+      ctx.fillText('start ur streak today', 72, 650);
     }
 
     // Bottom accent + date
@@ -1589,15 +1589,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const weatherDiv = document.getElementById('weather-widget');
       weatherDiv.innerHTML = `
         <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
-          <h4 style="margin-bottom:0.5rem; color:var(--primary-300);">🌤️ Local Climate Context (${userLocation.city || 'Your Location'})</h4>
+          <h4 style="margin-bottom:0.5rem; color:var(--primary-300);">🌤️ weather where u are (${userLocation.city || 'ur location'})</h4>
           <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:1rem;">
             <div>
               <p style="font-size:0.875rem; color:var(--neutral-400);">Current UV Index</p>
-              <p style="font-size:1.25rem; font-weight:bold;">${current.uv_index} ${current.uv_index > 5 ? '<span style="color:var(--primary-700); font-size:1rem;">(High! Apply Extra SPF)</span>' : '<span style="color:#2a8a64; font-size:1rem;">(Safe)</span>'}</p>
+              <p style="font-size:1.25rem; font-weight:bold;">${current.uv_index} ${current.uv_index > 5 ? '<span style="color:var(--primary-700); font-size:1rem;">(high! double up on spf)</span>' : '<span style="color:#2a8a64; font-size:1rem;">(chill)</span>'}</p>
             </div>
             <div>
               <p style="font-size:0.875rem; color:var(--neutral-400);">Relative Humidity</p>
-              <p style="font-size:1.25rem; font-weight:bold;">${current.relative_humidity_2m}% ${current.relative_humidity_2m < 40 ? '<span style="color:var(--primary-700); font-size:1rem;">(Dry! Hydrate)</span>' : ''}</p>
+              <p style="font-size:1.25rem; font-weight:bold;">${current.relative_humidity_2m}% ${current.relative_humidity_2m < 40 ? '<span style="color:var(--primary-700); font-size:1rem;">(dry — drink water)</span>' : ''}</p>
             </div>
           </div>
         </div>

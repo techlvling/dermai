@@ -75,13 +75,13 @@ window.Treatment = (function () {
     root.innerHTML = `
       <div class="tx-header">
         <div>
-          <h1>Your <span class="gradient-text">Treatment</span></h1>
-          <p class="tx-sub">Clinically-backed products tailored to your scan. Click <strong>I have this</strong> on anything you own — it'll show up in your daily Routine checklist.</p>
+          <h1>shit to put on <span class="gradient-text">ur face</span></h1>
+          <p class="tx-sub">products that actually work for ur face. tap <strong>got this</strong> on anything u own — it'll show in ur daily routine.</p>
         </div>
         <div class="tx-filters">
-          <button class="tx-filter-btn active" data-filter="recommended">Recommended for you</button>
-          <button class="tx-filter-btn" data-filter="all">Full catalog</button>
-          <button class="tx-filter-btn" data-filter="owned">My routine</button>
+          <button class="tx-filter-btn active" data-filter="recommended">for u</button>
+          <button class="tx-filter-btn" data-filter="all">everything</button>
+          <button class="tx-filter-btn" data-filter="owned">what i own</button>
         </div>
       </div>
       <div id="treatment-no-analysis" class="hidden tx-empty"></div>
@@ -105,11 +105,11 @@ window.Treatment = (function () {
     if (!_userAnalysis && _activeFilter === 'recommended') {
       noAnalysisEl.classList.remove('hidden');
       noAnalysisEl.innerHTML = `
-        <h2>Scan first to see recommendations</h2>
-        <p>Take a 3-photo skin scan and we'll show products matched to your concerns.</p>
-        <a href="/analyze.html" class="btn btn-primary">Analyze My Skin</a>
+        <h2>scan first bestie</h2>
+        <p>take a 3-pic scan and we'll show products matched to ur concerns.</p>
+        <a href="/analyze.html" class="btn btn-primary">scan ur shit</a>
         <p style="margin-top:1rem; font-size:0.875rem; color:var(--neutral-500);">
-          Or browse the <button class="link-btn" id="tx-show-all">full catalog</button> instead.
+          or just <button class="link-btn" id="tx-show-all">browse everything</button> instead.
         </p>
       `;
       catsEl.innerHTML = '';
@@ -143,19 +143,19 @@ window.Treatment = (function () {
     if (visible.length === 0) {
       catsEl.innerHTML = `
         <div class="tx-empty">
-          <h2>No products match this view</h2>
+          <h2>nothing here fr</h2>
           <p>${_activeFilter === 'owned'
-            ? 'You haven\'t added anything to your routine yet. Switch to <strong>Recommended for you</strong> and click <strong>I have this</strong> on what you own.'
-            : 'Try the Full catalog filter to see everything.'}</p>
+            ? 'u haven\'t added anything yet. switch to <strong>for u</strong> and tap <strong>got this</strong> on stuff u own.'
+            : 'try <strong>everything</strong> to see the full catalog.'}</p>
         </div>`;
       return;
     }
 
     const labels = {
-      cleanser: 'Cleansers',
-      treatment: 'Treatments (active ingredients)',
-      moisturizer: 'Moisturizers',
-      sunscreen: 'Sunscreens',
+      cleanser: 'wash ur face',
+      treatment: 'the actives (where the magic happens)',
+      moisturizer: 'moisturizers',
+      sunscreen: 'spf (non-negotiable)',
     };
 
     catsEl.innerHTML = ['cleanser', 'treatment', 'moisturizer', 'sunscreen']
@@ -256,17 +256,17 @@ window.Treatment = (function () {
           <span class="badge badge-tier-${evidenceTier}">${evidenceTier === 1 ? 'Tier 1 RCT' : evidenceTier === 2 ? 'Tier 2' : 'Tier 3'}</span>
         </div>
         <div class="tx-card-meta">
-          <span class="tx-meta-item"><strong>Active:</strong> ${ingredient ? ingredient.name : prod.primaryIngredientId}</span>
-          <span class="tx-meta-item"><strong>Use:</strong> ${prod.bestTimeOfDay === 'both' ? 'AM &amp; PM' : prod.bestTimeOfDay}</span>
+          <span class="tx-meta-item"><strong>active:</strong> ${ingredient ? ingredient.name : prod.primaryIngredientId}</span>
+          <span class="tx-meta-item"><strong>use:</strong> ${prod.bestTimeOfDay === 'both' ? 'AM &amp; PM' : prod.bestTimeOfDay}</span>
           <span class="tx-meta-item">${prod.priceTier || ''}</span>
         </div>
         ${evidenceHTML}
         <div class="tx-card-actions">
           <button class="btn ${owned ? 'btn-outline' : 'btn-primary'} tx-toggle-btn" data-tx-toggle="${prod.id}">
-            ${owned ? '✓ In your routine — Remove' : '+ I have this'}
+            ${owned ? '✓ in routine — yeet it' : '+ got this one'}
           </button>
           <a href="https://www.amazon.in/s?k=${encodeURIComponent(prod.brand + ' ' + prod.name)}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn-small">
-            Search on Amazon →
+            find on amazon →
           </a>
         </div>
       </div>`;

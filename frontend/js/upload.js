@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const notice = document.createElement('div');
     notice.id = 'drive-optout-notice';
     notice.style.cssText = 'margin-bottom:1rem; padding:0.75rem 1rem; background:rgba(0,0,0,0.04); border-radius:var(--radius-md,12px); font-size:0.78rem; color:var(--neutral-600);';
-    notice.innerHTML = 'Drive backup is off. Scan photos will only live on this device. <a href="/dashboard.html#connections" class="link-btn">Re-enable in Connections</a>';
+    notice.innerHTML = 'drive backup is off. pics only live on this device. <a href="/dashboard.html#connections" class="link-btn">turn it back on in plug-ins</a>';
     if (dropZone && dropZone.parentNode) dropZone.parentNode.insertBefore(notice, dropZone);
   }
 
@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
       uploadSection.classList.add('hidden');
 
       // Rotate loading messages
-      const msgs = ['Detecting concerns...', 'Consulting database...', 'Generating routine...'];
+      const msgs = ['reading ur face like a tarot deck...', 'pulling the receipts from the db...', 'cooking ur routine...'];
       let msgIdx = 0;
       const msgEl = document.getElementById('loading-msg');
       const rotateInterval = msgEl ? setInterval(() => {
@@ -470,15 +470,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let userMsg;
         if (msg.includes('quota') || msg.includes('429') || msg.includes('rate limit') || msg.includes('RESOURCE_EXHAUSTED')) {
-          userMsg = 'AI rate limit reached. Please wait a moment and try again.';
+          userMsg = 'AI is cooked rn. wait a sec.';
         } else if (msg.includes('No image') || msg.includes('HTTP 400')) {
-          userMsg = 'Image not received — please try again.';
+          userMsg = 'didn\'t get the pic. try again.';
         } else if (msg.includes('OPENROUTER_API_KEY') || msg.includes('not configured')) {
-          userMsg = 'Analysis service unavailable. Please try again later.';
+          userMsg = 'AI is broken on our end. try again later.';
         } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ERR_CONNECTION')) {
-          userMsg = 'Connection failed. Check your internet and try again.';
+          userMsg = 'no internet? check ur connection and try again.';
         } else {
-          userMsg = 'Something went wrong. Please try again in a moment.';
+          userMsg = 'shit broke. try again.';
         }
 
         analyzeBtn.disabled = false;
@@ -760,8 +760,8 @@ document.addEventListener('DOMContentLoaded', () => {
         saveGate.className = 'save-gate';
         saveGate.style.cssText = 'margin-top:1.5rem; padding:1.25rem 1.5rem; border:1px solid var(--border,#e8e4dc); border-radius:var(--radius-lg,24px); box-shadow:var(--shadow-md); background:var(--bg-card,#fff); display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;';
         saveGate.innerHTML = `
-          <p class="save-gate__msg" style="margin:0; font-family:var(--font-primary,system-ui,sans-serif); font-size:0.875rem; font-weight:600; color:var(--text-body,#3a3630);">Sign in to save this analysis across devices</p>
-          <button class="btn btn-primary" id="save-gate-btn" style="white-space:nowrap;">SIGN IN WITH GOOGLE</button>
+          <p class="save-gate__msg" style="margin:0; font-family:var(--font-primary,system-ui,sans-serif); font-size:0.875rem; font-weight:600; color:var(--text-body,#3a3630);">log in or u lose this when u close the tab fr</p>
+          <button class="btn btn-primary" id="save-gate-btn" style="white-space:nowrap;">sign in with google</button>
         `;
         if (!resultsSection.querySelector('.save-gate')) resultsSection.appendChild(saveGate);
         saveGate.querySelector('#save-gate-btn').addEventListener('click', () => {
@@ -782,8 +782,8 @@ document.addEventListener('DOMContentLoaded', () => {
       driveSection.innerHTML = `
         <div class="drive-backup__row">
           <div>
-            <div class="drive-backup__label" id="drive-label">SAVING TO GOOGLE DRIVE…</div>
-            <div class="drive-backup__hint" id="drive-hint">Uploading your scan photos automatically</div>
+            <div class="drive-backup__label" id="drive-label">backing up to google drive…</div>
+            <div class="drive-backup__hint" id="drive-hint">uploading ur pics automatically</div>
           </div>
           <span class="drive-backup__status" id="drive-status" aria-live="polite">⏳</span>
         </div>
@@ -822,7 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Inside the day folder we can use simple short filenames —
             // the parent folder already encodes the date + day.
             const filename = `${ANGLE_LABELS[i]}.jpg`;
-            hint.textContent = `Uploading ${filesToUp.length} photos to Day ${dayIndex} folder… (${i + 1}/${filesToUp.length})`;
+            hint.textContent = `uploading ${filesToUp.length} pics to Day ${dayIndex}… (${i + 1}/${filesToUp.length})`;
             fill.style.width = `${Math.round((i / filesToUp.length) * 100)}%`;
             const result = await Drive.uploadPhoto(filesToUp[i], filename, dayFolderId);
             urls.push(result.webViewLink);
@@ -844,15 +844,15 @@ document.addEventListener('DOMContentLoaded', () => {
           const user = await window.Auth.getUser();
           if (user) Drive.migrateFromIndexedDB(user.id).catch(() => {});
 
-          label.textContent  = 'SAVED TO GOOGLE DRIVE ✓';
+          label.textContent  = 'saved to google drive ✓';
           status.textContent = '✓';
           const folderLink   = `https://drive.google.com/drive/folders/${encodeURIComponent(dayFolderId)}`;
           const dayName      = dayIndex === 0 ? 'Day 0 (Initial)' : `Day ${dayIndex}`;
-          hint.innerHTML     = `${filesToUp.length} photos saved to <strong>${dayName}</strong> · <a href="${folderLink}" target="_blank" rel="noopener">View in Drive →</a>`;
+          hint.innerHTML     = `${filesToUp.length} pics saved to <strong>${dayName}</strong> · <a href="${folderLink}" target="_blank" rel="noopener">open in drive →</a>`;
           bar.style.display  = 'none';
         } catch (err) {
           console.error('[Drive] backup failed:', err);
-          label.textContent  = 'BACKUP FAILED';
+          label.textContent  = 'backup failed';
           status.textContent = '⚠';
           // Surface the actual error so we can diagnose. Common cases:
           // - "no provider_token" → Drive scope expired or never granted
@@ -861,11 +861,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const msg = String(err?.message || err || 'Unknown error');
           let userMsg;
           if (msg.includes('quota')) {
-            userMsg = 'Google Drive is full — free up space and reload to retry.';
+            userMsg = 'ur google drive is full — free some space and reload to retry.';
           } else if (msg.includes('provider_token') || msg.includes('401')) {
-            userMsg = 'Drive permission expired. <button id="drive-retry-grant" class="link-btn">Reconnect Drive</button> to retry.';
+            userMsg = 'drive permission expired. <button id="drive-retry-grant" class="link-btn">reconnect drive</button> to retry.';
           } else {
-            userMsg = `Couldn't save to Drive: ${msg.slice(0, 80)}`;
+            userMsg = `couldn't save to drive: ${msg.slice(0, 80)}`;
           }
           hint.innerHTML     = userMsg;
           bar.style.display  = 'none';
@@ -879,32 +879,32 @@ document.addEventListener('DOMContentLoaded', () => {
         runDriveBackup();
       } else if (localStorage.getItem('dermAI_drive_declined') === 'true') {
         // User said no earlier — don't nag. Show a quiet enable affordance.
-        label.textContent  = 'DRIVE BACKUP IS OFF';
+        label.textContent  = 'drive backup is off';
         status.textContent = '';
-        hint.innerHTML     = '<button id="drive-reenable" class="link-btn">Enable backup</button> to save scan photos to your Google Drive';
+        hint.innerHTML     = '<button id="drive-reenable" class="link-btn">turn on backup</button> to save scan pics to ur google drive';
         document.getElementById('drive-reenable').addEventListener('click', async () => {
           localStorage.removeItem('dermAI_drive_declined');
-          hint.textContent = 'Redirecting to Google for permission…';
+          hint.textContent = 'redirecting to google…';
           await Drive.requestDriveScope(); // page redirects; photos in memory are lost
         });
       } else {
         // First-time user without scope — offer one inline grant button.
         // Granting redirects to OAuth which loses the in-memory photos, so
         // we don't auto-trigger; user opts in explicitly.
-        label.textContent  = 'BACK UP PHOTOS TO DRIVE';
+        label.textContent  = 'back up pics to drive?';
         status.textContent = '';
-        hint.innerHTML     = '<button id="drive-grant" class="link-btn">Allow Drive access</button> to auto-save every scan. <button id="drive-skip" class="link-btn link-btn--muted">Not now</button>';
+        hint.innerHTML     = '<button id="drive-grant" class="link-btn">hook up drive</button> to auto-save every scan. <button id="drive-skip" class="link-btn link-btn--muted">nah skip</button>';
         document.getElementById('drive-grant').addEventListener('click', async () => {
-          hint.textContent = 'Redirecting to Google for permission…';
+          hint.textContent = 'redirecting to google…';
           await Drive.requestDriveScope();
         });
         document.getElementById('drive-skip').addEventListener('click', () => {
           localStorage.setItem('dermAI_drive_declined', 'true');
-          label.textContent  = 'DRIVE BACKUP IS OFF';
-          hint.innerHTML     = '<button id="drive-reenable2" class="link-btn">Enable backup</button> later from any scan';
+          label.textContent  = 'drive backup is off';
+          hint.innerHTML     = '<button id="drive-reenable2" class="link-btn">turn it on</button> later from any scan';
           document.getElementById('drive-reenable2').addEventListener('click', async () => {
             localStorage.removeItem('dermAI_drive_declined');
-            hint.textContent = 'Redirecting to Google for permission…';
+            hint.textContent = 'redirecting to google…';
             await Drive.requestDriveScope();
           });
         });
