@@ -1,11 +1,12 @@
 const express  = require('express');
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const { GROQ_VISION_MODELS, GROQ_TEXT_MODELS } = require('../lib/ai-models');
 
 const compareLimit = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 20,
-  keyGenerator: (req) => req.user?.id || req.ip,
+  keyGenerator: (req) => req.user?.id || ipKeyGenerator(req.ip),
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many comparisons. Please wait before trying again.' }
