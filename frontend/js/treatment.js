@@ -158,7 +158,15 @@ window.Treatment = (function () {
       sunscreen: 'spf (non-negotiable)',
     };
 
-    catsEl.innerHTML = ['cleanser', 'treatment', 'moisturizer', 'sunscreen']
+    // ── AM/PM schedule (only for "for u" with a scan) ──────────────
+    // Render the daily routine at the top so the user knows exactly
+    // what to use in the morning vs at night, with explicit "same as
+    // AM" hints when the PM step uses the same product.
+    const scheduleHTML = (_activeFilter === 'recommended' && _userAnalysis)
+      ? _buildScheduleHTML(byCat)
+      : '';
+
+    const catsHTML = ['cleanser', 'treatment', 'moisturizer', 'sunscreen']
       .filter(cat => byCat[cat].length > 0)
       .map(cat => {
         const items = byCat[cat];
@@ -175,10 +183,105 @@ window.Treatment = (function () {
         </section>
       `;}).join('');
 
+    catsEl.innerHTML = scheduleHTML + catsHTML;
+
     // Wire toggle buttons
     catsEl.querySelectorAll('[data-tx-toggle]').forEach(btn => {
       btn.addEventListener('click', () => _toggleOwned(btn.dataset.txToggle, btn));
     });
+  }
+
+  // ── AM/PM daily schedule ──────────────────────────────────────────
+  // Builds a 2-column block (AM | PM) that tells the user exactly which
+  // product to use at each step, in routine order. When the AM and PM
+  // pick for a category is the same product (typical for cleanser and
+  // moisturizer), the PM lane shows a compact "↺ same as AM — use again"
+  // row instead of repeating the full product name, so the user can't
+  // miss that they should reuse it.
+  function _buildScheduleHTML(byCat) {
+    const AM_CATS = ['cleanser', 'treatment', 'moisturizer', 'sunscreen'];
+    const PM_CATS = ['cleanser', 'treatment', 'moisturizer']; // no spf at night
+
+    const pickFor = (cat, time) => {
+      const list = byCat[cat] || [];
+      // List is already ranked. Prefer a product whose bestTimeOfDay
+      // matches the lane exactly; fall back to a 'both'-time product.
+      return list.find(p => p.bestTimeOfDay === time)
+          || list.find(p => p.bestTimeOfDay === 'both');
+    };
+
+    const amPicks = {};
+    AM_CATS.forEach(cat => { amPicks[cat] = pickFor(cat, 'AM'); });
+
+    const pmPicks = {};
+    PM_CATS.forEach(cat => { pmPicks[cat] = pickFor(cat, 'PM'); });
+
+    const stepLabels = {
+      cleanser: 'cleanse', treatment: 'treat',
+      moisturizer: 'moisturize', sunscreen: 'spf',
+    };
+
+    const amRows = AM_CATS
+      .map((cat, i) => amPicks[cat] ? _scheduleRowHTML(stepLabels[cat], i + 1, amPicks[cat], null) : '')
+      .filter(Boolean).join('');
+
+    const pmRows = PM_CATS
+      .map((cat, i) => {
+        const pick = pmPicks[cat];
+        if (!pick) return '';
+        const sameAsAM = amPicks[cat] && amPicks[cat].id === pick.id;
+        return _scheduleRowHTML(stepLabels[cat], i + 1, pick, sameAsAM);
+      })
+      .filter(Boolean).join('');
+
+    if (!amRows && !pmRows) return '';
+
+    return `
+      <section class="tx-schedule">
+        <div class="tx-schedule-head">
+          <h2 class="tx-schedule-title">ur daily routine</h2>
+          <p class="tx-schedule-sub">top picks matched to ur scan. cleanser + moisturizer are usually same AM &amp; PM — we'll flag it. tap <strong>got this</strong> on the cards below to add to ur routine.</p>
+        </div>
+        <div class="tx-schedule-grid">
+          <div class="tx-schedule-col tx-schedule-col--am">
+            <h3 class="tx-schedule-col-title"><span class="tx-schedule-icon">☀</span> morning</h3>
+            ${amRows || '<p class="tx-schedule-empty">no matched products yet — scan to populate.</p>'}
+          </div>
+          <div class="tx-schedule-col tx-schedule-col--pm">
+            <h3 class="tx-schedule-col-title"><span class="tx-schedule-icon">🌙</span> night</h3>
+            ${pmRows || '<p class="tx-schedule-empty">no matched products yet.</p>'}
+          </div>
+        </div>
+        <p class="tx-schedule-foot">choices below — alternates if budget or stock is tight, plus the rest of the matched catalog.</p>
+      </section>
+    `;
+  }
+
+  function _scheduleRowHTML(stepLabel, stepNum, product, sameAsAM) {
+    const ingredient = _allIngredients.find(i => i.id === product.primaryIngredientId);
+    const safeName = `${product.brand} ${product.name}`;
+
+    if (sameAsAM) {
+      return `
+        <div class="tx-sched-row tx-sched-row--repeat">
+          <span class="tx-sched-step">${stepNum}</span>
+          <div class="tx-sched-body">
+            <div class="tx-sched-cat">${stepLabel}</div>
+            <div class="tx-sched-repeat">↺ same as AM — use again</div>
+            <div class="tx-sched-prod-mute">${safeName}</div>
+          </div>
+        </div>`;
+    }
+
+    return `
+      <div class="tx-sched-row">
+        <span class="tx-sched-step">${stepNum}</span>
+        <div class="tx-sched-body">
+          <div class="tx-sched-cat">${stepLabel}</div>
+          <div class="tx-sched-prod"><strong>${product.brand}</strong> ${product.name}</div>
+          ${ingredient ? `<div class="tx-sched-active">→ active: ${ingredient.name}</div>` : ''}
+        </div>
+      </div>`;
   }
 
   function _rankProducts(products) {
@@ -281,8 +384,9 @@ window.Treatment = (function () {
 
   function _buildEvidenceHTML(prod, ingredient) {
     if (!ingredient) return '';
-    const userConcernNames = (_userAnalysis?.concerns || []).map(c => c.name);
-    const matchedConcerns = prod.concerns.filter(pc => userConcernNames.includes(pc));
+    const userConcerns = _userAnalysis?.concerns || [];
+    const userConcernsByName = new Map(userConcerns.map(c => [c.name, c]));
+    const matchedConcerns = prod.concerns.filter(pc => userConcernsByName.has(pc));
 
     const study = (Array.isArray(prod.productTrials) && prod.productTrials.length)
       ? prod.productTrials[0]
@@ -291,13 +395,24 @@ window.Treatment = (function () {
       ? `<a href="${study.link}" target="_blank" rel="noopener noreferrer" class="tx-pmid">[PMID ${study.pubmedId}]</a>`
       : '';
 
+    // Personal lead-in: tell the user which of THEIR concerns this product
+    // targets, and how severe each one was on their scan. Keeps the WHY
+    // panel feeling matched to them instead of generic copy.
+    const personalLeadIn = matchedConcerns.length
+      ? `matched to ur ${matchedConcerns.map(cn => {
+          const c = userConcernsByName.get(cn);
+          const sev = c && Number.isFinite(c.severity) ? ` (${Math.round(c.severity)}%)` : '';
+          return `<strong>${cn}</strong>${sev}`;
+        }).join(', ')}. `
+      : '';
+
     const rationales = matchedConcerns
       .map(cn => _allConcerns[cn] && _allConcerns[cn].targetIngredients.includes(prod.primaryIngredientId) ? _allConcerns[cn].rationale : null)
       .filter(Boolean);
-    const rationaleText = rationales[0]
+    const rationaleText = personalLeadIn + (rationales[0]
       || (matchedConcerns.length
         ? `${ingredient.name} is clinically studied for ${matchedConcerns.join(', ')}.`
-        : `${ingredient.name} — see ingredient evidence panel for general clinical use.`);
+        : `${ingredient.name} — see ingredient evidence panel for general clinical use.`));
 
     const badgeHTML = _trialBadgeHTML(prod);
     const rxBadge = _rxBadgeHTML(prod);

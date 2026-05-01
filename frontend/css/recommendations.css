@@ -2252,3 +2252,135 @@
   .trends-row-label { font-size: 0.62rem; }
   .trends-row-cells.range-30 { max-width: none; }
 }
+
+/* ── Treatment page — daily AM/PM schedule ──────────────────────── */
+.tx-schedule {
+  margin: 0 0 2.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, var(--primary-50) 0%, var(--bg-card) 60%);
+  border: 1px solid rgba(245, 88, 142, 0.18);
+  border-radius: var(--radius-lg);
+}
+.tx-schedule-head { margin-bottom: 1.25rem; }
+.tx-schedule-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  letter-spacing: -0.01em;
+}
+.tx-schedule-sub {
+  margin: 0;
+  color: var(--neutral-600);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 56ch;
+}
+.tx-schedule-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.tx-schedule-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.tx-schedule-col-title {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: lowercase;
+}
+.tx-schedule-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+.tx-schedule-col--am .tx-schedule-col-title { color: var(--neutral-800); }
+.tx-schedule-col--pm .tx-schedule-col-title { color: var(--neutral-800); }
+.tx-schedule-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--neutral-500);
+  font-style: italic;
+}
+
+.tx-sched-row {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--border);
+}
+.tx-sched-row:first-of-type { border-top: 0; padding-top: 0; }
+.tx-sched-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: rgba(245, 88, 142, 0.12);
+  color: var(--primary-700);
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.tx-sched-body { min-width: 0; }
+.tx-sched-cat {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary-700);
+  margin-bottom: 0.2rem;
+}
+.tx-sched-prod {
+  font-size: 0.95rem;
+  color: var(--text-strong);
+  line-height: 1.4;
+}
+.tx-sched-prod strong { color: var(--text-strong); }
+.tx-sched-active {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--neutral-500);
+}
+
+.tx-sched-row--repeat .tx-sched-step {
+  background: var(--neutral-100);
+  color: var(--neutral-600);
+}
+.tx-sched-repeat {
+  font-size: 0.875rem;
+  color: var(--text-body);
+  font-weight: 600;
+}
+.tx-sched-prod-mute {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--neutral-500);
+  font-style: italic;
+}
+
+.tx-schedule-foot {
+  margin: 1.25rem 0 0;
+  font-size: 0.82rem;
+  color: var(--neutral-500);
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .tx-schedule { padding: 1.25rem; }
+  .tx-schedule-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+  .tx-schedule-title { font-size: 1.3rem; }
+}
