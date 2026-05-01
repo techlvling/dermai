@@ -230,6 +230,34 @@ ul {
 .footer-minimal a { color: var(--primary-500); padding: 0.5rem 0.75rem; display: inline-flex; align-items: center; min-height: 44px; }
 .footer-minimal a:hover { color: var(--primary-700); }
 
+/* ── Tip-the-dev pill — donation link with the rest of the GenZ voice
+   tucked inline into the footer row. Pink wash + pill border so it
+   reads as a button without screaming for attention. */
+.tip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.85rem !important;
+  min-height: 32px !important;
+  background: rgba(245, 88, 142, 0.1);
+  color: var(--primary-700) !important;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-decoration: none;
+  transition: background var(--duration-fast), transform var(--duration-fast), color var(--duration-fast);
+  white-space: nowrap;
+}
+.tip-pill:hover {
+  background: rgba(245, 88, 142, 0.2);
+  color: var(--primary-700) !important;
+  transform: translateY(-1px);
+}
+.tip-pill:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-glow);
+}
+
 /* ── Navbar base (shared across all pages) ───────────────────────── */
 .navbar {
   display: flex;
