@@ -395,6 +395,44 @@ ul {
 .nav-links a.active,
 .nav-links a[aria-current="page"] { color: var(--primary-600); background: rgba(245,88,142,0.08); }
 
+/* Header donate pill — sits between .nav-links and .user-menu so it's
+   always reachable, regardless of auth state. Visually distinct from
+   the main nav links so it reads as an action, not navigation. */
+.nav-donate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0 0.5rem 0 0.25rem;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary-700);
+  background: rgba(245, 88, 142, 0.1);
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--duration-fast), color var(--duration-fast), transform var(--duration-fast);
+  min-height: 36px;
+}
+.nav-donate:hover {
+  background: rgba(245, 88, 142, 0.2);
+  color: var(--primary-700);
+  transform: translateY(-1px);
+}
+.nav-donate[aria-current="page"] {
+  background: var(--primary-500);
+  color: #ffffff;
+}
+.nav-donate:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-glow);
+}
+@media (max-width: 768px) {
+  /* Drawer covers nav on mobile; hide the inline donate pill there to
+     avoid crowding the header next to the hamburger. */
+  .nav-donate { display: none; }
+}
+
 @media (max-width: 768px) {
   .nav-hamburger { display: flex; align-items: center; justify-content: center; }
   .nav-links { display: none; }

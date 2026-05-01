@@ -36,6 +36,7 @@ window.Nav = {
         <div class="nav-links">
           ${links.map(l => linkHTML(l)).join('')}
         </div>
+        <a class="nav-donate" href="/donate.html"${activeKey === 'donate' ? ' aria-current="page"' : ''} aria-label="Tip the dev — open donate page">tip ☕</a>
         <div class="user-menu" id="user-menu">
           <button class="user-menu__signin btn-ghost" id="user-signin-btn"
                   style="display:${isAuthed ? 'none' : 'block'}">SIGN IN</button>
@@ -60,6 +61,7 @@ window.Nav = {
         </div>
         <div class="nav-drawer-links">
           ${links.map(l => linkHTML(l, true)).join('')}
+          <a href="/donate.html"${activeKey === 'donate' ? ' class="active" aria-current="page"' : ''}>tip the dev ☕</a>
         </div>
         <a href="/analyze.html" class="btn btn-primary nav-drawer-cta">Analyze My Skin</a>
         <div style="margin-top:1rem;">

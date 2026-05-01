@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/privacy.css" />
     <style>
-      .donate-cta {
+      /* Higher specificity than .privacy-container a (which lives in
+         privacy.css and would otherwise force the link color to pink,
+         making the white CTA text invisible against the pink background). */
+      .privacy-container a.donate-cta,
+      a.donate-cta,
+      a.donate-cta:visited {
         display: inline-flex;
         align-items: center;
         gap: 0.55rem;
@@ -19,7 +24,7 @@
         font-family: var(--font-primary);
         font-size: 1rem;
         font-weight: 700;
-        color: #fff;
+        color: #ffffff;
         background: var(--primary-500);
         border: none;
         border-radius: var(--radius-pill);
@@ -27,12 +32,14 @@
         transition: background var(--duration-base), transform var(--duration-fast);
         min-height: 48px;
       }
-      .donate-cta:hover {
+      .privacy-container a.donate-cta:hover,
+      a.donate-cta:hover {
         background: var(--primary-600);
         transform: translateY(-1px);
-        color: #fff;
+        color: #ffffff;
+        text-decoration: none;
       }
-      .donate-cta:focus-visible {
+      a.donate-cta:focus-visible {
         outline: none;
         box-shadow: var(--shadow-glow);
       }
@@ -133,7 +140,7 @@
       <h2>broke? these also help fr</h2>
       <ul class="donate-alt-list">
         <li>tell one friend who'd actually use it. organic word-of-mouth beats ads every time.</li>
-        <li>found a bug? send a screenshot to <a href="mailto:jamesjoy696@gmail.com">jamesjoy696@gmail.com</a>. honest bug reports = better app.</li>
+        <li>found a bug? send a screenshot to <a href="mailto:helldock@protonmail.com">helldock@protonmail.com</a>. honest bug reports = better app.</li>
         <li>got feedback? same email. tell me what's broken, what's mid, what slaps. i actually read it.</li>
       </ul>
 
@@ -153,7 +160,7 @@
 
     <script src="/js/auth.js"></script>
     <script src="/js/nav.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', () => Nav.render(''));</script>
+    <script>document.addEventListener('DOMContentLoaded', () => Nav.render('donate'));</script>
     <script>
       // Vercel Web Analytics — only inject in production (skip localhost / private IPs)
       if (!/^(localhost|127\.|10\.|192\.168\.|\[::1\])/.test(location.hostname)) {
