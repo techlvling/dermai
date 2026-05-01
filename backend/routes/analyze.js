@@ -1,6 +1,6 @@
 const express = require('express');
 
-function createAnalyzeRouter(upload, analyzeLimit, getClient) {
+function createAnalyzeRouter(upload, analyzeLimit, getAIStudioClient, getClient) {
   const router = express.Router();
 
   // Accept the 3 required angles in `images` and up to 3 optional close-ups
@@ -37,8 +37,9 @@ function createAnalyzeRouter(upload, analyzeLimit, getClient) {
       while (closeupNotes.length < closeupFiles.length) closeupNotes.push('');
       closeupNotes.length = closeupFiles.length;
 
-      const client = getClient();
-      if (!client) {
+      const aiStudio   = getAIStudioClient();
+      const openRouter = getClient();
+      if (!aiStudio && !openRouter) {
         return res.status(500).json({ error: 'Analysis service not available.' });
       }
 
@@ -106,21 +107,20 @@ function createAnalyzeRouter(upload, analyzeLimit, getClient) {
         content: [{ type: 'text', text: prompt }, ...imageContents]
       }];
 
-      const modelsToTry = [
-        'qwen/qwen2.5-vl-72b-instruct:free',
-        'meta-llama/llama-3.2-90b-vision-instruct:free',
-        'meta-llama/llama-3.2-11b-vision-instruct:free',
-        'google/gemma-4-31b-it:free',
-        'google/gemma-3-27b-it:free',
+      const providerChain = [
+        { client: aiStudio,   model: 'gemma-4-31b-it',       label: 'aistudio:gemma-4-31b-it' },
+        { client: aiStudio,   model: 'gemma-4-26b-a4b-it',   label: 'aistudio:gemma-4-26b-a4b-it' },
+        { client: openRouter, model: 'google/gemma-3-27b-it:free', label: 'openrouter:gemma-3-27b' },
       ];
 
       let aiResponse = null;
       let lastError  = null;
       let quotaHit   = false;
 
-      for (const model of modelsToTry) {
+      for (const { client, model, label } of providerChain) {
+        if (!client) continue;
         try {
-          console.log(`[analyze] ${model} — ${angleCount} angle(s) + ${closeupCount} closeup(s)`);
+          console.log(`[analyze] ${label} — ${angleCount} angle(s) + ${closeupCount} closeup(s)`);
           const completion = await client.chat.completions.create({
             model,
             messages,
@@ -128,11 +128,11 @@ function createAnalyzeRouter(upload, analyzeLimit, getClient) {
             max_tokens: 1500
           });
           aiResponse = completion.choices[0].message.content;
-          console.log(`[analyze] success: ${model}`);
+          console.log(`[analyze] success: ${label}`);
           break;
         } catch (err) {
           const msg = String(err.message || err);
-          console.warn(`[analyze] ${model} failed:`, msg.slice(0, 300));
+          console.warn(`[analyze] ${label} failed:`, msg.slice(0, 300));
           if (msg.includes('429') || msg.includes('quota') || msg.includes('rate limit') || msg.includes('RESOURCE_EXHAUSTED')) {
             quotaHit = true;
           }

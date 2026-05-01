@@ -5,6 +5,7 @@ const createCompareRouter = require('../routes/compare.js');
 const { makeChain } = require('./helpers.js');
 
 const mockGetSupabaseAdmin = vi.fn();
+const mockGetAIStudioClient = vi.fn();
 const mockGetClient = vi.fn();
 const mockVerifyAuth = (req, res, next) => {
   req.user = { id: 'user-123' };
@@ -15,7 +16,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 const app = express();
 app.use(express.json());
-app.use(createCompareRouter(mockVerifyAuth, mockGetSupabaseAdmin, mockGetClient, upload));
+app.use(createCompareRouter(mockVerifyAuth, mockGetSupabaseAdmin, mockGetAIStudioClient, mockGetClient, upload));
+
 
 // Error handler so 500s don't crash the test process
 app.use((err, _req, res, _next) => {
@@ -25,7 +27,12 @@ app.use((err, _req, res, _next) => {
 const fakeImg = Buffer.from('fake-image-data');
 
 describe('POST /api/compare', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Most tests exercise OpenRouter behavior — default AI Studio off so the
+    // existing mockGetClient (OpenRouter) mocks keep their original semantics.
+    mockGetAIStudioClient.mockReturnValue(null);
+  });
 
   it('400 when scan_a_id is missing', async () => {
     const res = await request(app)

@@ -2,9 +2,17 @@
 
 ## Unreleased
 
+### AI provider chain — Google AI Studio promoted to primary
+
+- New `getAIStudioClient` factory in `server.js` using the OpenAI-compatible AI Studio endpoint
+- Provider chain on `/api/analyze` and `/api/compare` now: AI Studio `gemma-4-31b-it` → AI Studio `gemma-4-26b-a4b-it` → OpenRouter `google/gemma-3-27b-it:free`
+- Replaces the previous 5-model OpenRouter-only chain (Qwen 72B, Llama 3.2 90B, Llama 3.2 11B, Gemma 4 31B, Gemma 3 27B)
+- New env var: `GOOGLE_AI_STUDIO_API_KEY`
+- privacy.html updated to list Google AI Studio as primary AI provider
+
 ### Removed
 
-- Groq fallback provider — `getGroqClient`, `lib/ai-models.js`, `GROQ_API_KEY` env var, and the Groq mention in privacy.html. `/api/analyze` and `/api/compare` now rely solely on the OpenRouter model chain.
+- Groq fallback provider — `getGroqClient`, `lib/ai-models.js`, `GROQ_API_KEY` env var, and the Groq mention in privacy.html.
 
 ## [1.2.0] — 2026-04-29
 

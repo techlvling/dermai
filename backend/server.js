@@ -93,8 +93,21 @@ const upload = multer({
 });
 
 // ---------------------------------------------------------------------------
-// OpenRouter client (OpenAI-compatible) — memoized; one instance per process
+// AI clients — primary is Google AI Studio, OpenRouter is the safety-net fallback
 // ---------------------------------------------------------------------------
+
+let _aiStudioClient = null;
+function getAIStudioClient() {
+  const key = process.env.GOOGLE_AI_STUDIO_API_KEY;
+  if (!key || key === 'your_aistudio_key_here') return null;
+  if (!_aiStudioClient) {
+    _aiStudioClient = new OpenAI({
+      baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+      apiKey: key
+    });
+  }
+  return _aiStudioClient;
+}
 
 let _openRouterClient = null;
 function getClient() {
@@ -196,7 +209,7 @@ app.get('/api/products', (_req, res) => {
 // POST /api/analyze  — accepts 1-3 images, returns AI skin analysis
 // ---------------------------------------------------------------------------
 
-app.use(require('./routes/analyze')(upload, analyzeLimit, getClient));
+app.use(require('./routes/analyze')(upload, analyzeLimit, getAIStudioClient, getClient));
 
 // ---------------------------------------------------------------------------
 // Authenticated data routes
@@ -219,7 +232,7 @@ app.use(require('./routes/diary')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/userRoutineItems')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/photos')(verifyAuth, getSupabaseAdmin));
-app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getClient, upload));
+app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getAIStudioClient, getClient, upload));
 
 // ---------------------------------------------------------------------------
 // 404 — serve branded page for unknown HTML routes, JSON for API routes

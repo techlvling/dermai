@@ -52,8 +52,9 @@
       <span class="privacy-eyebrow">the brain</span>
       <h2>which AI reads ur face</h2>
       <ul>
-        <li>ur image hits an AI vision model via <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer">OpenRouter</a>. their privacy policy applies to that hop — see <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer">openrouter.ai/privacy</a>.</li>
-        <li>models in rotation: Qwen 2.5 VL, Llama 3.2 Vision, GPT-4o mini. the list rotates as better ones drop.</li>
+        <li>primary: <a href="https://ai.google.dev" target="_blank" rel="noopener noreferrer">Google AI Studio</a> (Gemma 4 31B + Gemma 4 26B). see <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">google's privacy policy</a> for that hop. free tier API submissions aren't used to train production Google models.</li>
+        <li>fallback: <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer">OpenRouter</a> running Gemma 3 27B (kicks in only when google's quota is hit). see <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer">openrouter.ai/privacy</a>.</li>
+        <li>models in rotation: Gemma 4 31B → Gemma 4 26B → Gemma 3 27B. the list rotates as better ones drop.</li>
       </ul>
 
       <span class="privacy-eyebrow">ur device</span>

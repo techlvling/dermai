@@ -11,7 +11,7 @@ const compareLimit = rateLimit({
   message: { error: 'Too many comparisons. Please wait before trying again.' }
 });
 
-function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
+function createCompareRouter(verifyAuth, getSupabaseAdmin, getAIStudioClient, getClient, upload) {
   const router = express.Router();
 
   router.post(
@@ -66,8 +66,9 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
         return res.status(404).json({ error: 'Scan not found or access denied' });
       }
 
-      const client = getClient();
-      if (!client) return res.status(500).json({ error: 'AI service not configured' });
+      const aiStudio   = getAIStudioClient();
+      const openRouter = getClient();
+      if (!aiStudio && !openRouter) return res.status(500).json({ error: 'AI service not configured' });
 
       let messages;
 
@@ -108,19 +109,20 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
         messages = [{ role: 'user', content: prompt }];
       }
 
-      const modelsToTry = [
-        'qwen/qwen2.5-vl-72b-instruct:free',
-        'google/gemma-4-31b-it:free',
-        'google/gemma-3-27b-it:free',
+      const providerChain = [
+        { client: aiStudio,   model: 'gemma-4-31b-it',       label: 'aistudio:gemma-4-31b-it' },
+        { client: aiStudio,   model: 'gemma-4-26b-a4b-it',   label: 'aistudio:gemma-4-26b-a4b-it' },
+        { client: openRouter, model: 'google/gemma-3-27b-it:free', label: 'openrouter:gemma-3-27b' },
       ];
 
       let narrative = null;
       let lastError = null;
       let quotaHit = false;
 
-      for (const model of modelsToTry) {
+      for (const { client, model, label } of providerChain) {
+        if (!client) continue;
         try {
-          console.log(`[compare] trying ${model}`);
+          console.log(`[compare] trying ${label}`);
           const completion = await client.chat.completions.create({
             model,
             messages,
@@ -128,10 +130,11 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
             max_tokens: 400,
           });
           narrative = completion.choices[0].message.content?.trim();
-          console.log(`[compare] success: ${model}`);
+          console.log(`[compare] success: ${label}`);
           break;
         } catch (err) {
           const msg = String(err.message || err);
+          console.warn(`[compare] ${label} failed:`, msg.slice(0, 200));
           if (msg.includes('429') || msg.includes('quota') || msg.includes('rate limit') || msg.includes('RESOURCE_EXHAUSTED')) {
             quotaHit = true;
           }
