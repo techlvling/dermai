@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Removed
+
+- Groq fallback provider — `getGroqClient`, `lib/ai-models.js`, `GROQ_API_KEY` env var, and the Groq mention in privacy.html. `/api/analyze` and `/api/compare` now rely solely on the OpenRouter model chain.
+
 ## [1.2.0] — 2026-04-29
 
 ### Phase 2 — Google Drive photo storage + daily progress tracking

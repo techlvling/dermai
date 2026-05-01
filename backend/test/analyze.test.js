@@ -5,12 +5,11 @@ const rateLimit = require('express-rate-limit');
 const createAnalyzeRouter = require('../routes/analyze.js');
 
 const mockGetClient = vi.fn();
-const mockGetGroqClient = vi.fn();
 const upload = multer({ storage: multer.memoryStorage() });
 const noopLimit = rateLimit({ windowMs: 1000, max: 1000, skip: () => false });
 
 const app = express();
-app.use(createAnalyzeRouter(upload, noopLimit, mockGetClient, mockGetGroqClient));
+app.use(createAnalyzeRouter(upload, noopLimit, mockGetClient));
 app.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
 });
@@ -93,36 +92,11 @@ describe('POST /api/analyze', () => {
         }
       }
     });
-    mockGetGroqClient.mockReturnValue(null);
     const res = await request(app)
       .post('/api/analyze')
       .attach('images', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' });
     expect(res.status).toBe(429);
     expect(res.body.error).toMatch(/rate limit/i);
-  });
-
-  it('uses Groq fallback when entire OpenRouter chain fails', async () => {
-    mockGetClient.mockReturnValue({
-      chat: {
-        completions: {
-          create: vi.fn().mockRejectedValue(new Error('Service unavailable'))
-        }
-      }
-    });
-    mockGetGroqClient.mockReturnValue({
-      chat: {
-        completions: {
-          create: vi.fn().mockResolvedValue({
-            choices: [{ message: { content: validJSON } }]
-          })
-        }
-      }
-    });
-    const res = await request(app)
-      .post('/api/analyze')
-      .attach('images', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' });
-    expect(res.status).toBe(200);
-    expect(res.body.overallHealth).toBe(80);
   });
 
   it('500 with safe message when AI returns no JSON block', async () => {
@@ -135,7 +109,6 @@ describe('POST /api/analyze', () => {
         }
       }
     });
-    mockGetGroqClient.mockReturnValue(null);
     const res = await request(app)
       .post('/api/analyze')
       .attach('images', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' });
@@ -153,7 +126,6 @@ describe('POST /api/analyze', () => {
         }
       }
     });
-    mockGetGroqClient.mockReturnValue(null);
     const res = await request(app)
       .post('/api/analyze')
       .attach('images', fakeImg, { filename: 'a.jpg', contentType: 'image/jpeg' });

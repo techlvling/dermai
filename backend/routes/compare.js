@@ -1,7 +1,6 @@
 const express  = require('express');
 const rateLimit = require('express-rate-limit');
 const { ipKeyGenerator } = require('express-rate-limit');
-const { GROQ_VISION_MODELS, GROQ_TEXT_MODELS } = require('../lib/ai-models');
 
 const compareLimit = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -12,7 +11,7 @@ const compareLimit = rateLimit({
   message: { error: 'Too many comparisons. Please wait before trying again.' }
 });
 
-function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload, getGroqClient) {
+function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload) {
   const router = express.Router();
 
   router.post(
@@ -137,33 +136,6 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getClient, upload, ge
             quotaHit = true;
           }
           lastError = err;
-        }
-      }
-
-      // Groq fallback when OpenRouter chain exhausts
-      if (!narrative && typeof getGroqClient === 'function') {
-        const groq = getGroqClient();
-        if (groq) {
-          const groqModels = isVisualMode ? GROQ_VISION_MODELS : GROQ_TEXT_MODELS;
-          for (const model of groqModels) {
-            try {
-              console.log(`[compare] trying groq:${model}`);
-              const completion = await groq.chat.completions.create({
-                model,
-                messages,
-                temperature: 0.3,
-                max_tokens: 400,
-              });
-              narrative = completion.choices[0].message.content?.trim();
-              quotaHit = false;
-              console.log(`[compare] success: groq:${model}`);
-              break;
-            } catch (err) {
-              const msg = String(err.message || err);
-              console.warn(`[compare] groq:${model} failed:`, msg.slice(0, 200));
-              lastError = err;
-            }
-          }
         }
       }
 

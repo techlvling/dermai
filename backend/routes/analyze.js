@@ -1,7 +1,6 @@
 const express = require('express');
-const { GROQ_VISION_MODELS } = require('../lib/ai-models');
 
-function createAnalyzeRouter(upload, analyzeLimit, getClient, getGroqClient) {
+function createAnalyzeRouter(upload, analyzeLimit, getClient) {
   const router = express.Router();
 
   // Accept the 3 required angles in `images` and up to 3 optional close-ups
@@ -138,32 +137,6 @@ function createAnalyzeRouter(upload, analyzeLimit, getClient, getGroqClient) {
             quotaHit = true;
           }
           lastError = err;
-        }
-      }
-
-      // Groq fallback when OpenRouter chain exhausts
-      if (!aiResponse) {
-        const groq = getGroqClient();
-        if (groq) {
-          for (const model of GROQ_VISION_MODELS) {
-            try {
-              console.log(`[analyze] groq:${model} — ${angleCount} angle(s) + ${closeupCount} closeup(s)`);
-              const completion = await groq.chat.completions.create({
-                model,
-                messages,
-                temperature: 0.3,
-                max_tokens: 1500
-              });
-              aiResponse = completion.choices[0].message.content;
-              quotaHit = false;
-              console.log(`[analyze] success: groq:${model}`);
-              break;
-            } catch (err) {
-              const msg = String(err.message || err);
-              console.warn(`[analyze] groq:${model} failed:`, msg.slice(0, 300));
-              lastError = err;
-            }
-          }
         }
       }
 

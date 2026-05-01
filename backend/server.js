@@ -113,20 +113,6 @@ function getClient() {
   return _openRouterClient;
 }
 
-// Groq fallback (used when OpenRouter is rate-limited or unresponsive)
-let _groqClient = null;
-function getGroqClient() {
-  const key = process.env.GROQ_API_KEY;
-  if (!key || key === 'your_groq_key_here') return null;
-  if (!_groqClient) {
-    _groqClient = new OpenAI({
-      baseURL: 'https://api.groq.com/openai/v1',
-      apiKey: key
-    });
-  }
-  return _groqClient;
-}
-
 // ---------------------------------------------------------------------------
 // Routes — public (no auth required)
 // ---------------------------------------------------------------------------
@@ -210,7 +196,7 @@ app.get('/api/products', (_req, res) => {
 // POST /api/analyze  — accepts 1-3 images, returns AI skin analysis
 // ---------------------------------------------------------------------------
 
-app.use(require('./routes/analyze')(upload, analyzeLimit, getClient, getGroqClient));
+app.use(require('./routes/analyze')(upload, analyzeLimit, getClient));
 
 // ---------------------------------------------------------------------------
 // Authenticated data routes
@@ -233,7 +219,7 @@ app.use(require('./routes/diary')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/userRoutineItems')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/photos')(verifyAuth, getSupabaseAdmin));
-app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getClient, upload, getGroqClient));
+app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getClient, upload));
 
 // ---------------------------------------------------------------------------
 // 404 — serve branded page for unknown HTML routes, JSON for API routes
