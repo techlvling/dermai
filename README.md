@@ -2,7 +2,7 @@
 
 AI-powered skin analysis. Upload photos of your face, get a science-backed routine with evidence-rated ingredients.
 
-Live: [tinkskin.com](https://tinkskin.com)
+Live: [tinkskin.in](https://tinkskin.in)
 
 ---
 
