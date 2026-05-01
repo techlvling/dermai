@@ -6,70 +6,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <title>DermAI | Privacy & Data</title>
+    <title>DermAI | privacy. no bs.</title>
     <link rel="stylesheet" href="./css/base.css" />
-    <style>
-      .privacy-container { max-width: 720px; margin: 0 auto; padding: 4rem 1.5rem; }
-      h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-      h2 { font-size: 1.1rem; color: var(--primary-300); margin: 2rem 0 0.75rem; }
-      p, li { color: var(--neutral-300); line-height: 1.7; font-size: 0.95rem; }
-      ul { padding-left: 1.5rem; margin-top: 0.5rem; }
-      li { margin-bottom: 0.4rem; }
-      .highlight { background: rgba(99,102,241,0.1); border-left: 3px solid var(--primary-500); padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; }
-      .highlight p { margin: 0; }
-      .last-updated { font-size: 0.8rem; color: var(--neutral-500); margin-bottom: 3rem; }
-    </style>
+    <link rel="stylesheet" href="./css/privacy.css" />
   </head>
   <body>
     <div id="nav-mount"></div>
 
     <main class="privacy-container">
-      <h1>Privacy <span class="gradient-text">&amp; Data</span></h1>
-      <p class="last-updated">Last updated: April 2026</p>
+      <h1>privacy. <span class="gradient-text">no bs.</span></h1>
+      <p class="privacy-last-updated">last updated: may 1, 2026</p>
 
-      <div class="highlight">
-        <p><strong>Short version:</strong> Your photo is sent to an AI vision model for analysis, then immediately discarded from our server. We store nothing about you. Your scan history lives only on your device.</p>
+      <div class="privacy-tldr">
+        <span class="privacy-tldr-label">tldr</span>
+        <p>ur photo goes to an AI vision model, then it's gone from our server in the same request. we keep zero. ur scan history lives only on ur device. that's it.</p>
       </div>
 
-      <h2>What happens to your photo</h2>
+      <span class="privacy-eyebrow">ur photo</span>
+      <h2>wtf happens to it</h2>
       <ul>
-        <li>When you upload a selfie, it is held in our server's memory only long enough to be forwarded to the AI vision model.</li>
-        <li>Once the analysis result is returned, your image is discarded from the server. This happens in the same request — your photo is never stored beyond a few seconds.</li>
-        <li>We do not log, save, or back up uploaded images at any point.</li>
-        <li><strong>Optional Drive backup:</strong> If you choose to back up scan photos or daily progress photos to Google Drive, they are uploaded directly to your personal Google Drive account. DermAI does not retain copies.</li>
+        <li>u upload a selfie → it sits in our server's RAM just long enough to forward to the AI vision model.</li>
+        <li>the AI returns a result → ur image is yeeted from server memory in the same request. usually a few seconds, never beyond.</li>
+        <li>we don't log it, save it, back it up, or peek at it. no copy ever lands on disk.</li>
+        <li><strong>opting into Drive backup?</strong> ur photo goes straight to <em>ur own</em> Google Drive. dermai never holds a copy.</li>
       </ul>
 
-      <h2>AI vision model (OpenRouter)</h2>
+      <span class="privacy-eyebrow">the brain</span>
+      <h2>which AI reads ur face</h2>
       <ul>
-        <li>Your image is processed by an AI vision model served via <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" style="color:var(--primary-400);">OpenRouter</a>. OpenRouter's own data handling policies apply to this step.</li>
-        <li>Models used include Qwen 2.5 VL, Llama 3.2 Vision, and GPT-4o mini as fallbacks. Per OpenRouter's terms, API-submitted images are not used for model training.</li>
-        <li>You can review OpenRouter's privacy policy at <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer" style="color:var(--primary-400);">openrouter.ai/privacy</a>.</li>
+        <li>ur image hits an AI vision model via <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer">OpenRouter</a>. their privacy policy applies to that hop — see <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer">openrouter.ai/privacy</a>.</li>
+        <li><a href="https://groq.com" target="_blank" rel="noopener noreferrer">Groq</a> is the fallback when OpenRouter is slow or unavailable. same deal: API submissions aren't used to train models.</li>
+        <li>models in rotation: Qwen 2.5 VL, Llama 3.2 Vision, GPT-4o mini. the list rotates as better ones drop.</li>
       </ul>
 
-      <h2>What we store on your device</h2>
-      <ul>
-        <li><strong>Latest analysis</strong> (<code>dermAI_analysis</code>): your most recent skin score, type, concerns, and product recommendations. Used to populate the recommendations page. Overwritten on each new scan.</li>
-        <li><strong>Scan history</strong> (<code>dermAI_history</code>): your last 20 full scan results — health score, skin type, concerns, and product recommendations — stored as JSON in your browser's localStorage. Powers the History page so you can re-open any past routine. Never transmitted anywhere.</li>
-        <li><strong>Progress photos</strong> (IndexedDB): if you opt in to progress tracking during a scan, a copy of your photo is stored in your browser's IndexedDB. It never leaves your device.</li>
-        <li><strong>Favourites &amp; shopping list</strong> (<code>dermAI_favorites</code>, <code>dermAI_shopping</code>): product saves, stored locally only.</li>
-        <li><strong>Routine streak &amp; badges</strong> (<code>dermAI_streak</code>, <code>dermAI_badges</code>): gamification state, stored locally only.</li>
+      <span class="privacy-eyebrow">ur device</span>
+      <h2>what stays on ur browser (not us)</h2>
+      <p>everything below lives <strong>only</strong> on ur device. nothing is transmitted, synced, or backed up to dermai's servers.</p>
+      <ul class="storage-list">
+        <li><code>dermAI_analysis</code><span class="storage-desc">ur most recent scan + recommendations. overwritten on each new scan.</span></li>
+        <li><code>dermAI_history</code><span class="storage-desc">last 20 scans so the History page works. JSON in localStorage.</span></li>
+        <li><code>dermAI_favorites</code><span class="storage-desc">products u saved.</span></li>
+        <li><code>dermAI_routineLog</code><span class="storage-desc">daily AM/PM routine check-ins powering the streak.</span></li>
+        <li><code>dermAI_earnedBadges</code><span class="storage-desc">gamification badges u've unlocked.</span></li>
+        <li><code>dermAI_diary</code> + <code>dermAI_reactions</code><span class="storage-desc">post-scan check-in notes and patch test reactions.</span></li>
+        <li><code>dermAI_patchQueue</code> + <code>dermAI_reorderData</code><span class="storage-desc">queued patch tests and reorder reminders.</span></li>
+        <li><code>dermAI_notifPrefs</code><span class="storage-desc">ur in-app notification settings.</span></li>
+        <li><code>dermAI_seen</code> + <code>dermAI_statsRange</code> + <code>dermAI_trendsRange</code><span class="storage-desc">UI state — what u've already seen, default chart ranges, etc.</span></li>
+        <li><code>dermAI_photos</code> (IndexedDB)<span class="storage-desc">progress photos, only if u opted in. never leaves ur device.</span></li>
       </ul>
-      <p>You can clear all data at any time by opening your browser's developer tools and running <code>localStorage.clear()</code>, or by clearing your browser's site data for this domain.</p>
 
-      <h2>Product recommendations</h2>
+      <p>want it gone? one tap:</p>
+      <button type="button" id="privacy-wipe-btn" class="privacy-wipe" aria-describedby="privacy-wipe-status">
+        wipe everything stored on this device
+      </button>
+      <span id="privacy-wipe-status" class="privacy-wipe-status" role="status" aria-live="polite"></span>
+
+      <span class="privacy-eyebrow">products</span>
+      <h2>recommendations + amazon</h2>
       <ul>
-        <li>Recommendations are generated client-side by matching your skin concerns to our local product database. No personal data is sent to any third party for this step.</li>
-        <li>Product links to Amazon are Amazon Associate affiliate links. DermAI earns a small commission on qualifying purchases at no extra cost to you. This does not affect which products are recommended — selections are based solely on clinical evidence.</li>
+        <li>recommendations are computed in ur browser by matching ur scan to our local product database. nothing about u gets shipped to amazon for this step.</li>
+        <li>amazon links are affiliate links — dermai earns a small cut on qualifying purchases at no extra cost to u. recommendations are picked on clinical evidence; affiliate doesn't move the rankings.</li>
       </ul>
 
-      <h2>Analytics &amp; tracking</h2>
-      <p>We do not use any analytics, tracking scripts, cookies, or advertising on this site.</p>
+      <span class="privacy-eyebrow">tracking</span>
+      <h2>analytics + cookies</h2>
+      <ul>
+        <li>on production deployments, dermai uses <a href="https://vercel.com/docs/analytics" target="_blank" rel="noopener noreferrer">Vercel Web Analytics</a> for page views and basic perf metrics. no cookies, no cross-site tracking, anonymized by Vercel.</li>
+        <li>on local dev or self-hosted instances, no analytics scripts run at all (the script is hostname-gated).</li>
+        <li>we don't use Google Analytics, Segment, PostHog, Intercom, Hotjar, or any fingerprinting / behavioural tracker.</li>
+        <li>we don't set any cookies. ur session is held in localStorage, scoped to this domain.</li>
+      </ul>
 
-      <h2>Medical disclaimer</h2>
-      <p>DermAI provides cosmetic skin analysis only and is <strong>not a medical diagnosis tool</strong>. The analysis is generated by an AI vision model and may not accurately reflect your skin condition. Always consult a board-certified dermatologist for skin health concerns.</p>
+      <section class="privacy-medical">
+        <h2>Medical disclaimer</h2>
+        <p>DermAI provides cosmetic skin analysis only and is <strong>not a medical diagnosis tool</strong>. The analysis is generated by an AI vision model and may not accurately reflect your skin condition. Always consult a board-certified dermatologist for skin health concerns.</p>
+      </section>
 
-      <h2>Contact</h2>
-      <p>Questions about privacy? Email <a href="mailto:jamesjoy696@gmail.com" style="color:var(--primary-400);">jamesjoy696@gmail.com</a>.</p>
+      <span class="privacy-eyebrow">contact</span>
+      <h2>questions?</h2>
+      <p>hit me at <a href="mailto:jamesjoy696@gmail.com">jamesjoy696@gmail.com</a>.</p>
     </main>
 
     <footer class="footer-minimal container">
@@ -81,6 +96,50 @@
     <script src="/js/auth.js"></script>
     <script src="/js/nav.js"></script>
     <script>document.addEventListener('DOMContentLoaded', () => Nav.render(''));</script>
+    <script>
+      // Wipe-everything button — clears localStorage + IndexedDB. Confirms first.
+      document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('privacy-wipe-btn');
+        const status = document.getElementById('privacy-wipe-status');
+        if (!btn || !status) return;
+
+        btn.addEventListener('click', async () => {
+          const ok = window.confirm(
+            "this wipes every dermai key from localStorage and deletes ur progress-photo IndexedDB on this device. ur scans and progress photos won't be recoverable. continue?"
+          );
+          if (!ok) return;
+
+          status.classList.remove('error');
+          status.textContent = 'wiping…';
+
+          try {
+            // 1. localStorage — only dermAI_* keys, leave other origins' data alone
+            const toRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+              const k = localStorage.key(i);
+              if (k && k.startsWith('dermAI_')) toRemove.push(k);
+            }
+            toRemove.forEach((k) => localStorage.removeItem(k));
+
+            // 2. IndexedDB — best-effort delete of the dermai photos DB
+            if ('indexedDB' in window) {
+              await new Promise((resolve) => {
+                const req = indexedDB.deleteDatabase('dermAI_photos');
+                req.onsuccess = () => resolve();
+                req.onerror = () => resolve();
+                req.onblocked = () => resolve();
+                setTimeout(resolve, 1500);
+              });
+            }
+
+            status.textContent = `wiped. removed ${toRemove.length} localStorage key${toRemove.length === 1 ? '' : 's'} + progress-photo db.`;
+          } catch (err) {
+            status.classList.add('error');
+            status.textContent = `couldn't wipe everything: ${err.message || 'unknown error'}. try Settings → Site data in ur browser.`;
+          }
+        });
+      });
+    </script>
     <script>
       // Vercel Web Analytics — only inject in production (skip localhost / private IPs)
       if (!/^(localhost|127\.|10\.|192\.168\.|\[::1\])/.test(location.hostname)) {

@@ -1,0 +1,244 @@
+/* ── Privacy page ────────────────────────────────────────────────
+   Long-form content with a tighter reading width than the rest of
+   the site. Uses the standard tokens from variables.css; every
+   color goes through a var(--token) — no hex literals here.
+*/
+
+.privacy-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 5rem;
+}
+
+.privacy-container h1 {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 0.5rem;
+  color: var(--text-strong);
+  letter-spacing: -0.01em;
+}
+
+.privacy-last-updated {
+  font-size: 0.8125rem;
+  color: var(--neutral-500);
+  margin-bottom: 2.5rem;
+}
+
+/* ── Section eyebrow + heading rhythm — mirrors landing page ───── */
+.privacy-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--primary-700);
+  background: rgba(245, 88, 142, 0.12);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  margin: 2.75rem 0 0.75rem;
+  text-transform: lowercase;
+}
+
+.privacy-container h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  color: var(--text-strong);
+  line-height: 1.25;
+}
+
+/* ── Body copy ───────────────────────────────────────────────────
+   Was --neutral-300 on near-white before — failing contrast hard.
+   Bumped to --neutral-700 / --text-body for proper readability.
+*/
+.privacy-container p,
+.privacy-container li {
+  color: var(--text-body);
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.privacy-container ul {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.privacy-container li {
+  margin-bottom: 0.5rem;
+}
+
+.privacy-container a {
+  color: var(--primary-600);
+  text-decoration: underline;
+  text-decoration-color: rgba(245, 88, 142, 0.4);
+  text-underline-offset: 2px;
+  transition: color var(--duration-fast);
+}
+
+.privacy-container a:hover {
+  color: var(--primary-700);
+  text-decoration-color: var(--primary-600);
+}
+
+.privacy-container strong {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+/* ── TLDR callout ───────────────────────────────────────────────
+   On-brand pink wash with primary border. Replaces the off-system
+   indigo box that lived in the old inline <style>.
+*/
+.privacy-tldr {
+  background: linear-gradient(180deg, var(--primary-50) 0%, rgba(255, 240, 245, 0.6) 100%);
+  border-left: 4px solid var(--primary-500);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 1.25rem 1.5rem;
+  margin: 0 0 2rem;
+}
+
+.privacy-tldr-label {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--primary-700);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.privacy-tldr p {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+/* ── Code chips for localStorage keys ─────────────────────────── */
+.privacy-container code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.85em;
+  background: var(--neutral-100);
+  color: var(--text-strong);
+  padding: 0.125rem 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--neutral-200);
+}
+
+/* ── Storage list as a clean stack of key + label rows ────────── */
+.storage-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.storage-list li {
+  display: grid;
+  grid-template-columns: minmax(180px, auto) 1fr;
+  gap: 0.75rem 1rem;
+  align-items: start;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin: 0;
+}
+
+.storage-list li code {
+  align-self: start;
+}
+
+.storage-list .storage-desc {
+  color: var(--neutral-600);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 600px) {
+  .storage-list li {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
+
+/* ── Wipe button ─────────────────────────────────────────────── */
+.privacy-wipe {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0.25rem;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--bg-card);
+  background: var(--primary-500);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background var(--duration-base), transform var(--duration-fast);
+  min-height: 44px;
+}
+
+.privacy-wipe:hover {
+  background: var(--primary-600);
+  transform: translateY(-1px);
+}
+
+.privacy-wipe:active {
+  transform: translateY(0);
+}
+
+.privacy-wipe:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-glow);
+}
+
+.privacy-wipe-status {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--success);
+  min-height: 1.2em;
+}
+
+.privacy-wipe-status.error {
+  color: var(--primary-700);
+}
+
+/* ── Medical disclaimer — keep this section formal/clinical ──── */
+.privacy-medical {
+  margin-top: 2.5rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 179, 128, 0.12);
+  border: 1px solid var(--peach-300);
+  border-radius: var(--radius-md);
+}
+
+.privacy-medical h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.125rem;
+  color: var(--neutral-800);
+}
+
+.privacy-medical p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--neutral-700);
+  line-height: 1.6;
+}
+
+/* ── Mobile spacing ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .privacy-container {
+    padding: 2rem 1.25rem 4rem;
+  }
+  .privacy-container h1 { font-size: 1.875rem; }
+  .privacy-container h2 { font-size: 1.25rem; }
+  .privacy-eyebrow { margin-top: 2rem; }
+}
