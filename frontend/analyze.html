@@ -127,9 +127,8 @@
         <div id="preview-container" class="glass-panel hidden">
           <div id="thumbnails-grid" class="thumbnails-grid" role="list" aria-label="Captured photos preview"></div>
           <div class="preview-actions">
-            <button id="analyze-btn" class="btn btn-primary" aria-label="Analyze captured photos">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              cook ☕
+            <button id="next-btn" class="btn btn-primary" aria-label="Continue to optional close-ups">
+              next →
             </button>
             <button id="retake-btn" class="btn btn-outline" aria-label="Retake all photos">redo all</button>
           </div>
@@ -137,6 +136,62 @@
             <input type="checkbox" id="save-photo-opt-in" checked>
             <span>save front pic for progress tracking</span>
           </label>
+        </div>
+
+        <!-- Step 2 — optional close-ups + per-photo notes -->
+        <div id="closeup-section" class="glass-panel hidden">
+          <div class="text-center">
+            <div class="section-eyebrow">STEP 2 — OPTIONAL</div>
+            <h2 class="closeup-title">anything <span class="gradient-text">specific</span>?</h2>
+            <p class="closeup-subtitle">add up to 3 close-ups of stuff u want us to look at — a mole u're tracking, a breakout that won't quit, a scar. each one gets a short note so the AI knows what u want it to check.</p>
+          </div>
+
+          <div class="closeup-slots-grid" id="closeup-slots" role="group" aria-label="Optional close-up photo slots">
+            <div class="closeup-slot-card" data-cu-slot="0">
+              <button type="button" class="closeup-slot" data-cu-pick="0" aria-label="Add close-up 1 of 3">
+                <div class="cu-placeholder">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  <span class="cu-label">close-up 1</span>
+                  <span class="cu-hint">tap to add a photo</span>
+                </div>
+              </button>
+              <textarea class="cu-note" data-cu-note="0" maxlength="100" placeholder="what should we look at? (optional, eg. 'this mole on my cheek')" disabled aria-label="Note for close-up 1"></textarea>
+              <div class="cu-note-counter"><span data-cu-count="0">0</span>/100</div>
+            </div>
+            <div class="closeup-slot-card" data-cu-slot="1">
+              <button type="button" class="closeup-slot" data-cu-pick="1" aria-label="Add close-up 2 of 3">
+                <div class="cu-placeholder">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  <span class="cu-label">close-up 2</span>
+                  <span class="cu-hint">tap to add a photo</span>
+                </div>
+              </button>
+              <textarea class="cu-note" data-cu-note="1" maxlength="100" placeholder="what should we look at? (optional)" disabled aria-label="Note for close-up 2"></textarea>
+              <div class="cu-note-counter"><span data-cu-count="1">0</span>/100</div>
+            </div>
+            <div class="closeup-slot-card" data-cu-slot="2">
+              <button type="button" class="closeup-slot" data-cu-pick="2" aria-label="Add close-up 3 of 3">
+                <div class="cu-placeholder">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  <span class="cu-label">close-up 3</span>
+                  <span class="cu-hint">tap to add a photo</span>
+                </div>
+              </button>
+              <textarea class="cu-note" data-cu-note="2" maxlength="100" placeholder="what should we look at? (optional)" disabled aria-label="Note for close-up 3"></textarea>
+              <div class="cu-note-counter"><span data-cu-count="2">0</span>/100</div>
+            </div>
+          </div>
+
+          <input type="file" id="closeup-file-input" accept="image/jpeg,image/png,image/webp" hidden />
+
+          <div class="closeup-actions">
+            <button id="analyze-btn" type="button" class="btn btn-primary" aria-label="Submit photos for analysis">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              cook ☕
+            </button>
+            <button id="closeup-skip-btn" type="button" class="btn btn-outline" aria-label="Skip close-ups and analyze">skip — just the 3 angles</button>
+          </div>
+          <p class="closeup-disclaimer">⚕ if u flag a mole, lesion, or anything u're worried about, u still need to see a board-certified dermatologist in person. close-up findings are visual notes, not a diagnosis.</p>
         </div>
       </div>
 

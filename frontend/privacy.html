@@ -29,6 +29,7 @@
         <li>the AI returns a result → ur image is yeeted from server memory in the same request. usually a few seconds, never beyond.</li>
         <li>we don't log it, save it, back it up, or peek at it. no copy ever lands on disk.</li>
         <li><strong>opting into Drive backup?</strong> ur photo goes straight to <em>ur own</em> Google Drive. dermai never holds a copy.</li>
+        <li><strong>optional close-ups</strong> (step 2 of the scan, "anything specific?") follow the exact same path as the main 3 angles — held in server RAM only long enough to forward to the AI, then dropped. backed up to ur own Drive only if u opted in. the short notes u type for each close-up are sent to the AI alongside the photo.</li>
       </ul>
 
       <span class="privacy-eyebrow">the brain</span>
@@ -54,6 +55,7 @@
         <li><code>dermAI_seen</code> + <code>dermAI_statsRange</code> + <code>dermAI_trendsRange</code><span class="storage-desc">UI state — what u've already seen, default chart ranges, etc.</span></li>
         <li><code>dermAI_photos</code> (IndexedDB)<span class="storage-desc">progress photos, only if u opted in. never leaves ur device.</span></li>
       </ul>
+      <p>close-up photos and the notes u attach to them are <strong>not</strong> stored in ur browser — they're persisted server-side on ur scan record (in <code>scans.closeup_meta</code>) so the report can echo them back later. the AI provider sees them as part of the analysis request; nothing about them goes to amazon, google analytics, or any third party beyond the AI provider.</p>
 
       <p>want it gone? one tap:</p>
       <button type="button" id="privacy-wipe-btn" class="privacy-wipe" aria-describedby="privacy-wipe-status">

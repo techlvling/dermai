@@ -92,6 +92,7 @@ const Storage = (() => {
       id: latest.id,
       result_json: latest.result_json,
       image_urls: latest.image_urls || null,
+      closeup_meta: latest.closeup_meta || null,
       created_at: latest.created_at,
     };
   }

@@ -23,6 +23,46 @@ function createPhotosRouter(verifyAuth, getSupabaseAdmin) {
     return res.json({ scan: data[0] });
   });
 
+  // PATCH /api/scans/:id/closeup-meta
+  // Persists user-flagged close-up photo URLs + notes for a scan. Optional —
+  // omitting this leaves closeup_meta NULL on the row.
+  router.patch('/api/scans/:id/closeup-meta', async (req, res) => {
+    const { closeup_meta } = req.body;
+    if (!Array.isArray(closeup_meta)) {
+      return res.status(400).json({ error: 'closeup_meta must be an array' });
+    }
+    if (closeup_meta.length > 3) {
+      return res.status(400).json({ error: 'closeup_meta cannot have more than 3 entries' });
+    }
+    let cleaned;
+    try {
+      cleaned = closeup_meta.map((entry, i) => {
+        if (!entry || typeof entry !== 'object') {
+          throw Object.assign(new Error(`closeup_meta[${i}] must be an object`), { status: 400 });
+        }
+        const url = typeof entry.url === 'string' ? entry.url.slice(0, 1000) : null;
+        const note = typeof entry.note === 'string' ? entry.note.slice(0, 200) : '';
+        if (!url) {
+          throw Object.assign(new Error(`closeup_meta[${i}].url is required`), { status: 400 });
+        }
+        return { url, note };
+      });
+    } catch (err) {
+      return res.status(err.status || 400).json({ error: err.message });
+    }
+    const db = getSupabaseAdmin();
+    if (!db) return res.status(503).json({ error: 'Database not configured' });
+    const { data, error } = await db
+      .from('scans')
+      .update({ closeup_meta: cleaned.length ? cleaned : null })
+      .eq('id', req.params.id)
+      .eq('user_id', req.user.id)
+      .select();
+    if (error) return res.status(500).json({ error: error.message });
+    if (!data || data.length === 0) return res.status(404).json({ error: 'Scan not found' });
+    return res.json({ scan: data[0] });
+  });
+
   // GET /api/progress-photos
   router.get('/api/progress-photos', async (req, res) => {
     const db = getSupabaseAdmin();

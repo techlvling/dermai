@@ -81,7 +81,8 @@ const analyzeLimit = rateLimit({
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 4 * 1024 * 1024, files: 3 },
+  // 3 required angles + up to 3 optional close-ups = 6 max per /api/analyze
+  limits: { fileSize: 4 * 1024 * 1024, files: 6 },
   fileFilter: (_req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);

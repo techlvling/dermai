@@ -148,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const latest = await Storage.fetchLatestScan();
       if (latest) {
         userAnalysis = latest.result_json;
+        userAnalysis.__closeup_meta = latest.closeup_meta || null;
         localStorage.setItem('dermAI_analysis', JSON.stringify({ ...userAnalysis, savedAt: userAnalysis.savedAt || Date.now() }));
       } else {
         // Server is empty. If localStorage has a recent unsynced scan,
@@ -282,6 +283,86 @@ document.addEventListener('DOMContentLoaded', () => {
         userConcernsList.appendChild(li);
       });
     }
+    renderSpotFindings();
+  }
+
+  // ── Spot findings (per-closeup AI observations from step 2 of scan) ──────
+  // Renders only when both result_json.spotFindings and closeup_meta are
+  // present. closeup_meta supplies the photo URL + user note, spotFindings
+  // supplies the AI observation. They are length-matched in upload order.
+  function renderSpotFindings() {
+    const findings = Array.isArray(userAnalysis?.spotFindings) ? userAnalysis.spotFindings : [];
+    if (findings.length === 0) return;
+    const meta = Array.isArray(userAnalysis?.__closeup_meta) ? userAnalysis.__closeup_meta : [];
+
+    const profileBlock = document.querySelector('.skin-profile-summary');
+    const routineContent = document.getElementById('routine-content');
+    if (!profileBlock || !routineContent) return;
+
+    const existing = document.getElementById('recs-spotfindings');
+    if (existing) existing.remove();
+
+    const section = document.createElement('section');
+    section.id = 'recs-spotfindings';
+    section.className = 'spotfindings-section';
+    section.style.marginBottom = '2rem';
+
+    const cardsHTML = findings.map((sf, i) => {
+      const note = (sf.note || meta[i]?.note || '').toString();
+      const observation = (sf.observation || 'No observation returned.').toString();
+      const concern = (sf.concern || 'Other').toString();
+      const sev = Number.isFinite(sf.severity) ? Math.max(0, Math.min(100, Math.round(sf.severity))) : null;
+      const seeDerm = sf.seeDerm === true;
+      const url = meta[i]?.url || null;
+
+      const sevHTML = sev !== null ? `
+        <div class="sf-sev">
+          <div class="sf-sev-bar"><div class="sf-sev-fill" style="width:${sev}%"></div></div>
+          <span class="sf-sev-num">${sev}/100</span>
+        </div>` : '';
+
+      const seeDermHTML = seeDerm ? `
+        <div class="sf-derm-callout" role="note">
+          <strong>⚕ See a board-certified dermatologist in person.</strong>
+          This is a visual observation, not a diagnosis. Any flagged mole, lesion, or persistent skin change warrants in-person evaluation by a clinician.
+        </div>` : '';
+
+      // Drive URLs are folder/file viewer links — they don't render as <img>
+      // sources directly. If we have a URL, link to it; otherwise show a
+      // placeholder. Direct thumbnails would require a server-side proxy.
+      const thumbHTML = url
+        ? `<a href="${url}" target="_blank" rel="noopener" class="sf-thumb sf-thumb--placeholder" aria-label="open close-up ${i + 1} in Drive"></a>`
+        : `<div class="sf-thumb sf-thumb--placeholder" aria-hidden="true"></div>`;
+
+      const noteHTML = note
+        ? `<p class="sf-note">u said: "${note.replace(/"/g, '&quot;')}"</p>`
+        : `<p class="sf-note sf-note--empty">no note attached</p>`;
+
+      return `
+        <article class="sf-card${seeDerm ? ' sf-card--derm' : ''}">
+          ${thumbHTML}
+          <div class="sf-body">
+            <div class="sf-head">
+              <span class="sf-concern">${concern}</span>
+              ${sevHTML}
+            </div>
+            ${noteHTML}
+            <p class="sf-obs">${observation}</p>
+            ${seeDermHTML}
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    section.innerHTML = `
+      <div class="sf-header">
+        <span class="section-eyebrow">spots u flagged</span>
+        <h2 class="sf-title">what we saw on ur close-ups</h2>
+        <p class="sf-sub">specific to the photos u uploaded with ur scan.</p>
+      </div>
+      <div class="sf-grid">${cardsHTML}</div>
+    `;
+    profileBlock.parentNode.insertBefore(section, profileBlock.nextSibling);
   }
 
   // Product-level evidence weight. Multiplies the ingredient × severity score

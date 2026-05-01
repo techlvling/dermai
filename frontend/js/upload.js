@@ -17,7 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const previewContainer = document.getElementById('preview-container');
   const thumbnailsGrid   = document.getElementById('thumbnails-grid');
   const analyzeBtn       = document.getElementById('analyze-btn');
+  const nextBtn          = document.getElementById('next-btn');
   const retakeBtn        = document.getElementById('retake-btn');
+
+  const closeupSection   = document.getElementById('closeup-section');
+  const closeupSkipBtn   = document.getElementById('closeup-skip-btn');
+  const closeupFileInput = document.getElementById('closeup-file-input');
 
   const uploadSection  = document.getElementById('upload-section');
   const loadingSection = document.getElementById('loading-section');
@@ -39,6 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let capturedDataURLs = [null, null, null];
   let currentStep    = 0;
   let activeSlotIdx  = null; // which slot slot-file-input is targeting
+
+  // Step 2: optional close-ups + per-photo notes. Empty until the user adds them.
+  // closeupFiles[i] is a File object (the photo); closeupDataURLs[i] is a data
+  // URL for thumbnail preview; closeupNotes[i] is a short string.
+  const closeupFiles    = [null, null, null];
+  const closeupDataURLs = [null, null, null];
+  const closeupNotes    = ['', '', ''];
+  let activeCloseupIdx  = null; // which closeup slot the file picker is targeting
 
   // ── Pre-scan Drive readiness gate (B1) ────────────────────────────
   // Per user instruction: "always store the photo to gdrive ... prep gdrive
@@ -418,6 +431,109 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── Step 2 transition: 3 mains captured → reveal close-up section ─────────
+  // The "next →" button on preview-container hands off to the optional
+  // close-up step. From there the user can either skip or attach up to 3
+  // close-ups + notes; both paths land in handleUpload().
+  function showCloseupStep() {
+    if (!closeupSection) return; // legacy markup without step 2 — fall through
+    previewContainer.classList.add('hidden');
+    closeupSection.classList.remove('hidden');
+    closeupSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      const validFiles = capturedFiles.filter(f => f !== null);
+      if (validFiles.length !== 3) return; // gate: must have all 3 main angles
+      showCloseupStep();
+    });
+  }
+
+  // ── Step 2: per-slot photo picker + note textarea ──────────────────────────
+  function setCloseupSlot(idx, file, dataURL) {
+    closeupFiles[idx]    = file;
+    closeupDataURLs[idx] = dataURL;
+    const card = document.querySelector(`.closeup-slot-card[data-cu-slot="${idx}"]`);
+    if (!card) return;
+    const slotBtn = card.querySelector('.closeup-slot');
+    const note    = card.querySelector('.cu-note');
+    if (file && dataURL) {
+      slotBtn.classList.add('cu-filled');
+      slotBtn.innerHTML = `
+        <img src="${dataURL}" alt="close-up ${idx + 1}" class="cu-thumb" />
+        <button type="button" class="cu-remove" data-cu-remove="${idx}" aria-label="Remove close-up ${idx + 1}">&times;</button>
+      `;
+      if (note) {
+        note.disabled = false;
+        note.focus();
+      }
+    } else {
+      slotBtn.classList.remove('cu-filled');
+      slotBtn.innerHTML = `
+        <div class="cu-placeholder">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          <span class="cu-label">close-up ${idx + 1}</span>
+          <span class="cu-hint">tap to add a photo</span>
+        </div>
+      `;
+      if (note) {
+        note.value = '';
+        note.disabled = true;
+      }
+      closeupNotes[idx] = '';
+      const counter = document.querySelector(`[data-cu-count="${idx}"]`);
+      if (counter) counter.textContent = '0';
+    }
+  }
+
+  if (closeupSection && closeupFileInput) {
+    closeupSection.addEventListener('click', (e) => {
+      const pickBtn = e.target.closest('[data-cu-pick]');
+      const removeBtn = e.target.closest('[data-cu-remove]');
+      if (removeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const idx = parseInt(removeBtn.dataset.cuRemove, 10);
+        setCloseupSlot(idx, null, null);
+        return;
+      }
+      if (pickBtn && !pickBtn.classList.contains('cu-filled')) {
+        activeCloseupIdx = parseInt(pickBtn.dataset.cuPick, 10);
+        closeupFileInput.value = '';
+        closeupFileInput.click();
+      }
+    });
+
+    closeupFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file || activeCloseupIdx === null) return;
+      // Reuse resizeImage to keep payloads sane.
+      resizeImage(file, (resizedFile, dataURL) => {
+        setCloseupSlot(activeCloseupIdx, resizedFile, dataURL);
+        activeCloseupIdx = null;
+      });
+    });
+
+    // Note textarea: track value + char counter.
+    closeupSection.querySelectorAll('.cu-note').forEach(ta => {
+      ta.addEventListener('input', () => {
+        const idx = parseInt(ta.dataset.cuNote, 10);
+        closeupNotes[idx] = ta.value;
+        const counter = document.querySelector(`[data-cu-count="${idx}"]`);
+        if (counter) counter.textContent = String(ta.value.length);
+      });
+    });
+  }
+
+  if (closeupSkipBtn && analyzeBtn) {
+    closeupSkipBtn.addEventListener('click', () => {
+      // Wipe any half-filled close-up state so we genuinely submit just the 3.
+      [0, 1, 2].forEach(i => setCloseupSlot(i, null, null));
+      analyzeBtn.click();
+    });
+  }
+
   // ── Submit for Analysis ────────────────────────────────────────────────────
   if (analyzeBtn) {
     analyzeBtn.addEventListener('click', async function handleUpload() {
@@ -428,6 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
       analyzeBtn.setAttribute('aria-busy', 'true');
       loadingSection.classList.remove('hidden');
       previewContainer.classList.add('hidden');
+      if (closeupSection) closeupSection.classList.add('hidden');
       uploadSection.classList.add('hidden');
 
       // Rotate loading messages
@@ -441,6 +558,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const formData = new FormData();
       validFiles.forEach(f => formData.append('images', f));
+
+      // Optional close-ups + their notes. We send notes in upload order so
+      // the backend can map note ↔ photo by index.
+      const validCloseups = [];
+      const validCloseupNotes = [];
+      [0, 1, 2].forEach(i => {
+        if (closeupFiles[i]) {
+          validCloseups.push(closeupFiles[i]);
+          validCloseupNotes.push((closeupNotes[i] || '').trim());
+        }
+      });
+      validCloseups.forEach(f => formData.append('closeups', f));
+      if (validCloseups.length > 0) {
+        formData.append('closeup_notes', JSON.stringify(validCloseupNotes));
+      }
 
       try {
         const response = await fetch('/api/analyze', { method: 'POST', body: formData });
@@ -670,6 +802,79 @@ document.addEventListener('DOMContentLoaded', () => {
     shortlistEl.classList.remove('hidden');
   }
 
+  // ── Spot findings renderer ────────────────────────────────────────────────
+  // Renders an inline "spots u flagged" section right after the concerns
+  // grid. Each card shows the closeup thumbnail (from local dataURL while
+  // we're on this page; from Drive after the scan saves), the user's note,
+  // the AI observation, a severity bar, and a formal "see a derm" callout
+  // when seeDerm is true.
+  function renderSpotFindings(spotFindings, anchor) {
+    if (!Array.isArray(spotFindings) || spotFindings.length === 0) return;
+    if (!anchor) return;
+
+    const existing = document.getElementById('spotfindings-section');
+    if (existing) existing.remove();
+
+    const section = document.createElement('section');
+    section.id = 'spotfindings-section';
+    section.className = 'spotfindings-section';
+    section.setAttribute('aria-label', 'Spot findings from your flagged close-ups');
+
+    const cardsHTML = spotFindings.map((sf, i) => {
+      const note = (sf.note || '').toString();
+      const observation = (sf.observation || 'No observation returned.').toString();
+      const concern = (sf.concern || 'Other').toString();
+      const sev = Number.isFinite(sf.severity) ? Math.max(0, Math.min(100, Math.round(sf.severity))) : null;
+      const seeDerm = sf.seeDerm === true;
+      const thumbDataURL = closeupDataURLs[i] || null;
+
+      const sevHTML = sev !== null ? `
+        <div class="sf-sev">
+          <div class="sf-sev-bar"><div class="sf-sev-fill" style="width:${sev}%"></div></div>
+          <span class="sf-sev-num">${sev}/100</span>
+        </div>` : '';
+
+      const seeDermHTML = seeDerm ? `
+        <div class="sf-derm-callout" role="note">
+          <strong>⚕ See a board-certified dermatologist in person.</strong>
+          This is a visual observation, not a diagnosis. Any flagged mole, lesion, or persistent skin change warrants in-person evaluation by a clinician.
+        </div>` : '';
+
+      const thumbHTML = thumbDataURL
+        ? `<img src="${thumbDataURL}" alt="close-up ${i + 1}" class="sf-thumb" />`
+        : `<div class="sf-thumb sf-thumb--placeholder" aria-hidden="true"></div>`;
+
+      const noteHTML = note
+        ? `<p class="sf-note">u said: "${note.replace(/"/g, '&quot;')}"</p>`
+        : `<p class="sf-note sf-note--empty">no note attached</p>`;
+
+      return `
+        <article class="sf-card${seeDerm ? ' sf-card--derm' : ''}">
+          ${thumbHTML}
+          <div class="sf-body">
+            <div class="sf-head">
+              <span class="sf-concern">${concern}</span>
+              ${sevHTML}
+            </div>
+            ${noteHTML}
+            <p class="sf-obs">${observation}</p>
+            ${seeDermHTML}
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    section.innerHTML = `
+      <div class="sf-header">
+        <span class="section-eyebrow">spots u flagged</span>
+        <h2 class="sf-title">what we saw on ur close-ups</h2>
+        <p class="sf-sub">specific to the photos u uploaded in step 2.</p>
+      </div>
+      <div class="sf-grid">${cardsHTML}</div>
+    `;
+    anchor.insertBefore(section, document.getElementById('ingredient-shortlist') || null);
+  }
+
   // ── Render Results ────────────────────────────────────────────────────────
   function renderResults(data) {
     loadingSection.classList.add('hidden');
@@ -711,6 +916,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     ingredientsReady.then(() => renderIngredientLayer(data.concerns));
+
+    // ── Spot findings (per-closeup AI observations) ─────────────────────────
+    // Only renders when the user uploaded close-ups in step 2 AND the model
+    // returned a spotFindings array. The seeDerm callout is intentionally
+    // formal/clinical voice — same rule as the medical disclaimer block on
+    // privacy.html. This is the one place where chronically-online voice
+    // does not apply.
+    renderSpotFindings(data.spotFindings || [], concernsList.parentElement);
 
     // Stamp savedAt so the routine page can tell "just scanned" from "stale
     // cache" when deciding whether to trust localStorage over an empty server.
@@ -816,16 +1029,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const dayFolderId = await Drive.ensureDayFolder(dayIndex, dateYYYYMMDD);
           const filesToUp   = capturedFiles.filter(Boolean);
+          const closeupsToUp = closeupFiles.filter(Boolean);
+          const totalToUp   = filesToUp.length + closeupsToUp.length;
           const urls        = [];
+          const closeupUrls = [];
 
           for (let i = 0; i < filesToUp.length; i++) {
             // Inside the day folder we can use simple short filenames —
             // the parent folder already encodes the date + day.
             const filename = `${ANGLE_LABELS[i]}.jpg`;
-            hint.textContent = `uploading ${filesToUp.length} pics to Day ${dayIndex}… (${i + 1}/${filesToUp.length})`;
-            fill.style.width = `${Math.round((i / filesToUp.length) * 100)}%`;
+            hint.textContent = `uploading ${totalToUp} pics to Day ${dayIndex}… (${i + 1}/${totalToUp})`;
+            fill.style.width = `${Math.round((i / totalToUp) * 100)}%`;
             const result = await Drive.uploadPhoto(filesToUp[i], filename, dayFolderId);
             urls.push(result.webViewLink);
+          }
+
+          // Close-ups, if any. Same day folder, distinct filenames.
+          for (let j = 0; j < closeupsToUp.length; j++) {
+            const filename = `closeup-${j + 1}.jpg`;
+            const overall = filesToUp.length + j + 1;
+            hint.textContent = `uploading ${totalToUp} pics to Day ${dayIndex}… (${overall}/${totalToUp})`;
+            fill.style.width = `${Math.round(((filesToUp.length + j) / totalToUp) * 100)}%`;
+            const result = await Drive.uploadPhoto(closeupsToUp[j], filename, dayFolderId);
+            closeupUrls.push(result.webViewLink);
           }
           fill.style.width = '100%';
 
@@ -839,6 +1065,27 @@ document.addEventListener('DOMContentLoaded', () => {
               },
               body: JSON.stringify({ image_urls: urls }),
             }).catch(e => console.warn('[Drive] PATCH scans images failed:', e.message));
+
+            // PATCH closeup_meta — pair each closeup URL with its note.
+            if (closeupUrls.length > 0) {
+              const meta = closeupUrls.map((url, idx) => {
+                // closeupUrls and closeupsToUp share an index because both
+                // were built by .filter(Boolean) on closeupFiles in the same
+                // order. Recover the original closeupNotes index by matching
+                // the file reference.
+                const origIdx = closeupFiles.indexOf(closeupsToUp[idx]);
+                const note = origIdx >= 0 ? (closeupNotes[origIdx] || '') : '';
+                return { url, note };
+              });
+              fetch(`/api/scans/${scanInfo.id}/closeup-meta`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${await window.Auth.getToken()}`,
+                },
+                body: JSON.stringify({ closeup_meta: meta }),
+              }).catch(e => console.warn('[Drive] PATCH closeup-meta failed:', e.message));
+            }
           }
 
           const user = await window.Auth.getUser();
