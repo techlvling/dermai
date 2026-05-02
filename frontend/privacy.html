@@ -32,11 +32,11 @@
 
     <main class="privacy-container">
       <h1>privacy. <span class="gradient-text">no bs.</span></h1>
-      <p class="privacy-last-updated">last updated: may 1, 2026</p>
+      <p class="privacy-last-updated">last updated: may 2, 2026</p>
 
       <div class="privacy-tldr">
         <span class="privacy-tldr-label">tldr</span>
-        <p>ur photo goes to an AI vision model, then it's gone from our server in the same request. we keep zero. ur scan history lives only on ur device. that's it.</p>
+        <p>ur photo → AI → gone from our server in the same request. zero pixels saved. if u sign in with google, ur scan results (text only), routine, favorites and check-ins sync to supabase so they follow u across devices. signed out? everything stays on this device. either way, photos only live on ur device or in ur <em>own</em> Google Drive (if u opted in) — never on tinkskin servers.</p>
       </div>
 
       <span class="privacy-eyebrow">ur photo</span>
@@ -57,9 +57,60 @@
         <li>models in rotation: Gemma 4 31B → Gemma 4 26B → Gemma 3 27B. the list rotates as better ones drop.</li>
       </ul>
 
+      <span class="privacy-eyebrow">signing in</span>
+      <h2>google login</h2>
+      <p>signing in is optional. u can scan, get recs, and save stuff on-device without ever logging in. if u do sign in, here's the deal:</p>
+      <ul>
+        <li>auth runs through <a href="https://supabase.com" target="_blank" rel="noopener noreferrer">Supabase</a> with Google as the OAuth provider. <strong>we never see ur google password</strong> — only the OAuth tokens google hands back.</li>
+        <li>from ur google profile we receive <strong>email, name, avatar URL, and a stable user id</strong>. that's it. no contacts, no calendar, no gmail, no docs.</li>
+        <li>ur session token lives in localStorage under <code>tinkskin-auth</code>, scoped to this domain. signing out kills it.</li>
+        <li>we ask for the Drive scope (<code>drive.file</code>) at sign-in even if u don't enable Drive backup yet — that way enabling it later doesn't punt u back through OAuth. unused = unused; we never call Drive unless u opt in.</li>
+        <li>delete ur account? hit <a href="mailto:helldock@protonmail.com">helldock@protonmail.com</a> with the email u signed in with and we'll wipe every row keyed to ur user id. supabase cascade-deletes the rest.</li>
+      </ul>
+
+      <span class="privacy-eyebrow">drive backup</span>
+      <h2>google drive (optional)</h2>
+      <p>by default, progress photos live in IndexedDB on this device only. opting into Drive backup uploads them to <em>ur own</em> Google Drive — tinkskin's server is not in the upload path and never holds a copy.</p>
+      <ul>
+        <li><strong>scope:</strong> <code>drive.file</code> — the most restricted Drive scope google offers. it grants access only to files <strong>tinkskin itself created</strong>. we cannot read, list, or touch anything else in ur Drive. ur tax docs are safe.</li>
+        <li><strong>folder layout</strong> we create in ur Drive:
+          <ul>
+            <li><code>tinkskin Photos / Scans / Day 0 - 2026-05-02 (Initial)</code> — per-scan day folders</li>
+            <li><code>tinkskin Photos / Progress</code> — opt-in progress photos</li>
+          </ul>
+        </li>
+        <li>uploads go <strong>directly from ur browser to google's drive API</strong>. our server isn't a middleman.</li>
+        <li>we cache the folder ids (<code>tinkskin-drive-folder-*</code>) in localStorage so we don't re-query Drive every upload. delete those keys and we just re-create folders on next upload.</li>
+        <li><strong>revoking access:</strong> <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">myaccount.google.com/permissions</a> → tinkskin → revoke. existing files in ur Drive stay where they are; u own them outright.</li>
+      </ul>
+
+      <span class="privacy-eyebrow">if u sign in</span>
+      <h2>what we save on the server</h2>
+      <p>signing in lets ur stuff sync across devices. here's the full list of what supabase stores, keyed to ur user id and protected by row-level security (other users physically cannot read ur rows):</p>
+      <ul class="storage-list">
+        <li><code>profiles</code><span class="storage-desc">name + avatar pulled from ur google profile.</span></li>
+        <li><code>scans</code><span class="storage-desc">scan results (the JSON the AI returned + close-up notes). <strong>no photos.</strong> Drive file ids if u opted in.</span></li>
+        <li><code>favorites</code><span class="storage-desc">products u saved.</span></li>
+        <li><code>routine_logs</code><span class="storage-desc">daily AM/PM check-ins — date + done/not done, that's it.</span></li>
+        <li><code>user_routine_items</code><span class="storage-desc">ur custom Routine — products u've added to AM/PM steps.</span></li>
+        <li><code>reactions</code><span class="storage-desc">products that broke u out + severity 1–5 + ur notes.</span></li>
+        <li><code>diary_entries</code><span class="storage-desc">post-scan check-ins (water/sleep/stress/sun/drinks/symptoms/wellness). see below.</span></li>
+        <li><code>progress_photos</code><span class="storage-desc">metadata only — Drive file id, taken-at, angle. <strong>zero pixels in our db.</strong></span></li>
+      </ul>
+      <p>signed-out users don't hit any of this. everything stays on the device.</p>
+
+      <span class="privacy-eyebrow">check-ins</span>
+      <h2>the lifestyle modal</h2>
+      <p>after each scan (and on the Routine "quick check-in" button) u get a tiny form: water / sleep / stress / sun / drinks / symptom chips. it's optional — "nah skip" is always on the table.</p>
+      <ul>
+        <li>values write to <code>tinkskin_diary</code> in localStorage immediately and, if signed in, to <code>diary_entries</code> on supabase. they power the heatmaps + correlations on Overview.</li>
+        <li>we compute a 0–100 <code>wellness_score</code> client-side from those numbers and store it. nothing about ur entry leaves supabase — no third-party analytics, no AI provider, nothing.</li>
+        <li>this is <strong>not</strong> medical data in any clinical sense. it's a vibe check, not a health record.</li>
+      </ul>
+
       <span class="privacy-eyebrow">ur device</span>
-      <h2>what stays on ur browser (not us)</h2>
-      <p>everything below lives <strong>only</strong> on ur device. nothing is transmitted, synced, or backed up to tinkskin's servers.</p>
+      <h2>local cache on this browser</h2>
+      <p>the keys below cache ur stuff locally so the app works offline-first. if u're signed in, supabase is the source of truth and these mirror it; if u're signed out, this is the only copy.</p>
       <ul class="storage-list">
         <li><code>tinkskin_analysis</code><span class="storage-desc">ur most recent scan + recommendations. overwritten on each new scan.</span></li>
         <li><code>tinkskin_history</code><span class="storage-desc">last 20 scans so the History page works. JSON in localStorage.</span></li>
@@ -70,9 +121,9 @@
         <li><code>tinkskin_patchQueue</code> + <code>tinkskin_reorderData</code><span class="storage-desc">queued patch tests and reorder reminders.</span></li>
         <li><code>tinkskin_notifPrefs</code><span class="storage-desc">ur in-app notification settings.</span></li>
         <li><code>tinkskin_seen</code> + <code>tinkskin_statsRange</code> + <code>tinkskin_trendsRange</code><span class="storage-desc">UI state — what u've already seen, default chart ranges, etc.</span></li>
-        <li><code>tinkskin_photos</code> (IndexedDB)<span class="storage-desc">progress photos, only if u opted in. never leaves ur device.</span></li>
+        <li><code>tinkskin_photos</code> (IndexedDB)<span class="storage-desc">progress photos, only if u opted in. stays here unless u also enabled Drive backup, in which case copies live in ur own Drive too. tinkskin's server never touches the pixels.</span></li>
       </ul>
-      <p>close-up photos and the notes u attach to them are <strong>not</strong> stored in ur browser — they're persisted server-side on ur scan record (in <code>scans.closeup_meta</code>) so the report can echo them back later. the AI provider sees them as part of the analysis request; nothing about them goes to amazon, google analytics, or any third party beyond the AI provider.</p>
+      <p>the close-up <em>notes</em> u type during a scan land on ur scan record server-side (in <code>scans.closeup_meta</code>) so the report can echo them back later. the AI provider sees them once during analysis; nothing about them goes to amazon, google analytics, or any third party beyond the AI provider.</p>
 
       <p>want it gone? one tap:</p>
       <button type="button" id="privacy-wipe-btn" class="privacy-wipe" aria-describedby="privacy-wipe-status">
