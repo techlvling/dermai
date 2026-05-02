@@ -30,6 +30,11 @@
   border-bottom-color: var(--primary-500);
 }
 
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-donate { display: none; }
+}
+
 
 /* ── Hero Section ────────────────────────────────────────────────── */
 .hero {
@@ -63,6 +68,7 @@
   color: var(--neutral-900);
   font-weight: 800;
   text-transform: lowercase;
+  text-wrap: balance;
 }
 
 .hero-subtitle {

@@ -10,6 +10,7 @@
   font-size: 3rem;
   margin-bottom: 1rem;
   color: var(--neutral-900);
+  text-wrap: balance;
 }
 
 .analyze-subtitle {
