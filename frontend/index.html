@@ -194,92 +194,62 @@
         </div>
       </section>
 
-      <!-- ── How It Works ──────────────────────────────────────────── -->
+      <!-- ── How It Works (step 1 hero, rest demoted) ───────────────── -->
       <section id="how-it-works" class="page-section container" aria-labelledby="hiw-heading">
-        <div class="text-center">
-          <div class="section-eyebrow">THE PROCESS</div>
-          <h2 class="section-title reveal" id="hiw-heading">3 steps to ur routine</h2>
-          <p class="section-subtitle reveal">selfie to science-backed AM/PM routine in under a minute fr.</p>
+        <div class="hiw-hero text-center reveal">
+          <span class="hiw-eyebrow">step 1 of 3</span>
+          <h2 class="hiw-title" id="hiw-heading">snap 3 selfies. that's the whole job.</h2>
+          <p class="hiw-lede">front, left, right. natural light. 30 seconds tops. we handle the rest.</p>
+          <a class="btn btn-primary btn-large hiw-cta" href="/analyze.html">start scan →</a>
         </div>
-        <div class="steps-grid">
-          <div class="step-card reveal">
-            <div class="step-number step-number-1">1</div>
-            <h3>3 angles</h3>
-            <p>front, left, right. use ur camera or upload pics. good lighting + no makeup = best read. natural daylight slaps.</p>
+        <div class="hiw-then text-center reveal">— then we handle —</div>
+        <div class="hiw-rest reveal">
+          <div class="hiw-pill">
+            <span class="hiw-pill-num">2</span>
+            <strong>AI reads ur skin (~10s)</strong>
           </div>
-          <div class="step-card reveal" style="transition-delay:0.1s;">
-            <div class="step-number step-number-2">2</div>
-            <h3>AI clocks ur face</h3>
-            <p>vision model spots acne, pores, texture, pigmentation across all 3 angles — way better than guessing from one bad selfie.</p>
-          </div>
-          <div class="step-card reveal" style="transition-delay:0.2s;">
-            <div class="step-number step-number-3">3</div>
-            <h3>routine that works</h3>
-            <p>personalised AM + PM routine with products mapped to ingredients proven in clinical trials. filtered to what u can actually buy where u live.</p>
+          <div class="hiw-pill">
+            <span class="hiw-pill-num">3</span>
+            <strong>u get a routine + the science</strong>
           </div>
         </div>
       </section>
 
-      <!-- ── Features Grid ─────────────────────────────────────────── -->
-      <section id="features" class="page-section container" aria-labelledby="feat-heading">
-        <div class="text-center">
-          <div class="section-eyebrow">WHY WE'RE BUILT DIFFERENT</div>
-          <h2 class="section-title reveal" id="feat-heading">no fluff just the receipts</h2>
-          <p class="section-subtitle reveal">no paid placements. no sponsored ingredients. no vague "dermatologist-approved" cope. just science.</p>
-        </div>
-        <div class="features-grid">
-          <div class="feature-card reveal">
-            <div class="feature-icon fi-pink">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            </div>
-            <div class="feature-text">
-              <h4>only ingredients that actually work</h4>
-              <p>every active is backed by human RCTs — the gold standard. not lab studies on cells in a dish. not influencer claims. real ppl, real results.</p>
-            </div>
+      <!-- ── Features (scrapbook / brutalist dark) ──────────────────── -->
+      <section id="features" class="features-dark" aria-labelledby="feat-heading">
+        <div class="container">
+          <div class="features-dark-header text-center reveal">
+            <h2 class="features-dark-title" id="feat-heading">no fluff. just receipts.</h2>
+            <span class="features-dark-sub">↓ what's actually in the box ↓</span>
           </div>
-          <div class="feature-card reveal" style="transition-delay:0.05s;">
-            <div class="feature-icon fi-lav">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <div class="scrap-grid">
+            <div class="scrap scrap--lg reveal" style="--rot: -1.5deg">
+              <span class="scrap-tag">FEATURE_01</span>
+              <strong>only ingredients that actually work</strong>
+              <p>every active is backed by human RCTs — the gold standard. not lab studies on cells in a dish. not influencer claims.</p>
             </div>
-            <div class="feature-text">
-              <h4>products u can actually buy</h4>
-              <p>we auto-detect ur country + link to ur local amazon. 18 markets. no more clicking a "top pick" that doesn't ship to u.</p>
+            <div class="scrap scrap--md reveal" style="--rot: 1deg; transition-delay:0.05s;">
+              <span class="scrap-tag">FEATURE_02</span>
+              <strong>products u can actually buy</strong>
+              <p>auto-detects ur country + links to ur local amazon. 18 markets, zero broken links.</p>
             </div>
-          </div>
-          <div class="feature-card reveal" style="transition-delay:0.10s;">
-            <div class="feature-icon fi-mint">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
+            <div class="scrap scrap--sm reveal" style="--rot: -0.5deg; transition-delay:0.10s;">
+              <span class="scrap-tag">03</span>
+              <strong>AM + PM, separated</strong>
             </div>
-            <div class="feature-text">
-              <h4>morning + night routine, separate</h4>
-              <p>not just a product list — an actual AM and PM routine. retinol at night, SPF in the morning. the way derms actually do it.</p>
+            <div class="scrap scrap--md reveal" style="--rot: 1.2deg; transition-delay:0.15s;">
+              <span class="scrap-tag">FEATURE_04</span>
+              <strong>worst concern fixed first</strong>
+              <p>recs ranked by how well they match ur most severe concern. not brand. not price. not who sponsored the list.</p>
             </div>
-          </div>
-          <div class="feature-card reveal" style="transition-delay:0.15s;">
-            <div class="feature-icon fi-peach">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <div class="scrap scrap--sm reveal" style="--rot: -1deg; transition-delay:0.20s;">
+              <span class="scrap-tag">05</span>
+              <strong>citations visible</strong>
             </div>
-            <div class="feature-text">
-              <h4>worst concern fixed first</h4>
-              <p>recs are ranked by how well they match ur most severe concern. not brand. not price. not who sponsored the list.</p>
-            </div>
-          </div>
-          <div class="feature-card reveal" style="transition-delay:0.20s;">
-            <div class="feature-icon fi-lav">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            </div>
-            <div class="feature-text">
-              <h4>see the science, not just the answer</h4>
-              <p>every rec has a "WHY THIS?" box with the exact PubMed study. read the trial urself. don't trust us, trust the data.</p>
-            </div>
-          </div>
-          <div class="feature-card reveal" style="transition-delay:0.25s;">
-            <div class="feature-icon fi-pink">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </div>
-            <div class="feature-text">
-              <h4>we don't keep ur pics</h4>
-              <p>photos go to AI for analysis then immediately discarded. optional google drive backup is ur call. no hidden copies. ur face is urs.</p>
+            <div class="scrap scrap--lg reveal" style="--rot: 0.8deg; transition-delay:0.25s;">
+              <span class="scrap-tag">FEATURE_06</span>
+              <strong>we don't keep ur pics</strong>
+              <p>photos hit the AI then evaporate. nothing on our servers. optional google drive backup is ur call.</p>
             </div>
           </div>
         </div>
