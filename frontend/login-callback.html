@@ -7,6 +7,7 @@
   <title>tinkskin — Signing in…</title>
   <link rel="stylesheet" href="/css/base.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="/js/analytics.js"></script>
   <script src="/js/auth.js"></script>
   <script src="/js/migration.js"></script>
 </head>
@@ -19,6 +20,7 @@
       if (!window.Auth) { window.location.href = '/'; return; }
       window.Auth.onAuthStateChange(function (event) {
         if (event === 'SIGNED_IN') {
+          if (window.track) window.track('user_signed_in');
           window.location.href = sessionStorage.getItem('tinkskin_redirect') || '/';
         }
       });

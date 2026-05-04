@@ -575,6 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
+        if (window.track) window.track('scan_started');
         const response = await fetch('/api/analyze', { method: 'POST', body: formData });
 
         let errData;
@@ -594,9 +595,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.warn('[PhotoDB] save failed:', err));
         }
 
+        if (window.track) window.track('scan_completed', { skin_type: data.skinType, concerns_count: (data.concerns || []).length });
         renderResults(data);
       } catch (error) {
         if (rotateInterval) clearInterval(rotateInterval);
+        if (window.track) window.track('scan_failed');
         console.error('Analysis Failed:', error);
         const msg = error.message || '';
 

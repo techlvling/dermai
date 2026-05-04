@@ -604,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           ${isFav ? 'saved' : 'save'}
         </button>
-        <a href="${buyURL}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn">
+        <a href="${buyURL}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn" onclick="if(window.track)window.track('affiliate_click',{product_id:'${prod.id}'})">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           Search on Amazon
         </a>
@@ -797,6 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!log[today][slot]) log[today][slot] = {};
     log[today][slot][key] = !log[today][slot][key];
     sSet('tinkskin_routineLog', log);
+    if (window.track && log[today][slot][key]) window.track('routine_checkin', { slot });
     const checked = log[today][slot][key];
     btn.className = 'step-check-btn' + (checked ? ' checked' : '');
     btn.setAttribute('aria-pressed', String(checked));
@@ -1065,6 +1066,7 @@ document.addEventListener('DOMContentLoaded', () => {
     else favs.push(prodId);
     sSet('tinkskin_favorites', favs);
     if (isAdding) {
+      if (window.track) window.track('favorite_added', { product_id: prodId });
       Storage.server.post('/api/favorites', { product_id: prodId }).catch(() => {});
     } else {
       Storage.server.delete('/api/favorites/' + encodeURIComponent(prodId)).catch(() => {});

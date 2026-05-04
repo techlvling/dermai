@@ -1027,3 +1027,20 @@ details.faq-item[open] summary.faq-q::after { content: '−'; }
   .features-dark-title,
   .hiw-title { font-size: 2rem; }
 }
+
+
+/* ── Live online counter pill ────────────────────────────────────── */
+.online-pill {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.875rem;
+  border: 2px solid var(--primary-500);
+  background: var(--primary-500);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  width: fit-content;
+}
