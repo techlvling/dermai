@@ -15,6 +15,69 @@ window.Treatment = (function () {
   let _userAnalysis = null;
   let _ownedItems = [];   // /api/routine-items rows
   let _activeFilter = 'recommended'; // 'recommended' | 'all' | 'owned'
+  let _currentRegion = 'IN';
+
+  const _amazonRegions = {
+    "US": { tld: "com",     tag: "" },
+    "CA": { tld: "ca",      tag: "" },
+    "UK": { tld: "co.uk",   tag: "" },
+    "DE": { tld: "de",      tag: "" },
+    "FR": { tld: "fr",      tag: "" },
+    "IT": { tld: "it",      tag: "" },
+    "ES": { tld: "es",      tag: "" },
+    "NL": { tld: "nl",      tag: "" },
+    "SE": { tld: "se",      tag: "" },
+    "PL": { tld: "pl",      tag: "" },
+    "IN": { tld: "in",      tag: "tinkref-21" },
+    "JP": { tld: "co.jp",   tag: "" },
+    "AU": { tld: "com.au",  tag: "" },
+    "SG": { tld: "sg",      tag: "" },
+    "AE": { tld: "ae",      tag: "" },
+    "SA": { tld: "sa",      tag: "" },
+    "MX": { tld: "com.mx",  tag: "" },
+    "BR": { tld: "com.br",  tag: "" },
+  };
+
+  const _countryToRegion = {
+    US:'US', CA:'CA', GB:'UK', DE:'DE', FR:'FR', IT:'IT', ES:'ES',
+    NL:'NL', SE:'SE', PL:'PL', IN:'IN', JP:'JP', AU:'AU', SG:'SG',
+    AE:'AE', SA:'SA', MX:'MX', BR:'BR',
+  };
+
+  function _tzRegion() {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (tz.includes('Kolkata') || tz.includes('Calcutta') || tz.includes('India')) return 'IN';
+    if (tz.includes('London')) return 'UK';
+    if (tz.includes('Australia')) return 'AU';
+    if (tz.includes('Tokyo')) return 'JP';
+    if (tz.includes('Singapore')) return 'SG';
+    if (tz.includes('Dubai') || tz.includes('Abu_Dhabi')) return 'AE';
+    if (tz.includes('Riyadh')) return 'SA';
+    if (tz.includes('Europe')) return 'DE';
+    if (tz.includes('America/Toronto') || tz.includes('America/Vancouver') || tz.includes('America/Halifax')) return 'CA';
+    if (tz.includes('America')) return 'US';
+    return null;
+  }
+
+  async function _detectRegion() {
+    const fromTz = _tzRegion();
+    if (fromTz) { _currentRegion = fromTz; return; }
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      const code = (data.country_code || '').toUpperCase();
+      _currentRegion = _countryToRegion[code] || 'IN';
+    } catch (_) {
+      _currentRegion = 'IN';
+    }
+  }
+
+  function _amazonURL(brand, name) {
+    const region = _amazonRegions[_currentRegion] || _amazonRegions['IN'];
+    const q = encodeURIComponent(brand + ' ' + name);
+    const tag = region.tag ? `&tag=${region.tag}` : '';
+    return `https://www.amazon.${region.tld}/s?k=${q}${tag}`;
+  }
 
   async function mount() {
     if (_mounted) {
@@ -36,13 +99,14 @@ window.Treatment = (function () {
     }
     _userAnalysis = analysis;
 
-    // 2. Load catalog + user's owned items in parallel
+    // 2. Load catalog + user's owned items + region in parallel
     try {
       const [prodRes, ingRes, conRes, ownedRes] = await Promise.all([
         fetch('/api/products').then(r => r.json()),
         fetch('/api/ingredients').then(r => r.json()),
         fetch('/api/concerns').then(r => r.json()),
         loggedIn ? Storage.server.get('/api/routine-items') : Promise.resolve({ items: [] }),
+        _detectRegion(),
       ]);
       _allProducts = prodRes;
       _allIngredients = ingRes;
@@ -375,7 +439,7 @@ window.Treatment = (function () {
           <button class="btn ${owned ? 'btn-outline' : 'btn-primary'} tx-toggle-btn" data-tx-toggle="${prod.id}">
             ${owned ? '✓ in routine — yeet it' : '+ got this one'}
           </button>
-          <a href="https://www.amazon.in/s?k=${encodeURIComponent(prod.brand + ' ' + prod.name)}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn-small">
+          <a href="${_amazonURL(prod.brand, prod.name)}" target="_blank" rel="sponsored noopener noreferrer" class="btn buy-btn-small">
             find on amazon →
           </a>
         </div>
