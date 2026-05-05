@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { getSupabaseAdmin } = require('../../lib/supabase');
+const { insertAuditLog } = require('../../lib/audit');
 
 const router = Router();
 
@@ -53,6 +54,7 @@ router.post('/:resource', async (req, res) => {
       .select()
       .single();
     if (error) throw error;
+    insertAuditLog(req, { action: 'create', resourceType: req.params.resource, resourceId: data.id, payload: req.body });
     res.status(201).json(data);
   } catch (err) {
     console.error(`[admin/catalog] POST /${req.params.resource}`, err.message);
@@ -74,6 +76,7 @@ router.patch('/:resource/:id', async (req, res) => {
       .select()
       .single();
     if (error) throw error;
+    insertAuditLog(req, { action: 'update', resourceType: req.params.resource, resourceId: req.params.id, payload: req.body });
     res.json(data);
   } catch (err) {
     console.error(`[admin/catalog] PATCH /${req.params.resource}/:id`, err.message);
@@ -90,6 +93,7 @@ router.delete('/:resource/:id', async (req, res) => {
     const supabase = getSupabaseAdmin();
     const { error } = await supabase.from(table).delete().eq('id', req.params.id);
     if (error) throw error;
+    insertAuditLog(req, { action: 'delete', resourceType: req.params.resource, resourceId: req.params.id });
     res.json({ ok: true });
   } catch (err) {
     console.error(`[admin/catalog] DELETE /${req.params.resource}/:id`, err.message);

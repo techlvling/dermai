@@ -22,5 +22,6 @@ router.use('/evidence', require('./evidence'));
 router.use('/ai-usage', require('./aiUsage'));
 router.use('/affiliate',require('./affiliate'));
 router.use('/analytics',require('./analytics'));
+router.use('/audit',   require('./audit'));
 
 module.exports = router;

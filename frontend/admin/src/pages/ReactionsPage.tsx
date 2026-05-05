@@ -4,6 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { downloadCsv } from '@/lib/csv'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
@@ -41,7 +42,16 @@ export default function ReactionsPage() {
           <h1 className="text-xl font-semibold">Reactions Safety Queue</h1>
           <p className="text-sm text-muted-foreground">Monitor adverse reactions logged by users.</p>
         </div>
-        <span className="text-sm text-muted-foreground">{data?.total ?? 0} records</span>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-muted-foreground">{data?.total ?? 0} records</span>
+          <Button variant="outline" size="sm" disabled={!data?.reactions.length}
+            onClick={() => downloadCsv('reactions.csv', (data?.reactions ?? []).map(r => ({
+              id: r.id, user_id: r.user_id, product_id: r.product_id,
+              severity: r.severity, notes: r.notes ?? '', created_at: r.created_at,
+            })))}>
+            Export CSV
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-2">

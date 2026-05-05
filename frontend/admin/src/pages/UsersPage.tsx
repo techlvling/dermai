@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { downloadCsv } from '@/lib/csv'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -43,7 +44,17 @@ export default function UsersPage() {
     <div className="p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Users</h1>
-        <span className="text-sm text-muted-foreground">{data?.total ?? 0} total</span>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-muted-foreground">{data?.total ?? 0} total</span>
+          <Button variant="outline" size="sm" disabled={!data?.users.length}
+            onClick={() => downloadCsv('users.csv', (data?.users ?? []).map(u => ({
+              id: u.id, email: u.email, display_name: u.display_name ?? '',
+              scan_count: u.scan_count, reaction_count: u.reaction_count,
+              created_at: u.created_at, last_sign_in: u.last_sign_in ?? '',
+            })))}>
+            Export CSV
+          </Button>
+        </div>
       </div>
 
       <Input

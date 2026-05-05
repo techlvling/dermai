@@ -3,6 +3,7 @@ import { useAdminQuery, useAdminMutation } from '@/lib/hooks'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { downloadCsv } from '@/lib/csv'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
@@ -35,7 +36,16 @@ export default function ScansPage() {
     <div className="p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Scans</h1>
-        <span className="text-sm text-muted-foreground">{data?.total ?? 0} total</span>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-muted-foreground">{data?.total ?? 0} total</span>
+          <Button variant="outline" size="sm" disabled={!data?.scans.length}
+            onClick={() => downloadCsv('scans.csv', (data?.scans ?? []).map(s => ({
+              id: s.id, user_id: s.user_id, created_at: s.created_at,
+              image_count: (s.image_urls ?? []).length,
+            })))}>
+            Export CSV
+          </Button>
+        </div>
       </div>
 
       <Input
@@ -83,6 +93,9 @@ export default function ScansPage() {
                   </TableCell>
                 </TableRow>
               ))}
+              {(data?.scans ?? []).length === 0 && (
+                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-10">No scans found.</TableCell></TableRow>
+              )}
             </TableBody>
           </Table>
         </div>

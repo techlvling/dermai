@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { getSupabaseAdmin } = require('../../lib/supabase');
+const { insertAuditLog } = require('../../lib/audit');
 
 const router = Router();
 
@@ -98,6 +99,7 @@ router.delete('/:id', async (req, res) => {
     const supabase = getSupabaseAdmin();
     const { error } = await supabase.auth.admin.deleteUser(req.params.id);
     if (error) throw error;
+    insertAuditLog(req, { action: 'delete_user', resourceType: 'user', resourceId: req.params.id });
     res.json({ ok: true });
   } catch (err) {
     console.error('[admin/users] DELETE /:id', err.message);

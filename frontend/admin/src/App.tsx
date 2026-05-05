@@ -16,6 +16,7 @@ import EvidencePage from '@/pages/EvidencePage'
 import AiUsagePage from '@/pages/AiUsagePage'
 import AffiliatePage from '@/pages/AffiliatePage'
 import AnalyticsPage from '@/pages/AnalyticsPage'
+import AuditPage from '@/pages/AuditPage'
 import NotAdminPage from '@/pages/NotAdminPage'
 import LoadingPage from '@/pages/LoadingPage'
 
@@ -61,6 +62,7 @@ export default function App() {
         <Route path="ai-usage" element={<AiUsagePage />} />
         <Route path="affiliate" element={<AffiliatePage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
+        <Route path="audit" element={<AuditPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

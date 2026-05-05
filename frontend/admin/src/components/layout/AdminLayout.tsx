@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import {
   LayoutDashboard, Users, Camera, AlertTriangle, BookOpen,
   Package, FlaskConical, Target, Zap, Database, Activity,
-  Link2, BarChart2, LogOut, ChevronDown,
+  Link2, BarChart2, LogOut, ChevronDown, ClipboardList,
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -36,6 +36,7 @@ const systemLinks = [
   { to: 'ai-usage',  label: 'AI Usage',       icon: Activity },
   { to: 'affiliate', label: 'Affiliate',      icon: Link2 },
   { to: 'analytics', label: 'Analytics',      icon: BarChart2 },
+  { to: 'audit',     label: 'Audit Log',      icon: ClipboardList },
 ]
 
 function NavItem({ to, label, icon: Icon, end, badge }: {
