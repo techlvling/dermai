@@ -1,12 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "npm --prefix frontend/admin install && npm --prefix frontend/admin run build",
   "builds": [
     {
       "src": "backend/server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["frontend/admin/dist/**", "backend/data/**"]
+        "includeFiles": ["frontend/admin/dist/**", "backend/data/**", "backend/templates/**"]
       }
     }
   ],
