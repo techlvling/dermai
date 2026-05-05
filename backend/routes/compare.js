@@ -131,6 +131,11 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getAIStudioClient, ge
           });
           narrative = completion.choices[0].message.content?.trim();
           console.log(`[compare] success: ${label}`);
+          const [cprov] = label.split(':');
+          db.from('ai_usage_log').insert({ route: 'compare', provider: cprov, model, status: 'success',
+            prompt_tokens: completion.usage?.prompt_tokens ?? null,
+            completion_tokens: completion.usage?.completion_tokens ?? null,
+            user_id: req.user?.id ?? null }).then().catch(() => {});
           break;
         } catch (err) {
           const msg = String(err.message || err);
@@ -139,6 +144,9 @@ function createCompareRouter(verifyAuth, getSupabaseAdmin, getAIStudioClient, ge
             quotaHit = true;
           }
           lastError = err;
+          const [cprov] = label.split(':');
+          db.from('ai_usage_log').insert({ route: 'compare', provider: cprov, model, status: 'error',
+            error: msg.slice(0, 500), user_id: req.user?.id ?? null }).then().catch(() => {});
         }
       }
 

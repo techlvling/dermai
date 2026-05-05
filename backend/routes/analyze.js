@@ -1,4 +1,11 @@
 const express = require('express');
+const { getSupabaseAdmin } = require('../lib/supabase');
+
+function logAiUsage(data) {
+  const db = getSupabaseAdmin();
+  if (!db) return;
+  db.from('ai_usage_log').insert(data).then().catch(() => {});
+}
 
 function createAnalyzeRouter(upload, analyzeLimit, getAIStudioClient, getClient) {
   const router = express.Router();
@@ -129,6 +136,10 @@ function createAnalyzeRouter(upload, analyzeLimit, getAIStudioClient, getClient)
           });
           aiResponse = completion.choices[0].message.content;
           console.log(`[analyze] success: ${label}`);
+          const [provider] = label.split(':');
+          logAiUsage({ route: 'analyze', provider, model, status: 'success',
+            prompt_tokens: completion.usage?.prompt_tokens ?? null,
+            completion_tokens: completion.usage?.completion_tokens ?? null });
           break;
         } catch (err) {
           const msg = String(err.message || err);
@@ -137,6 +148,8 @@ function createAnalyzeRouter(upload, analyzeLimit, getAIStudioClient, getClient)
             quotaHit = true;
           }
           lastError = err;
+          const [provider] = label.split(':');
+          logAiUsage({ route: 'analyze', provider, model, status: 'error', error: msg.slice(0, 500) });
         }
       }
 

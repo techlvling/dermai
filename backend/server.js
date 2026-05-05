@@ -39,6 +39,13 @@ app.get(Object.keys(LEGACY_REDIRECTS), (req, res) => {
 
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
+// Admin SPA — served from frontend/admin/dist, with SPA fallback for sub-routes
+const adminDistPath = path.join(__dirname, '..', 'frontend', 'admin', 'dist');
+app.use('/admin', express.static(adminDistPath));
+app.get('/admin/*', (_req, res) => {
+  res.sendFile(path.join(adminDistPath, 'index.html'));
+});
+
 // Non-API 404 guard — must come AFTER express.static and BEFORE the API route
 // modules. Any non-API path that express.static didn't serve is a real 404; we
 // handle it here so the API routers (which apply verifyAuth to all paths) never
@@ -153,11 +160,64 @@ app.get('/api/health-ai', async (_req, res) => {
 // mounted routes below also use it.
 const { getSupabaseAdmin: _getSupabaseAdmin } = require('./lib/supabase');
 
-// Tiny in-memory cache so we don't hit Supabase on every /api/ingredients
-// request. The weekly cron is the only writer, so a 5-minute TTL is plenty.
+// Tiny in-memory cache so we don't hit Supabase on every catalog request.
+// 5-minute TTL so admin edits propagate quickly without hammering the DB.
+const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000;
+
 let _ingCacheValue = null;
 let _ingCacheAt    = 0;
-const ING_CACHE_TTL_MS = 5 * 60 * 1000;
+
+// Cache slots for the three other catalog tables
+const _catCache   = { products: null, concerns: null, conflicts: null };
+const _catCacheAt = { products: 0,    concerns: 0,    conflicts: 0 };
+
+async function getCatalog(key) {
+  const now = Date.now();
+  if (_catCache[key] && (now - _catCacheAt[key]) < CATALOG_CACHE_TTL_MS) {
+    return _catCache[key];
+  }
+  try {
+    const supabase = _getSupabaseAdmin();
+    if (supabase) {
+      const { data, error } = await supabase.from(key).select('*').order('id');
+      if (!error && data?.length) {
+        // concerns DB rows → object keyed by id to preserve existing API contract
+        if (key === 'concerns') {
+          const obj = {};
+          for (const row of data) {
+            obj[row.id] = { name: row.name, targetIngredients: row.target_ingredients, rationale: row.rationale };
+          }
+          _catCache[key] = obj;
+        } else if (key === 'products') {
+          // DB snake_case → camelCase to preserve existing API contract
+          _catCache[key] = data.map(p => ({
+            id:                  p.id,
+            name:                p.name,
+            brand:               p.brand,
+            primaryIngredientId: p.primary_ingredient_id,
+            category:            p.category,
+            bestTimeOfDay:       p.best_time_of_day,
+            concerns:            p.concerns,
+            priceTier:           p.price_tier,
+            productEvidenceTier: p.product_evidence_tier,
+            categoryNote:        p.category_note,
+            productTrials:       p.product_trials,
+          }));
+        } else {
+          _catCache[key] = data;
+        }
+        _catCacheAt[key] = now;
+        return _catCache[key];
+      }
+    }
+  } catch (_) { /* fall through */ }
+  // Fallback to bundled JSON on DB error
+  _catCache[key] = DATA[key];
+  _catCacheAt[key] = now;
+  return DATA[key];
+}
+
+const ING_CACHE_TTL_MS = CATALOG_CACHE_TTL_MS;
 
 app.get('/api/ingredients', async (_req, res) => {
   res.set('Cache-Control', 'public, max-age=3600');
@@ -190,19 +250,19 @@ app.get('/api/ingredients', async (_req, res) => {
   res.json(_ingCacheValue);
 });
 
-app.get('/api/concerns', (_req, res) => {
+app.get('/api/concerns', async (_req, res) => {
   res.set('Cache-Control', 'public, max-age=3600');
-  res.json(DATA.concerns);
+  res.json(await getCatalog('concerns'));
 });
 
-app.get('/api/conflicts', (_req, res) => {
+app.get('/api/conflicts', async (_req, res) => {
   res.set('Cache-Control', 'public, max-age=3600');
-  res.json(DATA.conflicts);
+  res.json(await getCatalog('conflicts'));
 });
 
-app.get('/api/products', (_req, res) => {
+app.get('/api/products', async (_req, res) => {
   res.set('Cache-Control', 'public, max-age=3600');
-  res.json(DATA.products);
+  res.json(await getCatalog('products'));
 });
 
 // ---------------------------------------------------------------------------
@@ -233,6 +293,9 @@ app.use(require('./routes/userRoutineItems')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/reactions')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/photos')(verifyAuth, getSupabaseAdmin));
 app.use(require('./routes/compare')(verifyAuth, getSupabaseAdmin, getAIStudioClient, getClient, upload));
+
+// Admin API — verifyAuth + requireAdmin applied inside the router
+app.use('/api/admin', require('./routes/admin/index'));
 
 // ---------------------------------------------------------------------------
 // 404 — serve branded page for unknown HTML routes, JSON for API routes
