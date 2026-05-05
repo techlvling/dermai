@@ -140,14 +140,15 @@ app.get('/ingredient/:slug', (req, res) => {
   res.set('Cache-Control', 'public, max-age=3600').type('html').send(html);
 });
 
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
-
-// Admin SPA — built into backend/admin-dist (same __dirname, no path ambiguity in Lambda)
+// Admin SPA — must come BEFORE express.static(frontend/) so frontend/admin/index.html
+// (the Vite source template) doesn't shadow the built backend/admin-dist/index.html
 const adminDistPath = path.join(__dirname, 'admin-dist');
 app.use('/admin', express.static(adminDistPath));
 app.get('/admin/*splat', (_req, res) => {
   res.sendFile(path.join(adminDistPath, 'index.html'));
 });
+
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Non-API 404 guard — must come AFTER express.static and BEFORE the API route
 // modules. Any non-API path that express.static didn't serve is a real 404; we
