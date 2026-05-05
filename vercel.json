@@ -5,7 +5,7 @@
       "src": "backend/server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["frontend/admin/dist/**", "backend/data/**", "backend/templates/**"]
+        "includeFiles": ["backend/admin-dist/**", "backend/data/**", "backend/templates/**"]
       }
     }
   ],

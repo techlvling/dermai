@@ -142,8 +142,8 @@ app.get('/ingredient/:slug', (req, res) => {
 
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-// Admin SPA — served from frontend/admin/dist, with SPA fallback for sub-routes
-const adminDistPath = path.join(__dirname, '..', 'frontend', 'admin', 'dist');
+// Admin SPA — built into backend/admin-dist (same __dirname, no path ambiguity in Lambda)
+const adminDistPath = path.join(__dirname, 'admin-dist');
 app.use('/admin', express.static(adminDistPath));
 app.get('/admin/*splat', (_req, res) => {
   res.sendFile(path.join(adminDistPath, 'index.html'));
