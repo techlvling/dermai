@@ -8,19 +8,17 @@ Live: [tinkskin.in](https://tinkskin.in)
 
 ## Quick Start
 
-**Prerequisites:** Node.js 18+, an [OpenRouter](https://openrouter.ai/keys) API key (free tier works), a [Supabase](https://supabase.com) project (free tier, for auth + sync).
+**Minimal (scan only — no auth/sync):** just a Google AI Studio key (free).
 
 ```bash
 git clone https://github.com/techlvling/dermai.git
 cd dermai/backend
 npm install
-cp .env.example .env          # fill in OPENROUTER_API_KEY + Supabase vars
+cp .env.example .env          # set GOOGLE_AI_STUDIO_API_KEY, leave Supabase vars blank
 npm start                     # http://localhost:3000
 ```
 
-Open `http://localhost:3000` — the frontend is served by the same Express server.
-
-See **[Supabase Setup](#supabase-setup)** below to enable Google sign-in.
+`/api/analyze` works immediately. Sign-in, scan history, and routine sync are disabled until you add Supabase vars (see [Supabase Setup](#supabase-setup)).
 
 ---
 
@@ -28,10 +26,12 @@ See **[Supabase Setup](#supabase-setup)** below to enable Google sign-in.
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `OPENROUTER_API_KEY` | Yes | Get free at [openrouter.ai/keys](https://openrouter.ai/keys) |
+| `GOOGLE_AI_STUDIO_API_KEY` | Yes | Primary AI — free at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| `OPENROUTER_API_KEY` | No (fallback) | AI fallback chain — free at [openrouter.ai/keys](https://openrouter.ai/keys) |
 | `SUPABASE_URL` | Yes (auth) | Your Supabase project URL |
 | `SUPABASE_ANON_KEY` | Yes (auth) | Public anon key — safe to expose |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes (auth) | Secret service key — server only, never in frontend |
+| `ADMIN_EMAILS` | No | Comma-separated emails that can access `/admin` |
 | `PORT` | No | Defaults to `3000` |
 
 ---
@@ -137,6 +137,23 @@ Response:
   ]
 }
 ```
+
+### Error responses
+
+| Status | Body | Cause |
+|--------|------|-------|
+| 400 | `{ "error": "No images uploaded" }` | No files in request |
+| 400 | `{ "error": "Too many images. Max 3." }` | More than 3 files |
+| 413 | Request Entity Too Large | File(s) exceed 10 MB |
+| 500 | `{ "error": "AI analysis failed", "details": "..." }` | All AI providers failed |
+| 503 | `{ "error": "AI service unavailable" }` | Rate limit hit across all providers |
+
+Auth-gated routes additionally return:
+
+| Status | Body | Cause |
+|--------|------|-------|
+| 401 | `{ "error": "Missing or invalid Authorization header" }` | No/bad Bearer token |
+| 500 | `{ "error": "Auth not configured ..." }` | Supabase env vars missing |
 
 ---
 
