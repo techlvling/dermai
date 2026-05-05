@@ -4,6 +4,9 @@
     "name": "Salicylic Acid",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["bha", "antimicrobial", "keratolytic", "sebum_regulator", "anti_inflammatory"],
+    "description": "A beta-hydroxy acid (BHA) derived from willow bark that exfoliates inside pores by dissolving oil-based debris. Clinically proven for acne, blackheads, and improving skin texture.",
+    "editorialBlurb": "If your pores are basically little trash cans, salicylic acid is the vacuum. It's oil-soluble so it actually goes IN the pore — not just sits on top feeling smug. Non-negotiable for acne-prone types.",
     "keyStudies": [
       {
         "title": "Clinical Efficacy of a Salicylic Acid-Containing Gel on Acne Management and Skin Barrier Function: A 21-Day Prospective Study.",
@@ -14,7 +17,7 @@
         "authors": "Liu Y, Dan Y, Yang J et al."
       },
       {
-        "title": "Efficacy of combined 1927 nm thulium fiber laser and supramolecular salicylic acid in photoaging treatment.",
+        "title": "Efficacy of combined 1927 nm thulium fiber laser and supramolecular salicylic acid in photoaging treatment.",
         "journal": "Lasers in medical science",
         "year": "2025",
         "pubmedId": "40960645",
@@ -28,6 +31,9 @@
     "name": "Niacinamide",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["brightening", "sebum_regulator", "anti_inflammatory", "barrier_repair"],
+    "description": "A form of vitamin B3 that regulates sebum production, fades hyperpigmentation, strengthens the skin barrier, and calms redness. One of the most versatile and well-tolerated skincare actives.",
+    "editorialBlurb": "The main character of your entire routine. Does like five jobs at once — brighten, calm, regulate oil, fix your barrier — plays nice with almost everything, and doesn't throw a fit on sensitive skin. Genuine GOAT of skincare.",
     "keyStudies": [
       {
         "title": "Niacinamide: A B vitamin that improves aging facial skin appearance.",
@@ -52,6 +58,9 @@
     "name": "Tretinoin",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["retinoid", "keratolytic", "anti_inflammatory", "brightening"],
+    "description": "A prescription-strength retinoic acid and the gold-standard retinoid for acne, fine lines, and hyperpigmentation. Directly binds to skin receptors to accelerate cell turnover and stimulate collagen synthesis.",
+    "editorialBlurb": "The one ingredient dermatologists have been hyping since 1971 and it hasn't gotten old. Tretinoin is that bitch. Expect a rough purge phase but the glow-up on the other side is genuinely unhinged. Prescription only — not a toy.",
     "keyStudies": [
       {
         "title": "Vehicle Formulation Impacts Tolerability and Patient Preference: Comparison of Tretinoin Branded Lotion and Generic Cream.",
@@ -76,6 +85,9 @@
     "name": "Benzoyl Peroxide",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["antimicrobial", "keratolytic", "sebum_regulator"],
+    "description": "A topical antibacterial that kills acne-causing P. acnes bacteria through oxidative activity while providing mild exfoliation. Available OTC in concentrations from 2.5–10%.",
+    "editorialBlurb": "Straight-up nukes acne bacteria with oxygen — brutal, effective, no notes. 2.5% works as well as 10% with way less irritation, so don't be a hero. Will bleach your towels. You have been warned.",
     "keyStudies": [
       {
         "title": "Efficacy and Safety of a Fixed-Dose Clindamycin Phosphate 1.2%, Benzoyl Peroxide 3.1%, and Adapalene 0.15% Gel for Moderate-to-Severe Acne: A Randomized Phase II Study of the First Triple-Combination Drug.",
@@ -87,7 +99,7 @@
       },
       {
         "title": "Intense pulsed light versus benzoyl peroxide.",
-        "journal": "Journal of population therapeutics and clinical pharmacology = Journal de la therapeutique des populations et de la pharmacologie clinique",
+        "journal": "Journal of population therapeutics and clinical pharmacology",
         "year": "2022",
         "pubmedId": "35044116",
         "link": "https://pubmed.ncbi.nlm.nih.gov/35044116/",
@@ -100,6 +112,9 @@
     "name": "Hyaluronic Acid",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["humectant"],
+    "description": "A naturally occurring polysaccharide that holds up to 1000x its weight in water, making it the most studied humectant in skincare. Naturally found in skin, levels decrease with age.",
+    "editorialBlurb": "The hydration hype is actually real — this stuff holds 1000x its weight in water. Apply it on damp skin or it'll pull moisture OUT of you in dry climates. Boring name, genuinely impressive science.",
     "keyStudies": [
       {
         "title": "The Effects of Dietary Supplementation with Collagen and Vitamin C and Their Combination with Hyaluronic Acid on Skin Density, Texture and Other Parameters: A Randomised, Double-Blind, Placebo-Controlled Trial.",
@@ -132,6 +147,9 @@
     "name": "Vitamin C",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["antioxidant", "brightening", "anti_inflammatory"],
+    "description": "A potent antioxidant that neutralises UV-induced free radicals, inhibits melanin synthesis, and boosts collagen production. L-ascorbic acid is the most bioactive and well-studied form.",
+    "editorialBlurb": "Your morning shield against the sun being an asshole to your collagen. L-ascorbic acid (the real deal) is finicky as hell — oxidises fast, stings on sensitive skin — but nothing else touches its glow-up results. Worth the drama.",
     "keyStudies": [
       {
         "title": "The Effects of Dietary Supplementation with Collagen and Vitamin C and Their Combination with Hyaluronic Acid on Skin Density, Texture and Other Parameters: A Randomised, Double-Blind, Placebo-Controlled Trial.",
@@ -156,10 +174,13 @@
     "name": "Azelaic Acid",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["antimicrobial", "anti_inflammatory", "brightening", "keratolytic", "sebum_regulator"],
+    "description": "A dicarboxylic acid found naturally in grains, proven effective for acne, rosacea, and hyperpigmentation. Works by inhibiting tyrosinase and eliminating acne bacteria without developing antibiotic resistance.",
+    "editorialBlurb": "The underdog that does everything niacinamide does PLUS kills bacteria PLUS is safe during pregnancy PLUS comes in prescription-strength 15–20%. Honestly so slept on. If retinoids wreck your skin, this is your new bestie.",
     "keyStudies": [
       {
         "title": "[Azelaic acid in the treatment of acne].",
-        "journal": "Giornale italiano di dermatologia e venereologia : organo ufficiale, Societa italiana di dermatologia e sifilografia",
+        "journal": "Giornale italiano di dermatologia e venereologia",
         "year": "1989",
         "pubmedId": "2530163",
         "link": "https://pubmed.ncbi.nlm.nih.gov/2530163/",
@@ -180,6 +201,9 @@
     "name": "Ceramides",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["barrier_repair", "occlusive", "emollient"],
+    "description": "Lipid molecules that make up around 50% of the skin's protective barrier. Declining ceramide levels lead to moisture loss, sensitivity, and reactive skin. Topical ceramides replenish this critical barrier lipid layer.",
+    "editorialBlurb": "The literal mortar between your skin cells. Without ceramides your barrier is basically a broken wall in a drafty house — everything gets in, everything gets out. If you're reactive, dry, or over-exfoliated, this is the fix.",
     "keyStudies": [
       {
         "title": "Ceramide-Containing Adjunctive Skin Care for Skin Barrier Restoration During Acne Vulgaris Treatment.",
@@ -196,6 +220,9 @@
     "name": "Alpha Arbutin",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["brightening", "depigmenting"],
+    "description": "A stable glycoside derivative of hydroquinone that inhibits tyrosinase activity to reduce melanin production. More skin-safe and stable than its parent compound with a strong safety profile.",
+    "editorialBlurb": "Hydroquinone's better-behaved cousin. Same brightening job, way less scary, no EU ban drama. It's slower but consistent — like a reliable person vs. someone who delivers in bursts and then causes problems.",
     "keyStudies": [
       {
         "title": "The Efficacy of Topical Cosmetic Containing Alpha-Arbutin 5% and Kojic Acid 2% Compared With Triple Combination Cream for the Treatment of Melasma: A Split-Face, Evaluator-Blinded Randomized Pilot Study.",
@@ -212,6 +239,9 @@
     "name": "Lactic Acid",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["aha", "humectant", "keratolytic"],
+    "description": "An alpha-hydroxy acid derived from fermented sugars that exfoliates the skin surface while simultaneously drawing in moisture. The gentlest of the common AHAs and a great entry point for acid beginners.",
+    "editorialBlurb": "AHA with a moisturiser mode — it exfoliates dead cells AND pulls water in. Gentler than glycolic, kinder to sensitive skin. Do NOT use in the same session as retinoids though — your face will absolutely rage.",
     "keyStudies": [
       {
         "title": "Effectiveness and Safety of Sculptra Poly-L-Lactic Acid Injectable Implant in the Correction of Cheek Wrinkles.",
@@ -231,7 +261,7 @@
       },
       {
         "title": "Comparative Bulk RNA-Seq Analysis of Poly-l-Lactic Acid Versus Calcium Hydroxylapatite Reveals a Novel, Adipocyte-Mediated Regenerative Mechanism of Action Unique to PLLA.",
-        "journal": "Dermatologic surgery : official publication for American Society for Dermatologic Surgery [et al.]",
+        "journal": "Dermatologic surgery",
         "year": "2024",
         "pubmedId": "39480040",
         "link": "https://pubmed.ncbi.nlm.nih.gov/39480040/",
@@ -244,6 +274,9 @@
     "name": "Glycolic Acid",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["aha", "keratolytic", "brightening"],
+    "description": "The smallest AHA molecule, glycolic acid penetrates deepest for maximum exfoliation, collagen stimulation, and pigmentation correction. The most clinically studied alpha-hydroxy acid.",
+    "editorialBlurb": "The brute-force exfoliant. Smallest molecule = deepest penetration = most dramatic results. It will make your skin glow or make you peel — entirely depending on whether you respect the percentage. Start low, patch test, don't get reckless.",
     "keyStudies": [
       {
         "title": "Efficacy and safety of 5% glycolic acid-based Gel essence in the treatment of mild to moderate acne.",
@@ -268,6 +301,9 @@
     "name": "Retinol",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["retinoid", "keratolytic", "antioxidant"],
+    "description": "An OTC vitamin A precursor that converts to retinoic acid in skin. Less potent but better tolerated than prescription tretinoin, with strong evidence for anti-aging, acne, and texture improvement.",
+    "editorialBlurb": "Tretinoin's gentler sibling who still gets shit done. Takes longer to work since your skin has to convert it first, but way fewer crying-from-irritation nights. Good gateway drug to the retinoid life.",
     "keyStudies": [
       {
         "title": "Prospective, randomized, double-blind assessment of topical bakuchiol and retinol for facial photoageing.",
@@ -292,9 +328,12 @@
     "name": "Zinc Oxide",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["sunscreen_filter", "anti_inflammatory", "antimicrobial", "sebum_regulator"],
+    "description": "A mineral UV filter that provides broad-spectrum UVA/UVB protection through physical reflection. Has mild anti-inflammatory and antimicrobial properties — ideal for sensitive and acne-prone skin.",
+    "editorialBlurb": "Physical sunscreen OG. Sits on your skin like a little shield — no absorption, no hormonal disruption, no reef damage. The white cast is real but nano formulations have improved it a lot. Sensitive skin's best bet for sun protection.",
     "keyStudies": [
       {
-        "title": "Support for the Safe Use of Zinc Oxide Nanoparticle Sunscreens: Lack of Skin Penetration or Cellular Toxicity after Repeated Application in Volunteers.",
+        "title": "Support for the Safe Use of Zinc Oxide Nanoparticle Sunscreens: Lack of Skin Penetration or Cellular Toxicity after Repeated Application in Volunteers.",
         "journal": "The Journal of investigative dermatology",
         "year": "2019",
         "pubmedId": "30448212",
@@ -308,10 +347,13 @@
     "name": "Kojic Acid",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["brightening", "depigmenting", "antimicrobial"],
+    "description": "A natural compound derived from fungi that inhibits tyrosinase to reduce melanin production. Used primarily for hyperpigmentation, melasma, and uneven skin tone.",
+    "editorialBlurb": "The original brightener before the alpha arbutin era. Derived from fungi, works by blocking the enzyme that makes melanin. Can irritate at high concentrations — don't go wild with percentages.",
     "keyStudies": [
       {
-        "title": "Evaluation of the of the efficacy of Fractional Erbium-Doped Yttrium Aluminum Garnet Laser-Assisted Drug Delivery of Kojic Acid in the Treatment of Melasma; A split face, comparative clinical study.",
-        "journal": "Journal of cosmetic and laser therapy : official publication of the European Society for Laser Dermatology",
+        "title": "Evaluation of the efficacy of Fractional Erbium-Doped Yttrium Aluminum Garnet Laser-Assisted Drug Delivery of Kojic Acid in the Treatment of Melasma.",
+        "journal": "Journal of cosmetic and laser therapy",
         "year": "2021",
         "pubmedId": "34407729",
         "link": "https://pubmed.ncbi.nlm.nih.gov/34407729/",
@@ -324,6 +366,9 @@
     "name": "Peptides",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["peptide", "anti_inflammatory", "barrier_repair"],
+    "description": "Short chains of amino acids that act as cell-signalling molecules, prompting skin to produce more collagen, elastin, and hyaluronic acid. Different peptide types target different skin concerns.",
+    "editorialBlurb": "Basically DMs to your skin cells telling them to act their age and make more collagen. Science is legit, results are slower and subtler than retinoids, but these play nice with everything. Solid for the 'maintain and prevent' phase.",
     "keyStudies": [
       {
         "title": "Oral intake of specific bioactive collagen peptides reduces skin wrinkles and increases dermal matrix synthesis.",
@@ -342,7 +387,7 @@
         "authors": "Kim DU, Chung HC, Choi J et al."
       },
       {
-        "title": "Low-molecular-weight collagen peptides supplement promotes a healthy skin: A randomized, double-blinded, placebo-controlled study.",
+        "title": "Low-molecular-weight collagen peptides supplement promotes a healthy skin: A randomized, double-blinded, placebo-controlled study.",
         "journal": "Journal of cosmetic dermatology",
         "year": "2024",
         "pubmedId": "37822045",
@@ -356,6 +401,9 @@
     "name": "Bakuchiol",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["retinoid", "antioxidant", "anti_inflammatory"],
+    "description": "A plant-derived compound from Psoralea corylifolia seed that mimics retinol's effects through different receptor pathways. Clinical trials show comparable results to retinol with significantly less irritation.",
+    "editorialBlurb": "Skincare's plant-based alternative that actually works. It's not retinol and doesn't hit the same receptors — but somehow gets similar anti-aging results without the red face and peeling. Perfect for pregnancy or if retinoids wreck your skin.",
     "keyStudies": [
       {
         "title": "Prospective, randomized, double-blind assessment of topical bakuchiol and retinol for facial photoageing.",
@@ -380,6 +428,9 @@
     "name": "Copper Peptides",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["peptide", "anti_inflammatory", "barrier_repair", "antioxidant"],
+    "description": "Peptide complexes chelated with copper ions that promote wound healing, collagen synthesis, and skin regeneration. Your skin naturally uses copper in collagen crosslinking — this tops it up.",
+    "editorialBlurb": "Peptides with metallurgy energy. Copper complexes have legit wound healing data and the mechanisms make sense. Results are slow but real. Don't combine with vitamin C — they cancel each other out.",
     "keyStudies": [
       {
         "title": "Anti-inflammatory effect of collagen tripeptide in atopic dermatitis.",
@@ -396,9 +447,12 @@
     "name": "Panthenol",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["humectant", "anti_inflammatory", "barrier_repair", "soothing"],
+    "description": "Provitamin B5 that converts to pantothenic acid in skin, enhancing moisture retention, wound healing, and barrier function. One of the gentlest and most well-tolerated skincare ingredients.",
+    "editorialBlurb": "The chill friend in your routine. No drama, no irritation, just quietly fixes your barrier and keeps things moisturised. If your skin is recovering from a purge, a laser, or a dumb DIY experiment — panthenol is the move.",
     "keyStudies": [
       {
-        "title": "Prebiotic and panthenol-containing dermocosmetic improves tolerance from artificial daylight photodynamic therapy: A randomized controlled trial in patients with actinic keratosis.",
+        "title": "Prebiotic and panthenol-containing dermocosmetic improves tolerance from artificial daylight photodynamic therapy.",
         "journal": "Photodiagnosis and photodynamic therapy",
         "year": "2024",
         "pubmedId": "39528008",
@@ -414,7 +468,7 @@
         "authors": "Camargo FB Jr, Gaspar LR, Maia Campos PM"
       },
       {
-        "title": "Evaluation of the Efficacy and Safety of a Panthenol-Enriched Mask for Skin Barrier Recovery After Facial Laser Treatment: Results of a Double-Blind Randomized Controlled Study.",
+        "title": "Evaluation of the Efficacy and Safety of a Panthenol-Enriched Mask for Skin Barrier Recovery After Facial Laser Treatment.",
         "journal": "Journal of cosmetic dermatology",
         "year": "2025",
         "pubmedId": "40613435",
@@ -428,9 +482,12 @@
     "name": "Allantoin",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["soothing", "keratolytic", "anti_inflammatory", "barrier_repair"],
+    "description": "A naturally occurring compound found in comfrey root that promotes skin cell proliferation and has mild keratolytic and soothing properties. Common in wound healing and sensitive skin formulations.",
+    "editorialBlurb": "Underrated as hell. Allantoin is in literally every 'sensitive skin' product because it calms irritation, speeds up skin repair, and does light exfoliation without being aggressive. Check your existing products — it's probably already in there.",
     "keyStudies": [
       {
-        "title": "Efficacy and Safety of Topical Compound Heparin Sodium Allantoin Gel (Main Components: Onion Extract Quercetin) for the Treatment of Rosacea.",
+        "title": "Efficacy and Safety of Topical Compound Heparin Sodium Allantoin Gel for the Treatment of Rosacea.",
         "journal": "Journal of cosmetic dermatology",
         "year": "2025",
         "pubmedId": "40177799",
@@ -438,7 +495,7 @@
         "authors": "Xu Z, Yu B, Qing Y et al."
       },
       {
-        "title": "Natural oil-based emulsion containing allantoin versus aqueous cream for managing radiation-induced skin reactions in patients with cancer: a phase 3, double-blind, randomized, controlled trial.",
+        "title": "Natural oil-based emulsion containing allantoin versus aqueous cream for managing radiation-induced skin reactions in patients with cancer.",
         "journal": "International journal of radiation oncology, biology, physics",
         "year": "2014",
         "pubmedId": "25151541",
@@ -446,7 +503,7 @@
         "authors": "Chan RJ, Mann J, Tripcony L et al."
       },
       {
-        "title": "Efficacy and tolerability of the investigational topical cream SD-101 (6% allantoin) in patients with epidermolysis bullosa: a phase 3, randomized, double-blind, vehicle-controlled trial (ESSENCE study).",
+        "title": "Efficacy and tolerability of the investigational topical cream SD-101 (6% allantoin) in patients with epidermolysis bullosa.",
         "journal": "Orphanet journal of rare diseases",
         "year": "2020",
         "pubmedId": "32576219",
@@ -460,6 +517,9 @@
     "name": "Centella Asiatica",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["anti_inflammatory", "soothing", "barrier_repair", "antioxidant"],
+    "description": "A medicinal herb containing triterpenoids (madecassoside, asiaticoside) that stimulate collagen synthesis and reduce inflammation. Traditional wound-healing plant with modern clinical backing for sensitive and compromised skin.",
+    "editorialBlurb": "Korean skincare made cica famous and honestly deserved. The actives genuinely calm inflammation and help barrier repair. Solid choice for post-active recovery, chronic redness, or when your routine has become a war zone.",
     "keyStudies": []
   },
   {
@@ -467,6 +527,10 @@
     "name": "Snail Mucin",
     "evidenceTier": 3,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["humectant", "barrier_repair", "anti_inflammatory", "soothing"],
+    "description": "A secretion from Cryptomphalus aspersa snails containing glycoproteins, hyaluronic acid, glycolic acid, and antimicrobial peptides. Popular in Korean skincare with growing research interest, though large-scale RCT data remains limited.",
+    "editorialBlurb": "Is putting snail secretion on your face weird? Yes. Does it work? Kind of honestly. The mucin is genuinely packed with good stuff. Evidence is still catching up to the hype but it's more than just a marketing gimmick — low risk, reasonable upside.",
+    "ratingOverride": "mid",
     "keyStudies": [
       {
         "title": "Snail extract for skin: A review of uses, projections, and limitations.",
@@ -483,9 +547,12 @@
     "name": "Epidermal Growth Factor",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["growth_factor", "anti_inflammatory", "barrier_repair"],
+    "description": "A protein that binds to skin cell receptors to stimulate proliferation, differentiation, and repair. Used in post-procedure recovery products and advanced anti-aging formulations.",
+    "editorialBlurb": "Sounds like sci-fi but EGF is your skin's actual repair signal protein. Gets interesting after procedures (lasers, microneedling) where healing speed matters. Large molecules have debated penetration — but post-treatment recovery data is decent.",
     "keyStudies": [
       {
-        "title": "Effectiveness of an epidermal growth factor-containing cream on postinflammatory hyperpigmentation after 1064-nm Q-switched neodymium-doped yttrium aluminum garnet laser treatment of acquired bilateral nevus of Ota-like macules (Hori's nevus) in Asians: A split-face, double-blinded, randomized controlled study.",
+        "title": "Effectiveness of an epidermal growth factor-containing cream on postinflammatory hyperpigmentation after 1064-nm Q-switched neodymium-doped yttrium aluminum garnet laser treatment.",
         "journal": "Journal of cosmetic dermatology",
         "year": "2022",
         "pubmedId": "35066982",
@@ -499,6 +566,9 @@
     "name": "Mandelic Acid",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["aha", "antimicrobial", "brightening", "keratolytic"],
+    "description": "A large-molecule alpha-hydroxy acid derived from bitter almonds with gentle exfoliating and antimicrobial properties. Larger molecular size means slower skin penetration and significantly reduced irritation risk.",
+    "editorialBlurb": "AHA for sensitive skin types who cried at glycolic acid. Bigger molecule = slower penetration = less sting. Bonus antimicrobial activity makes it decent for adult acne. Great if other acids are just too aggro for your face.",
     "keyStudies": []
   },
   {
@@ -506,9 +576,12 @@
     "name": "Urea",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["humectant", "keratolytic", "emollient", "barrier_repair"],
+    "description": "A naturally occurring compound in the skin's natural moisturising factor that acts as both a humectant and keratolytic. Low concentrations hydrate; higher concentrations (20–40%) soften and exfoliate thickened skin.",
+    "editorialBlurb": "Unglamorous name, genuinely one of the best moisturisers going. Your skin naturally makes urea — you're just topping it up. At 10% it's a moisturiser. At 40% it's a medical-grade callus destroyer. Same molecule, very different vibes.",
     "keyStudies": [
       {
-        "title": "Effectiveness and Tolerability of an Emollient \"Plus\" Compared to Urea 10% in Patients With Mild-to-Moderate Atopic Dermatitis.",
+        "title": "Effectiveness and Tolerability of an Emollient 'Plus' Compared to Urea 10% in Patients With Mild-to-Moderate Atopic Dermatitis.",
         "journal": "Journal of cosmetic dermatology",
         "year": "2025",
         "pubmedId": "39973079",
@@ -530,6 +603,9 @@
     "name": "Squalane",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["emollient", "occlusive", "antioxidant"],
+    "description": "A saturated, stable version of squalene derived from olives or sugarcane that closely mimics the skin's own sebum. Non-comedogenic emollient that seals in moisture without clogging pores.",
+    "editorialBlurb": "The cheat-code emollient. Squalane is basically your own skin oil but better — stable, non-comedogenic, non-greasy. Works on literally every skin type including acne-prone. One of those 'should be in every routine' ingredients.",
     "keyStudies": [
       {
         "title": "Clinical evaluation of fullerene-C60 dissolved in squalane for anti-wrinkle cosmetics.",
@@ -540,7 +616,7 @@
         "authors": "Kato S, Taira H, Aoshima H et al."
       },
       {
-        "title": "High-dose squalene ingestion increases type I procollagen and decreases ultraviolet-induced DNA damage in human skin in vivo but is associated with transient adverse effects.",
+        "title": "High-dose squalene ingestion increases type I procollagen and decreases ultraviolet-induced DNA damage in human skin in vivo.",
         "journal": "Clinical and experimental dermatology",
         "year": "2009",
         "pubmedId": "19522983",
@@ -554,9 +630,12 @@
     "name": "Polyhydroxy Acids",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["pha", "humectant", "keratolytic", "anti_inflammatory", "antioxidant"],
+    "description": "A family of next-generation exfoliants with larger molecules than AHAs, offering gentler exfoliation and simultaneous hydration. Gluconolactone is the most studied PHA.",
+    "editorialBlurb": "AHAs for people whose skin cried at glycolic acid. PHAs exfoliate so gently you barely notice — but the results are real and there's zero burning. Solid option for reactive skin that still wants chemical exfoliation benefits.",
     "keyStudies": [
       {
-        "title": "Comparison of Efficacy and Willingness to a 5% Gluconolactone-Based Topical Serum and Intense Pulsed Light in Mild Erythema of Rosacea: A Paired Control Study.",
+        "title": "Comparison of Efficacy and Willingness to a 5% Gluconolactone-Based Topical Serum and Intense Pulsed Light in Mild Erythema of Rosacea.",
         "journal": "Journal of cosmetic dermatology",
         "year": "2025",
         "pubmedId": "40111222",
@@ -586,6 +665,9 @@
     "name": "Tranexamic Acid",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["brightening", "depigmenting", "anti_inflammatory"],
+    "description": "A synthetic lysine derivative that disrupts the UV-induced melanin pathway and reduces inflammation-triggered pigmentation. Clinical evidence supports its use for melasma, PIH, and rosacea.",
+    "editorialBlurb": "Melasma's main nemesis. Originally a blood-clotting drug that someone noticed also erased dark spots — classic accidental skincare discovery. Fewer side effects than hydroquinone, different mechanism. The new gold standard for stubborn discolouration.",
     "keyStudies": [
       {
         "title": "Oral tranexamic acid treats papulopustular rosacea by improving the skin barrier.",
@@ -605,7 +687,7 @@
       },
       {
         "title": "Tranexamic Acid for Melasma Treatment: A Split-Face Study.",
-        "journal": "Dermatologic surgery : official publication for American Society for Dermatologic Surgery [et al.]",
+        "journal": "Dermatologic surgery",
         "year": "2020",
         "pubmedId": "32701529",
         "link": "https://pubmed.ncbi.nlm.nih.gov/32701529/",
@@ -618,6 +700,9 @@
     "name": "Sulfur",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["antimicrobial", "keratolytic", "sebum_regulator", "anti_inflammatory"],
+    "description": "One of the oldest topical acne treatments — sulfur exfoliates dead skin cells, absorbs excess oil, and has proven antibacterial properties. Effective for acne and rosacea, particularly for skin that doesn't tolerate BHA.",
+    "editorialBlurb": "The OG acne treatment from before BHA was invented. It smells like eggs, looks like chalk, and somehow still makes it into modern formulas because it works when other stuff doesn't. Great for sensitive types who can't handle salicylic acid.",
     "keyStudies": [
       {
         "title": "Combination sodium sulfacetamide 10% and sulfur 5% cream with sunscreens versus metronidazole 0.75% cream for rosacea.",
@@ -634,6 +719,9 @@
     "name": "Beta-Glucan",
     "evidenceTier": 2,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["soothing", "anti_inflammatory", "humectant", "barrier_repair"],
+    "description": "A polysaccharide derived from oats or yeast with potent soothing and immune-modulating properties. Penetrates deeply into skin and activates the healing response involved in barrier repair.",
+    "editorialBlurb": "The underdog hydrator. Beta-glucan goes deeper than hyaluronic acid and tells your immune system to chill. Strong candidate for the 'best humectant' conversation, especially for post-procedure and reactive skin types.",
     "keyStudies": []
   },
   {
@@ -641,6 +729,10 @@
     "name": "Adenosine",
     "evidenceTier": 3,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["anti_inflammatory", "antioxidant", "soothing"],
+    "description": "A naturally occurring nucleoside found in all living cells. Used in skincare for anti-aging and calming effects, though large-scale randomised trial evidence remains limited.",
+    "editorialBlurb": "The 'could be onto something' ingredient. Shows up in K-beauty anti-agers and the safety profile is impeccable, but don't expect tretinoin-level results. Think of it as a gentle support player, not the main event.",
+    "ratingOverride": "mid",
     "keyStudies": []
   },
   {
@@ -648,6 +740,10 @@
     "name": "Hydroquinone",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["depigmenting", "brightening"],
+    "description": "The most studied and potent topical depigmenting agent, inhibiting tyrosinase to block melanin synthesis. Highly effective for melasma and hyperpigmentation at 2–4%, but banned OTC in the EU, Australia, and Japan due to long-term safety concerns.",
+    "editorialBlurb": "The nuclear option for dark spots. Genuinely works better than almost anything else — there's a reason derms reach for it. But it's banned OTC in the EU and Australia: long-term unsupervised use can cause permanent blue-black pigment (ochronosis). Medical supervision only — not vibes.",
+    "ratingOverride": "caution",
     "keyStudies": []
   },
   {
@@ -655,6 +751,9 @@
     "name": "Ivermectin (topical)",
     "evidenceTier": 1,
     "evidenceType": "Peer-Reviewed Clinical Trials (PubMed)",
+    "functions": ["antimicrobial", "anti_inflammatory"],
+    "description": "A topical antiparasitic drug FDA-approved for papulopustular rosacea. Kills Demodex mites implicated in rosacea flares while reducing skin inflammation through anti-inflammatory mechanisms.",
+    "editorialBlurb": "Demodex mites — tiny face mites — are a real thing and they make rosacea significantly worse. Ivermectin kills them AND has anti-inflammatory effects, with solid rosacea trial data. Very niche use case but when it's your use case, it's the right call.",
     "keyStudies": [
       {
         "title": "Ivermectin--clinical trials and treatment schedules in onchocerciasis.",

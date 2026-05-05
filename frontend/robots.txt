@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Allow: /ingredient/
 Disallow: /dashboard.html
 Disallow: /recommendations.html
 Disallow: /login-callback.html

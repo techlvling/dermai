@@ -8,9 +8,11 @@ window.Ingredients = (function () {
 
     if (!grid || !searchInput) return;
 
-    let ingredientsData = [];
-    let concernsMap     = {};
-    let activeFilter    = 'All';
+    let ingredientsData    = [];
+    let concernsMap        = {};
+    let functionTagsData   = {};
+    let activeFilter       = 'All';
+    let activeFnFilter     = 'All';
 
     const filterDefs = [
       { label: 'All',          concerns: null },
@@ -45,6 +47,47 @@ window.Ingredients = (function () {
       else grid.parentNode.insertBefore(chipsContainer, grid);
     }
 
+    function _buildFnChips() {
+      if (document.getElementById('function-filter-chips')) return;
+      const keys = Object.keys(functionTagsData);
+      if (!keys.length) return;
+      const fnContainer = document.createElement('div');
+      fnContainer.id = 'function-filter-chips';
+      fnContainer.className = 'filter-chips filter-chips--functions';
+
+      const allBtn = document.createElement('button');
+      allBtn.className = 'function-chip-filter active';
+      allBtn.textContent = 'All functions';
+      allBtn.dataset.fn = 'All';
+      allBtn.addEventListener('click', () => {
+        activeFnFilter = 'All';
+        fnContainer.querySelectorAll('.function-chip-filter').forEach(c => c.classList.remove('active'));
+        allBtn.classList.add('active');
+        applyFilters();
+      });
+      fnContainer.appendChild(allBtn);
+
+      keys.forEach(slug => {
+        const meta = functionTagsData[slug];
+        const btn  = document.createElement('button');
+        btn.className = 'function-chip-filter';
+        btn.textContent = meta.label;
+        btn.dataset.fn  = slug;
+        btn.style.setProperty('--chip-accent', meta.accent);
+        btn.addEventListener('click', () => {
+          activeFnFilter = slug;
+          fnContainer.querySelectorAll('.function-chip-filter').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          applyFilters();
+        });
+        fnContainer.appendChild(btn);
+      });
+
+      const concernsRow = document.getElementById('filter-chips');
+      if (concernsRow) concernsRow.insertAdjacentElement('afterend', fnContainer);
+      else grid.parentNode.insertBefore(fnContainer, grid);
+    }
+
     function getFilteredIngredients() {
       const def  = filterDefs.find(d => d.label === activeFilter);
       const term = searchInput.value.toLowerCase();
@@ -52,6 +95,9 @@ window.Ingredients = (function () {
         if (def && def.concerns) {
           const targetIds = def.concerns.flatMap(c => (concernsMap[c] && concernsMap[c].targetIngredients) || []);
           if (!targetIds.includes(ing.id)) return false;
+        }
+        if (activeFnFilter !== 'All') {
+          if (!ing.functions || !ing.functions.includes(activeFnFilter)) return false;
         }
         if (term) {
           return ing.name.toLowerCase().includes(term) ||
@@ -66,10 +112,12 @@ window.Ingredients = (function () {
     async function fetchData() {
       if (loadingIndicator) loadingIndicator.classList.remove('hidden');
       try {
-        const [ingRes, conRes] = await Promise.all([fetch('/api/ingredients'), fetch('/api/concerns')]);
+        const [ingRes, conRes, fnRes] = await Promise.all([fetch('/api/ingredients'), fetch('/api/concerns'), fetch('/api/function-tags')]);
         if (!ingRes.ok) throw new Error('Failed to load ingredients');
-        ingredientsData = await ingRes.json();
-        if (conRes.ok) concernsMap = await conRes.json();
+        ingredientsData  = await ingRes.json();
+        if (conRes.ok) concernsMap      = await conRes.json();
+        if (fnRes.ok)  functionTagsData = await fnRes.json();
+        _buildFnChips();
         renderGrid(ingredientsData);
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -112,16 +160,30 @@ window.Ingredients = (function () {
             </div>`
           : '';
 
+        const ratingKey = ingredient.ratingOverride ||
+          (ingredient.evidenceTier === 1 ? 'hero' : ingredient.evidenceTier === 2 ? 'solid' : ingredient.evidenceTier === 3 ? 'caution' : 'mid');
+        const ratingLabelMap = { hero: '🏆 Hero', solid: '✅ Solid', mid: '💡 Mid', caution: '⚠️ Caution' };
+        const fnChipsHTML = (ingredient.functions || []).map(slug => {
+          const meta = functionTagsData[slug];
+          return meta ? `<span class="function-chip-tag" style="--chip-accent:${meta.accent}" title="${meta.definition}">${meta.label}</span>` : '';
+        }).join('');
+
         card.innerHTML = `
           <div class="ingredient-header">
-            <div>
-              <h2 class="ingredient-name">${ingredient.name}</h2>
+            <div style="flex:1;min-width:0;">
+              <a href="/ingredient/${ingredient.id}" class="ingredient-name-link">
+                <h2 class="ingredient-name">${ingredient.name}</h2>
+              </a>
               <span class="evidence-label">${ingredient.evidenceType}</span>
               ${concernTagsHTML}
+              ${fnChipsHTML ? `<div class="function-chips-row">${fnChipsHTML}</div>` : ''}
             </div>
-            <span class="badge badge-tier-${ingredient.evidenceTier}">
-              ${ingredient.evidenceTier === 1 ? '🏆 Tier 1 RCT' : '✅ Tier 2'}
-            </span>
+            <div class="ingredient-badges">
+              <span class="badge badge-tier-${ingredient.evidenceTier}">
+                ${ingredient.evidenceTier === 1 ? '🏆 Tier 1 RCT' : '✅ Tier 2'}
+              </span>
+              <span class="rating-badge-card rating-badge-card--${ratingKey}">${ratingLabelMap[ratingKey] || ratingKey}</span>
+            </div>
           </div>
           <div class="studies-section">
             <div class="studies-title">

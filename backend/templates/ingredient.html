@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5588e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{TITLE}}</title>
+    <meta name="description" content="{{META_DESC}}" />
+    {{ROBOTS}}
+    <meta name="theme-color" content="#f5588e" />
+    <link rel="canonical" href="https://tinkskin.in{{CANONICAL}}" />
+    {{OG_TAGS}}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://tinkskin.in/public/og-image.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="/css/base.css" />
+    <link rel="stylesheet" href="/css/ingredient.css" />
+    <script type="application/ld+json">{{JSON_LD}}</script>
+  </head>
+  <body>
+    <div class="bg-blob bg-blob-1" aria-hidden="true"></div>
+    <div class="bg-blob bg-blob-2" aria-hidden="true"></div>
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div id="nav-mount"></div>
+
+    <main class="ing-page container" id="main-content">
+      <a href="/dashboard.html#ingredients" class="ing-back">← ingredient library</a>
+
+      <header class="ing-hero">
+        <div class="ing-hero__chips">{{FUNCTION_CHIPS}}</div>
+        <h1 class="ing-hero__name">{{NAME}}</h1>
+        <div class="ing-hero__badges">
+          {{RATING_BADGE}}
+          {{EVIDENCE_BADGE}}
+        </div>
+      </header>
+
+      <div class="ing-body">
+        <section class="ing-section glass-panel">
+          <h2 class="ing-section__title">what it does</h2>
+          <p class="ing-description">{{DESCRIPTION}}</p>
+        </section>
+
+        {{EDITORIAL}}
+
+        {{CONCERNS_HTML}}
+
+        {{CONFLICTS_HTML}}
+
+        {{STUDIES_HTML}}
+
+        {{PRODUCTS_HTML}}
+      </div>
+
+      <footer class="ing-disclaimer">
+        <p>This page is for educational purposes only and does not constitute medical advice. Consult a qualified dermatologist before adding any active ingredient to your routine.</p>
+      </footer>
+    </main>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/nav.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', () => Nav.render('ingredient'));</script>
+    <script>
+      if (!/^(localhost|127\.|10\.|192\.168\.|\[::1\])/.test(location.hostname)) {
+        var s = document.createElement('script');
+        s.defer = true; s.src = '/_vercel/insights/script.js';
+        document.head.appendChild(s);
+      }
+    </script>
+  </body>
+</html>

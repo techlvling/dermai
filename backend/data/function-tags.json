@@ -1,0 +1,21 @@
+{
+  "humectant":        { "label": "Humectant",        "definition": "Draws moisture into the skin by binding water molecules.",                        "accent": "#4FB3D9" },
+  "occlusive":        { "label": "Occlusive",         "definition": "Forms a physical barrier to lock in moisture and prevent water loss.",            "accent": "#7EC8A4" },
+  "emollient":        { "label": "Emollient",         "definition": "Softens and smooths skin by filling gaps between surface cells.",                 "accent": "#A8D4B8" },
+  "antioxidant":      { "label": "Antioxidant",       "definition": "Neutralises free radicals to protect skin from environmental damage.",            "accent": "#F4A261" },
+  "aha":              { "label": "AHA",               "definition": "Alpha-hydroxy acid that exfoliates the skin surface by dissolving dead-cell bonds.", "accent": "#E76F51" },
+  "bha":              { "label": "BHA",               "definition": "Beta-hydroxy acid that exfoliates inside pores — oil-soluble so it cuts through sebum.", "accent": "#D62828" },
+  "pha":              { "label": "PHA",               "definition": "Polyhydroxy acid — gentler exfoliant with larger molecules and added humectant properties.", "accent": "#F7B267" },
+  "retinoid":         { "label": "Retinoid",          "definition": "Vitamin A derivative that accelerates cell turnover and boosts collagen synthesis.", "accent": "#C77DFF" },
+  "peptide":          { "label": "Peptide",           "definition": "Short amino acid chain that signals skin cells to produce more collagen or reduce inflammation.", "accent": "#7B2FBE" },
+  "sunscreen_filter": { "label": "UV Filter",         "definition": "Absorbs or reflects UV radiation to protect against photodamage.",                "accent": "#FFD166" },
+  "anti_inflammatory":{ "label": "Anti-inflammatory", "definition": "Calms redness, irritation, and inflammatory skin responses.",                    "accent": "#06D6A0" },
+  "brightening":      { "label": "Brightening",       "definition": "Inhibits melanin production or dispersal to even skin tone and fade dark spots.",  "accent": "#FFE66D" },
+  "antimicrobial":    { "label": "Antimicrobial",     "definition": "Kills or inhibits acne-causing bacteria and microbes on skin.",                   "accent": "#EF233C" },
+  "sebum_regulator":  { "label": "Sebum Regulator",   "definition": "Reduces excess oil production to control shine and congestion.",                  "accent": "#118AB2" },
+  "barrier_repair":   { "label": "Barrier Repair",    "definition": "Replenishes key lipids or proteins to restore the skin's protective barrier.",     "accent": "#2D6A4F" },
+  "keratolytic":      { "label": "Keratolytic",       "definition": "Breaks down keratin buildup to soften rough, flaky, or thickened skin.",          "accent": "#8D6E63" },
+  "depigmenting":     { "label": "Depigmenting",      "definition": "Actively reduces existing pigmentation by blocking the melanin synthesis pathway.", "accent": "#B5838D" },
+  "soothing":         { "label": "Soothing",          "definition": "Reduces sensitivity, tightness, and reactive skin responses.",                    "accent": "#A8DADC" },
+  "growth_factor":    { "label": "Growth Factor",     "definition": "Proteins that signal skin repair, cell proliferation, and collagen production.",   "accent": "#457B9D" }
+}

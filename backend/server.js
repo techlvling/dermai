@@ -37,6 +37,109 @@ app.get(Object.keys(LEGACY_REDIRECTS), (req, res) => {
   res.redirect(302, LEGACY_REDIRECTS[req.path]);
 });
 
+// ---------------------------------------------------------------------------
+// Ingredient page helpers — loaded at startup; routes come before express.static
+// so /sitemap.xml shadows the static file and /ingredient/:slug beats the 404 guard
+// ---------------------------------------------------------------------------
+const { enrichIngredient: _enrichIng, getBySlug: _getIngBySlug } = require('./lib/ingredient-enrich');
+const _ingTpl = fs.readFileSync(path.join(__dirname, 'templates', 'ingredient.html'), 'utf8');
+function _esc(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function _sub(h, k, v) { return h.split(`{{${k}}}`).join(v); }
+
+app.get('/sitemap.xml', (_req, res) => {
+  const statics = [
+    'https://tinkskin.in/', 'https://tinkskin.in/analyze.html',
+    'https://tinkskin.in/donate.html', 'https://tinkskin.in/privacy.html',
+    'https://tinkskin.in/terms.html',
+  ];
+  const ingUrls = (DATA.ingredients || [])
+    .filter(i => i.description && i.description.trim())
+    .map(i => `  <url><loc>https://tinkskin.in/ingredient/${i.id}</loc></url>`);
+  const allLocs = statics.map(u => `  <url><loc>${u}</loc></url>`).concat(ingUrls);
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${allLocs.join('\n')}\n</urlset>`;
+  res.set('Content-Type', 'application/xml').set('Cache-Control', 'public, max-age=3600').send(xml);
+});
+
+const _RATING_LABELS = { hero: '🏆 hero ingredient', solid: '✅ solid choice', mid: '💡 emerging evidence', caution: '⚠️ use with care' };
+
+app.get('/ingredient/:slug', (req, res) => {
+  const ing = _getIngBySlug(req.params.slug, DATA.ingredients || []);
+  if (!ing) return res.status(404).sendFile(path.join(__dirname, '..', 'frontend', '404.html'));
+
+  const enriched = _enrichIng(ing, {
+    concerns: DATA.concerns || {}, conflicts: DATA.conflicts || [],
+    products: DATA.products || [], functionTags: DATA.functionTags || {},
+  });
+
+  const hasDesc   = !!(ing.description && ing.description.trim());
+  const title     = `${ing.name} for skin — what it does, benefits, products | tinkskin`;
+  const metaDesc  = hasDesc ? ing.description.slice(0, 155) : `${ing.name}: evidence-based skincare ingredient analysis.`;
+  const canonical = `/ingredient/${ing.id}`;
+
+  const ratingBadge   = `<span class="ing-rating-badge ing-rating-badge--${enriched.rating}">${_RATING_LABELS[enriched.rating] || enriched.rating}</span>`;
+  const evidenceBadge = `<span class="ing-evidence-badge ing-evidence-badge--tier${ing.evidenceTier}">Tier ${ing.evidenceTier} Evidence</span>`;
+
+  const functionChips = enriched.functionMeta
+    .map(f => `<span class="ing-fn-chip" style="--chip-accent:${_esc(f.accent)}" title="${_esc(f.definition)}">${_esc(f.label)}</span>`)
+    .join('');
+
+  const editorial = ing.editorialBlurb
+    ? `<section class="ing-section ing-editorial glass-panel"><span class="ing-editorial__badge">dermai take</span><p>${_esc(ing.editorialBlurb)}</p></section>`
+    : '';
+
+  const concernsHtml = enriched.relatedConcerns.length
+    ? `<section class="ing-section glass-panel"><h2 class="ing-section__title">targets these concerns</h2><div class="ing-chips-row">${enriched.relatedConcerns.map(c => `<a href="/dashboard.html#ingredients" class="ing-concern-chip">${_esc(c.key)}</a>`).join('')}</div></section>`
+    : '';
+
+  const conflictsHtml = enriched.relatedConflicts.length
+    ? `<section class="ing-section glass-panel"><h2 class="ing-section__title">don't combine with</h2><div class="ing-conflicts">${enriched.relatedConflicts.map(c => {
+        const otherId = c.a === ing.id ? c.b : c.a;
+        const other   = (DATA.ingredients || []).find(i => i.id === otherId);
+        return `<div class="ing-conflict-card ing-conflict-card--${_esc(c.severity)}"><div class="ing-conflict__header"><a href="/ingredient/${_esc(otherId)}" class="ing-conflict__name">${_esc(other ? other.name : otherId)}</a><span class="ing-conflict__sev ing-conflict__sev--${_esc(c.severity)}">${_esc(c.severity)}</span></div><p class="ing-conflict__reason">${_esc(c.reason)}</p><p class="ing-conflict__tip">💡 ${_esc(c.tip)}</p></div>`;
+      }).join('')}</div></section>`
+    : '';
+
+  const studiesHtml = ing.keyStudies && ing.keyStudies.length
+    ? `<section class="ing-section glass-panel"><h2 class="ing-section__title">the studies</h2><div class="ing-studies">${ing.keyStudies.map(s => `<div class="ing-study"><a href="${_esc(s.link)}" target="_blank" rel="noopener noreferrer" class="ing-study__title">"${_esc(s.title)}"</a><div class="ing-study__meta">${_esc(s.journal)} (${_esc(String(s.year))}) · ${_esc(s.authors)}</div></div>`).join('')}</div></section>`
+    : '';
+
+  const productsHtml = enriched.relatedProducts.length
+    ? `<section class="ing-section glass-panel"><h2 class="ing-section__title">products with this ingredient</h2><div class="ing-products">${enriched.relatedProducts.map(p => `<div class="ing-product-card"><span class="ing-product__name">${_esc(p.name)}</span><span class="ing-product__brand">${_esc(p.brand)}</span></div>`).join('')}</div></section>`
+    : '';
+
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'DefinedTerm',
+    name: ing.name, description: ing.description || '',
+    url: `https://tinkskin.in${canonical}`,
+    inDefinedTermSet: { '@type': 'DefinedTermSet', name: 'tinkskin Skincare Ingredient Glossary', url: 'https://tinkskin.in/dashboard.html#ingredients' },
+    identifier: ing.id,
+  });
+  const ogTags = [
+    `<meta property="og:type" content="article" />`,
+    `<meta property="og:url" content="https://tinkskin.in${canonical}" />`,
+    `<meta property="og:title" content="${_esc(title)}" />`,
+    `<meta property="og:description" content="${_esc(metaDesc)}" />`,
+    `<meta property="og:image" content="https://tinkskin.in/public/og-image.png" />`,
+    `<meta property="og:site_name" content="tinkskin" />`,
+  ].join('\n    ');
+
+  let html = _ingTpl;
+  [
+    ['TITLE', title], ['META_DESC', metaDesc],
+    ['ROBOTS', hasDesc ? '' : '<meta name="robots" content="noindex" />'],
+    ['CANONICAL', canonical], ['OG_TAGS', ogTags], ['JSON_LD', jsonLd],
+    ['NAME', _esc(ing.name)], ['FUNCTION_CHIPS', functionChips],
+    ['RATING_BADGE', ratingBadge], ['EVIDENCE_BADGE', evidenceBadge],
+    ['DESCRIPTION', hasDesc ? _esc(ing.description) : '<em class="ing-empty">description coming soon</em>'],
+    ['EDITORIAL', editorial], ['CONCERNS_HTML', concernsHtml],
+    ['CONFLICTS_HTML', conflictsHtml], ['STUDIES_HTML', studiesHtml], ['PRODUCTS_HTML', productsHtml],
+  ].forEach(([k, v]) => { html = _sub(html, k, v); });
+
+  res.set('Cache-Control', 'public, max-age=3600').type('html').send(html);
+});
+
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Admin SPA — served from frontend/admin/dist, with SPA fallback for sub-routes
@@ -65,7 +168,8 @@ const DATA = {
   ingredients: JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'ingredients.json'))),
   concerns:    JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'concerns.json'))),
   conflicts:   JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'conflicts.json'))),
-  products:    JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'products.json'))),
+  products:     JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'products.json'))),
+  functionTags: JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'function-tags.json'))),
 };
 
 // ---------------------------------------------------------------------------
@@ -248,6 +352,22 @@ app.get('/api/ingredients', async (_req, res) => {
   _ingCacheValue = DATA.ingredients;
   _ingCacheAt    = now;
   res.json(_ingCacheValue);
+});
+
+app.get('/api/ingredients/:slug', (req, res) => {
+  res.set('Cache-Control', 'public, max-age=3600');
+  const ing = _getIngBySlug(req.params.slug, DATA.ingredients || []);
+  if (!ing) return res.status(404).json({ error: 'Ingredient not found' });
+  const enriched = _enrichIng(ing, {
+    concerns: DATA.concerns || {}, conflicts: DATA.conflicts || [],
+    products: DATA.products || [], functionTags: DATA.functionTags || {},
+  });
+  res.json(enriched);
+});
+
+app.get('/api/function-tags', (_req, res) => {
+  res.set('Cache-Control', 'public, max-age=3600');
+  res.json(DATA.functionTags || {});
 });
 
 app.get('/api/concerns', async (_req, res) => {
