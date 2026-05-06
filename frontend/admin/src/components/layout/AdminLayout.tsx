@@ -3,6 +3,7 @@ import { supabase } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAdminQuery } from '@/lib/hooks'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Badge } from '@/components/ui/badge'
 import {
   LayoutDashboard, Users, Camera, AlertTriangle, BookOpen,
@@ -119,7 +120,9 @@ export default function AdminLayout() {
 
       {/* Main */}
       <main className="flex-1 overflow-y-auto">
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   )

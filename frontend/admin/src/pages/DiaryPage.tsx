@@ -66,7 +66,7 @@ export default function DiaryPage() {
             <TableBody>
               {(data?.entries ?? []).map(e => (
                 <TableRow key={e.id}>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{e.user_id.slice(0, 8)}…</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{(e.user_id ?? '—').slice(0, 8)}…</TableCell>
                   <TableCell className="text-sm">{new Date(e.created_at).toLocaleDateString()}</TableCell>
                   <TableCell className="text-sm">{e.water_glasses ?? '—'}</TableCell>
                   <TableCell className="text-sm">{e.sleep_hours ?? '—'}</TableCell>

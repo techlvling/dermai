@@ -82,8 +82,8 @@ export default function ScansPage() {
                       />
                     ) : <div className="w-10 h-10 bg-muted rounded" />}
                   </TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{s.id.slice(0, 8)}…</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{s.user_id.slice(0, 8)}…</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{(s.id ?? '').slice(0, 8)}…</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{(s.user_id ?? '—').slice(0, 8)}…</TableCell>
                   <TableCell className="text-sm">{new Date(s.created_at).toLocaleString()}</TableCell>
                   <TableCell>
                     <div className="flex gap-1">

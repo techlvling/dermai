@@ -83,7 +83,7 @@ export default function ReactionsPage() {
                 <TableRow key={r.id} className={r.severity >= 4 ? 'bg-destructive/5' : ''}>
                   <TableCell>{severityBadge(r.severity)}</TableCell>
                   <TableCell className="font-medium text-sm">{r.product_id}</TableCell>
-                  <TableCell className="font-mono text-xs text-muted-foreground">{r.user_id.slice(0, 8)}…</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{(r.user_id ?? '—').slice(0, 8)}…</TableCell>
                   <TableCell className="text-sm max-w-xs truncate">{r.notes ?? '—'}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleString()}</TableCell>
                 </TableRow>
